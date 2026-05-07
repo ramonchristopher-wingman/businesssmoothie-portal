@@ -626,12 +626,12 @@
 <body>
 
 <!-- ═══════════════════════════════════ LOADING ═══════════════════════════════════ -->
-<div id="screen-loading" class="screen active">
+<div id="screen-loading" class="screen">
   <div class="spinner"></div>
 </div>
 
 <!-- ═══════════════════════════════════ AUTH ═══════════════════════════════════ -->
-<div id="screen-auth" class="screen">
+<div id="screen-auth" class="screen active">
   <div class="auth-card">
     <div class="logo-mark">BUSINESS <span>Smoothie</span></div>
     <div class="auth-icon">✉️</div>
@@ -1227,7 +1227,7 @@ function renderAll() {
 function renderOverview() {
   const name = state.clientName || 'Your';
   document.getElementById('overview-title').textContent = name + "'s Dashboard";
-  document.getElementById('overview-sub').textContent = 'Here's where everything stands.';
+  document.getElementById('overview-sub').textContent = 'Here is where everything stands.';
 
   const active = state.projects.filter(p => p.status === 'In Progress').length;
   const done = state.projects.filter(p => p.status === 'Done').length;
