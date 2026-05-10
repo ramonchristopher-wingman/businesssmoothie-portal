@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Where Do We Begin? | Business Smoothie</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:      #00C45A;
+  --dark-green: #1A5C35;
+  --bg:         #F9F8F5;
+  --white:      #ffffff;
+  --dark:       #2C2C2C;
+  --mid:        #666;
+  --border:     #ddd8ce;
+  --shadow:     0 4px 24px rgba(0,0,0,0.07);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ── */
+.site-header {
+  width: 100%;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo { font-family: 'Fredoka One', cursive; font-size: 20px; color: var(--dark-green); }
+.logo span { color: var(--green); }
+
+/* ── Screens ── */
+.screen { display: none; width: 100%; max-width: 660px; padding: 40px 24px 60px; animation: rise 0.3s ease both; }
+.screen.active { display: block; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Progress ── */
+.progress-wrap { margin-bottom: 32px; }
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mid);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+.progress-bar { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
+
+/* ── Intro ── */
+.intro-wrap { text-align: center; padding: 16px 0 8px; }
+.intro-icon { font-size: 60px; display: block; margin-bottom: 16px; }
+.intro-title { font-family: 'Fredoka One', cursive; font-size: 44px; color: var(--dark-green); line-height: 1.1; margin-bottom: 14px; }
+.intro-body { font-size: 17px; color: var(--mid); line-height: 1.65; max-width: 460px; margin: 0 auto 28px; }
+.intro-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
+.chip { background: var(--white); border: 1.5px solid var(--border); border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 700; color: var(--dark-green); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+}
+.btn-green { background: var(--green); color: var(--white); font-size: 17px; padding: 15px 36px; }
+.btn-green:hover { background: #00ae50; transform: translateY(-1px); }
+.btn-green:active { transform: translateY(0); }
+.btn-green:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn-outline { background: transparent; color: var(--dark-green); border: 2px solid var(--dark-green); font-size: 15px; padding: 12px 24px; }
+.btn-outline:hover { background: var(--dark-green); color: var(--white); }
+.btn-ghost {
+  background: none;
+  border: none;
+  color: var(--mid);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 24px;
+}
+.btn-ghost:hover { color: var(--dark); }
+
+/* ── Questions ── */
+.q-label { font-size: 12px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
+.q-text { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark); line-height: 1.25; margin-bottom: 26px; }
+.options { display: flex; flex-direction: column; gap: 11px; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 13px;
+  padding: 15px 18px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  text-align: left;
+  width: 100%;
+}
+.option:hover { border-color: var(--green); background: #f1fdf6; }
+.option.picked { border-color: var(--green); background: #f1fdf6; }
+.opt-badge {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--mid);
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.option.picked .opt-badge { background: var(--green); border-color: var(--green); color: var(--white); }
+.opt-text { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.4; padding-top: 3px; }
+.q-footer { margin-top: 22px; }
+
+/* ── Results: Layer 1 ── */
+.result-line-a { font-family: 'Fredoka One', cursive; font-size: 30px; color: var(--dark); line-height: 1.2; margin-bottom: 10px; }
+.result-line-b { font-size: 16px; color: var(--mid); line-height: 1.65; margin-bottom: 36px; }
+
+/* ── Results: Layer 2 — tier cards (NO PRICING per spec) ── */
+.plan-cards { display: flex; flex-direction: column; gap: 22px; margin-bottom: 32px; }
+.plan-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 34px 26px 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.plan-card.is-primary { border-color: var(--green); }
+.plan-badge {
+  position: absolute;
+  top: -13px;
+  left: 22px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 14px;
+  border-radius: 99px;
+}
+.badge-best { background: var(--green); color: var(--white); }
+.badge-also { background: var(--dark-green); color: var(--white); }
+.badge-alt { background: #e2e0da; color: var(--dark); }
+
+.plan-name { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark-green); margin-bottom: 8px; }
+.plan-tagline { font-size: 14px; font-weight: 700; color: var(--mid); margin-bottom: 14px; }
+.plan-description { font-size: 14px; color: var(--dark); line-height: 1.6; margin-bottom: 12px; }
+.plan-for { font-size: 13px; color: var(--mid); line-height: 1.5; margin-bottom: 20px; }
+.plan-for strong { color: var(--dark-green); }
+.plan-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.plan-ctas .btn { flex: 1; font-size: 14px; padding: 12px 16px; }
+
+/* ── Layer 3 — AI demo CTA ── */
+.demo-cta {
+  background: var(--dark-green);
+  border-radius: 18px;
+  padding: 28px 26px;
+  margin-bottom: 32px;
+  text-align: center;
+  color: var(--white);
+}
+.demo-cta-headline { font-family: 'Fredoka One', cursive; font-size: 22px; margin-bottom: 8px; }
+.demo-cta-sub { font-size: 14px; opacity: 0.85; line-height: 1.5; margin-bottom: 18px; }
+.demo-cta-number {
+  display: inline-block;
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  color: var(--green);
+  text-decoration: none;
+}
+.demo-cta-number:hover { opacity: 0.85; }
+
+/* ── Contact capture ── */
+.contact-section {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 26px;
+  margin-bottom: 32px;
+}
+.contact-heading { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--dark-green); margin-bottom: 6px; }
+.contact-sub { font-size: 14px; color: var(--mid); line-height: 1.55; margin-bottom: 22px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dark); margin-bottom: 7px; }
+.field input {
+  width: 100%;
+  padding: 13px 15px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  color: var(--dark);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.18s;
+}
+.field input:focus { border-color: var(--green); }
+.form-note { font-size: 12px; color: var(--mid); margin-top: 10px; line-height: 1.5; }
+.contact-sent { text-align: center; padding: 12px 0; font-size: 15px; color: var(--dark-green); font-weight: 700; }
+
+/* ── Results footer ── */
+.result-footer { text-align: center; font-size: 13px; color: var(--mid); line-height: 1.7; padding-top: 8px; }
+.result-footer a { color: var(--dark-green); font-weight: 700; }
+.restart-btn { background: none; border: none; color: var(--green); font-weight: 700; font-size: 13px; cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+@media (max-width: 480px) {
+  .intro-title { font-size: 34px; }
+  .q-text { font-size: 22px; }
+  .result-line-a { font-size: 22px; }
+  .plan-ctas { flex-direction: column; }
+  .plan-ctas .btn { flex: unset; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Business Smoothie<span>.</span></div>
+</header>
+
+<!-- ── INTRO ── -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-wrap">
+    <span class="intro-icon">🥤</span>
+    <h1 class="intro-title">Where Do We Begin?</h1>
+    <p class="intro-body">AI is changing what's possible for every business. Let's find out where you are and what your next move should be. Takes about 3 minutes. No wrong answers.</p>
+    <div class="intro-chips">
+      <span class="chip">14 questions</span>
+      <span class="chip">~3 minutes</span>
+      <span class="chip">Personalized plan match</span>
+      <span class="chip">No pressure</span>
+    </div>
+    <button class="btn btn-green" onclick="startQuiz()">Let's find your blend →</button>
+  </div>
+</div>
+
+<!-- ── QUESTION ── -->
+<div class="screen" id="screen-question">
+  <button class="btn-ghost" onclick="goBack()">← Back</button>
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">Question 1 of 14</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="q-label" id="q-label">Question 1</div>
+  <div class="q-text" id="q-text"></div>
+  <div class="options" id="options"></div>
+  <div class="q-footer">
+    <button class="btn btn-green" id="btn-next" onclick="nextQ()" disabled>Continue →</button>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div class="screen" id="screen-results">
+
+  <!-- Layer 1: Dynamic read-back -->
+  <p class="result-line-a" id="r-line-a"></p>
+  <p class="result-line-b" id="r-line-b"></p>
+
+  <!-- Layer 2: Tier cards — NO PRICING per spec -->
+  <div class="plan-cards" id="plan-cards"></div>
+
+  <!-- Layer 3: AI demo CTA — appears on every results page -->
+  <div class="demo-cta">
+    <div class="demo-cta-headline">Want to hear what AI sounds like for your business?</div>
+    <div class="demo-cta-sub">Call or text our AI demo line and experience it yourself.</div>
+    <a class="demo-cta-number" href="tel:5154003057">515.400.3057</a>
+  </div>
+
+  <!-- Contact capture: soft ask, not a gate -->
+  <div class="contact-section">
+    <h3 class="contact-heading">Want the full breakdown sent to you?</h3>
+    <p class="contact-sub">Drop your info and we will email everything — including pricing and next steps.</p>
+    <form id="contact-form" onsubmit="submitContact(event)">
+      <div class="field">
+        <label for="f-name">First Name</label>
+        <input type="text" id="f-name" placeholder="Your first name" required />
+      </div>
+      <div class="field">
+        <label for="f-email">Email Address</label>
+        <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
+      </div>
+      <button class="btn btn-green" type="submit" style="width:100%;margin-top:4px">Send My Results →</button>
+      <p class="form-note">No spam. One email with your results — that's it.</p>
+    </form>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Got it — check your inbox.</div>
+  </div>
+
+  <div class="result-footer">
+    <p>Questions? <a href="mailto:ramon@businesssmoothie.com">Talk it through with Ramon</a> or <a href="https://calendar.app.google/your-link" target="_blank">book a free call</a>.</p>
+    <p style="margin-top:8px">Not seeing what you expected? <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   QUESTION DATA — locked Saturday May 9 2026, Session 8
+   14 questions per spec Section 2
+   ═══════════════════════════════════════════════════ */
+const QS = [
+  /* Q1 — business tenure */
+  {
+    q: "How long have you been in business?",
+    opts: [
+      "Just getting started",
+      "1 to 3 years",
+      "3 to 10 years",
+      "10 years or more"
+    ]
+  },
+  /* Q2 — business type (added Session 8 — used for results language, not branching) */
+  {
+    q: "What best describes your business?",
+    opts: [
+      "Local service business",
+      "Professional services",
+      "Food, beverage, or entertainment",
+      "Retail or e-commerce",
+      "Nonprofit or community organization",
+      "Something else"
+    ]
+  },
+  /* Q3 — website */
+  {
+    q: "What is your website situation?",
+    opts: [
+      "No website yet",
+      "I have one but it is not doing much for me",
+      "I have one and it works pretty well",
+      "I have a presence but it feels scattered"
+    ]
+  },
+  /* Q4 — AI personal feeling */
+  {
+    q: "When it comes to AI, how are you feeling about it personally?",
+    opts: [
+      "Curious but have not done anything yet",
+      "A little intimidated — not sure where to start",
+      "Feeling behind and ready to catch up",
+      "Already in it and want to do more"
+    ]
+  },
+  /* Q5 — AI business standing */
+  {
+    q: "When it comes to AI, where does your business stand right now?",
+    opts: [
+      "Ahead of the curve — we are already using it",
+      "Keeping up — aware of it, doing some things",
+      "Falling behind — competitors are moving and I am not",
+      "I do not know what I am missing but I feel like something is",
+      "Honestly — I have not thought much about it yet"
+    ]
+  },
+  /* Q6 — autopilot want (includes no-ai signal per Session 8) */
+  {
+    q: "If AI could handle one thing for your business automatically, what would matter most?",
+    opts: [
+      "Being there for the people I serve 24/7 — calls, texts, messages",
+      "Following up with new leads and clients automatically",
+      "Keeping my social media active and consistent",
+      "All of it — I want the whole operation running on autopilot",
+      "I am not interested in AI for my business"
+    ]
+  },
+  /* Q7 — current system */
+  {
+    q: "How are you managing your contacts, clients, and follow-ups right now?",
+    opts: [
+      "It is all in my head — or a notebook",
+      "Spreadsheets and good intentions",
+      "I use something but it is not really working for me",
+      "I have a system I like — but it does not do everything I need",
+      "I have a system I trust — I am just missing the AI piece"
+    ]
+  },
+  /* Q8 — discovery */
+  {
+    q: "How do new clients or customers find you today?",
+    opts: [
+      "Word of mouth and referrals mostly",
+      "They find me on social media",
+      "They search for me on Google",
+      "Honestly — I am not sure"
+    ]
+  },
+  /* Q9 — social presence */
+  {
+    q: "How is your social media presence?",
+    opts: [
+      "Pretty quiet — I rarely post",
+      "I show up sometimes but not consistently",
+      "I am posting regularly and it is working",
+      "I am active but it feels like shouting into the void"
+    ]
+  },
+  /* Q10 — email list */
+  {
+    q: "Do you have an email list or a way to stay in touch with your audience?",
+    opts: [
+      "No — have not built one",
+      "I have something but barely use it",
+      "Yes and I reach out sometimes",
+      "Yes and it is a real part of how I stay connected"
+    ]
+  },
+  /* Q11 — platform users (NOT team size — updated Session 8) */
+  {
+    q: "How many people will actually use the platform day to day?",
+    opts: [
+      "Just me",
+      "2 people",
+      "3 to 8 people",
+      "9 or more"
+    ]
+  },
+  /* Q12 — app count */
+  {
+    q: "How many apps or tools are you currently using to run your business?",
+    opts: [
+      "None — I am doing it all manually",
+      "1 to 3",
+      "4 to 6",
+      "More than 6 — it is a lot to manage"
+    ]
+  },
+  /* Q13 — readiness (stronger language per Session 8) */
+  {
+    q: "How ready are you to make a change?",
+    opts: [
+      "I am not ready — just looking around for now",
+      "I would need someone to hold my hand through it",
+      "I am ready — point me in the right direction",
+      "I am moving right now — I just need the right partner"
+    ]
+  },
+  /* Q14 — outcome */
+  {
+    q: "What would make this worth it?",
+    opts: [
+      "Getting found online and looking credible",
+      "Never missing a lead or losing touch with someone I serve",
+      "Having my whole business running like a system",
+      "Getting AI actually working in my business",
+      "Solving one specific thing that has been bugging me"
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════
+   TIER CARDS — NO PRICING per spec Section 4 / Section 6
+   Pricing lives in follow-up email only
+   ═══════════════════════════════════════════════════ */
+const TIERS = {
+  splash: {
+    name: "Splash",
+    tagline: "The focused entry. One priority, done right, running for your business from day one.",
+    desc: "Pick your focus: AI Power Blend, Smart Website, or Freedom Phone. Complete on its own — and you can add more when you are ready.",
+    forText: "Any business that wants to start focused, add one specific thing, or move fast without overhauling everything.",
+    callUrl: "mailto:ramon@businesssmoothie.com",
+    getUrl:  "https://businesssmoothie.com/get-started"
+  },
+  lite: {
+    name: "Lite",
+    tagline: "The full foundation. Everything you need to show up, stay connected, and never miss a lead.",
+    desc: "AI Power Blend, Smart Website, Freedom Phone, CRM Smoothie, social scheduling, and Reporting Dashboard — all running for your business.",
+    forText: "Solo operators and small teams ready to stop piecing things together and run on one real system.",
+    callUrl: "mailto:ramon@businesssmoothie.com",
+    getUrl:  "https://businesssmoothie.com/get-started"
+  },
+  signature: {
+    name: "Signature",
+    tagline: "The complete Business Smoothie platform. Built to run the whole operation from one place.",
+    desc: "Everything in Lite plus Automations and Funnels, advanced social scheduling, and Reputation Smoothie. The right plan within Signature depends on how many people will use it — we will sort that out together.",
+    forText: "Teams who need multiple users, full automation, and a system that scales with them.",
+    callUrl: "mailto:ramon@businesssmoothie.com",
+    getUrl:  "https://businesssmoothie.com/get-started"
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════ */
+let qIndex  = 0;
+let answers = [];
+let picked  = null;
+
+/* ═══════════════════════════════════════════════════
+   QUIZ FLOW
+   ═══════════════════════════════════════════════════ */
+function startQuiz() {
+  qIndex = 0; answers = []; picked = null;
+  renderQuestion();
+  show('screen-question');
+}
+
+function renderQuestion() {
+  var q = QS[qIndex];
+  picked = null;
+
+  var pct = Math.round((qIndex / QS.length) * 100);
+  document.getElementById('prog-label').textContent = 'Question ' + (qIndex + 1) + ' of ' + QS.length;
+  document.getElementById('prog-pct').textContent   = pct + '%';
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('q-label').textContent    = 'Question ' + (qIndex + 1);
+  document.getElementById('q-text').textContent     = q.q;
+
+  var letters = ['A','B','C','D','E','F'];
+  document.getElementById('options').innerHTML = q.opts.map(function(o, i) {
+    return '<button class="option" onclick="pick(this,' + i + ')">' +
+           '<div class="opt-badge">' + letters[i] + '</div>' +
+           '<div class="opt-text">' + o + '</div>' +
+           '</button>';
+  }).join('');
+
+  document.getElementById('btn-next').disabled = true;
+}
+
+function pick(el, idx) {
+  document.querySelectorAll('.option').forEach(function(o) { o.classList.remove('picked'); });
+  el.classList.add('picked');
+  picked = idx;
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQ() {
+  if (picked === null) return;
+  answers.push(picked);
+  if (qIndex < QS.length - 1) {
+    qIndex++;
+    renderQuestion();
+    window.scrollTo(0, 0);
+  } else {
+    renderResults();
+    show('screen-results');
+    window.scrollTo(0, 0);
+  }
+}
+
+function goBack() {
+  if (qIndex > 0) {
+    answers.pop();
+    qIndex--;
+    renderQuestion();
+  } else {
+    show('screen-intro');
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════════════
+   SIGNAL-BASED ROUTING — Section 3 of spec
+   Index map (0-based):
+   Q1=0  Q2=1  Q3=2  Q4=3  Q5=4  Q6=5  Q7=6
+   Q8=7  Q9=8  Q10=9 Q11=10 Q12=11 Q13=12 Q14=13
+   ═══════════════════════════════════════════════════ */
+function calcSignals(ans) {
+
+  /* Q4 (idx 3) — AI personal feeling */
+  var aiCurious     = ans[3] === 0;
+  var aiIntimid     = ans[3] === 1;
+  var aiBehindPers  = ans[3] === 2; /* FOMO signal */
+  var aiForwPers    = ans[3] === 3; /* already in it */
+
+  /* Q5 (idx 4) — AI business standing */
+  var aiAheadBiz    = ans[4] === 0;
+  var aiKeepBiz     = ans[4] === 1;
+  var aiFallingBiz  = ans[4] === 2; /* FOMO HIGH */
+  var aiMissingBiz  = ans[4] === 3; /* FOMO HIGH */
+  var aiPassBiz     = ans[4] === 4; /* passive */
+
+  /* Q6 (idx 5) — autopilot / no-ai signal */
+  var autoAi        = ans[5] === 0; /* 24/7 answering */
+  var autoLeads     = ans[5] === 1;
+  var autoSocial    = ans[5] === 2;
+  var autoAll       = ans[5] === 3;
+  var noAi          = ans[5] === 4; /* NOT interested in AI */
+
+  /* Q7 (idx 6) — current system */
+  var sysHead       = ans[6] === 0;
+  var sysSheet      = ans[6] === 1;
+  var sysBroken     = ans[6] === 2;
+  var sysPartial    = ans[6] === 3;
+  var sysTrustAi    = ans[6] === 4; /* addon signal */
+
+  /* Q11 (idx 10) — platform users (NOT team size) */
+  var puSolo        = ans[10] === 0; /* just me */
+  var puTwo         = ans[10] === 1; /* 2 people */
+  var puMed         = ans[10] === 2; /* 3-8 */
+  var puLarge       = ans[10] === 3; /* 9+ */
+  var isSmall       = puSolo || puTwo;
+
+  /* Q12 (idx 11) — app count */
+  var manyApps      = ans[11] === 3; /* more than 6 */
+
+  /* Q13 (idx 12) — readiness */
+  var rLooking      = ans[12] === 0; /* just looking */
+  var rGuided       = ans[12] === 1; /* needs hand-holding */
+  var rReady        = ans[12] === 2; /* ready, point me */
+  var rMoving       = ans[12] === 3; /* moving right now */
+
+  /* Q14 (idx 13) — outcome */
+  var oFound        = ans[13] === 0;
+  var oLeads        = ans[13] === 1; /* never miss a lead */
+  var oSystem       = ans[13] === 2; /* whole system */
+  var oAi           = ans[13] === 3; /* get AI working */
+  var oOneThing     = ans[13] === 4; /* one specific thing */
+
+  /* ── Composite signals ── */
+  var aiFomo     = aiBehindPers || aiFallingBiz || aiMissingBiz;
+  var aiForward  = aiForwPers && (aiAheadBiz || aiKeepBiz);
+  var aiAddon    = sysTrustAi;
+  var aiPassive  = (aiCurious || aiIntimid) && aiPassBiz;
+
+  /* SPLASH RULE — surfaces whenever any of these fire */
+  var splashTrigger = aiFomo || aiAddon || oOneThing || rLooking || rGuided || autoAi;
+
+  return {
+    /* AI signals */
+    aiFomo: aiFomo, aiForward: aiForward, aiAddon: aiAddon, aiPassive: aiPassive, noAi: noAi,
+    /* autopilot */
+    autoAi: autoAi, autoAll: autoAll,
+    /* system */
+    sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
+    /* platform users */
+    isSmall: isSmall, puMed: puMed, puLarge: puLarge,
+    /* other */
+    manyApps: manyApps,
+    rLooking: rLooking, rGuided: rGuided, rReady: rReady, rMoving: rMoving,
+    oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads, oAi: oAi,
+    splashTrigger: splashTrigger,
+    /* business type for language (Q2 idx 1) */
+    bizType: ans[1]
+  };
+}
+
+function calcTiers(sig) {
+  var tiers, personaKey;
+
+  /* Platform users drives primary structure (Section 3 — PRIMARY signal) */
+  if (sig.puLarge) {
+    /* 9+ users → Signature primary */
+    tiers = sig.splashTrigger ? ['signature', 'splash'] : ['signature'];
+    personaKey = 'signature-large';
+
+  } else if (sig.puMed) {
+    /* 3-8 users → Signature primary */
+    tiers = sig.splashTrigger ? ['signature', 'splash'] : ['signature', 'lite'];
+    personaKey = 'signature-team';
+
+  } else {
+    /* Small (just me or 2 people) */
+    if (sig.aiAddon) {
+      /* Working system, just missing AI → Splash + Signature */
+      tiers = ['splash', 'signature'];
+      personaKey = 'splash-addon';
+
+    } else if (sig.aiForward || (sig.autoAll && !sig.rLooking && !sig.rGuided)) {
+      /* AI-forward or wants everything → Signature */
+      tiers = sig.aiFomo ? ['splash', 'signature'] : ['signature'];
+      personaKey = 'signature-forward';
+
+    } else if (sig.aiPassive && (sig.sysHead || sig.sysSheet)) {
+      /* Curious/intimidated, no real system → Splash + Lite */
+      tiers = ['splash', 'lite'];
+      personaKey = 'lite';
+
+    } else if (sig.sysBroken || sig.manyApps) {
+      /* Unhappy tools or too many apps → consolidate */
+      tiers = ['splash', 'lite', 'signature'];
+      personaKey = 'signature-consolidate';
+
+    } else if (sig.oOneThing) {
+      /* One specific fix → Splash */
+      tiers = ['splash', 'lite'];
+      personaKey = 'splash-one-thing';
+
+    } else if (sig.rMoving || sig.rReady) {
+      /* Ready to move → Lite or Signature */
+      tiers = sig.oSystem ? ['signature', 'lite'] : ['lite', 'splash'];
+      personaKey = sig.oSystem ? 'signature-forward' : 'lite';
+
+    } else if (sig.rLooking || sig.rGuided) {
+      /* Just looking or needs help → Splash + Lite */
+      tiers = ['splash', 'lite'];
+      personaKey = 'lite';
+
+    } else {
+      /* Default small */
+      tiers = sig.splashTrigger ? ['splash', 'lite'] : ['lite'];
+      personaKey = 'lite';
+    }
+  }
+
+  /* Ensure Splash surfaces whenever splashTrigger fired */
+  if (sig.splashTrigger && tiers.indexOf('splash') === -1) {
+    tiers = ['splash'].concat(tiers);
+  }
+
+  return { tiers: tiers.slice(0, 2), personaKey: personaKey };
+}
+
+/* ═══════════════════════════════════════════════════
+   READ-BACK TEXT — Sections 5 + 4
+   Business-type aware, wingman tone
+   ═══════════════════════════════════════════════════ */
+
+/* Business type language (Q2, idx 1) */
+var BIZ_LANG = [
+  /* 0 — local service */
+  "You have built something real — and your reputation is what keeps the phone ringing. The question is whether that phone is being answered every time, and whether the people who find you online see the same business you have worked hard to build.",
+  /* 1 — professional services */
+  "Your expertise is the product — and the businesses that stand out right now are the ones showing up consistently and following up without dropping the ball. The gap between a great reputation and a full calendar is usually systems, not skill.",
+  /* 2 — food / bev / entertainment */
+  "Your business runs on experience and word of mouth — and right now AI is changing how people find you, choose you, and come back. The operations side should be running quietly in the background so you can focus on what happens in the room.",
+  /* 3 — retail / e-commerce */
+  "You are competing for attention every single day — and the businesses winning right now are the ones that show up consistently online and never let a customer fall through the cracks after the first visit.",
+  /* 4 — nonprofit */
+  "Your work matters — and the people you serve deserve an organization that is easy to reach, easy to trust, and always present. The right systems free up your time for the mission, not the administration.",
+  /* 5 — something else */
+  "Whatever your business looks like, the fundamentals are the same — show up, stay connected, and never let someone who is ready to work with you slip away. That is what this platform is built to do."
+];
+
+function getReadBack(tiers, sig) {
+  var key = tiers.join('+');
+
+  /* FOMO always takes the opener */
+  if (sig.aiFomo) {
+    return {
+      a: "Your competitors are not waiting. Neither should you.",
+      b: "Here is what fits your business — and the fastest way to get AI running for you right now."
+    };
+  }
+
+  /* No-AI signal — shift language away from AI */
+  if (sig.noAi) {
+    return {
+      a: "You know your business. Let's build the right foundation.",
+      b: "Not everything has to be about AI — and Splash lets you choose exactly where to start."
+    };
+  }
+
+  /* Named combos */
+  var combos = {
+    'splash+lite': {
+      a: "You are ready to start — and you want it to feel right, not overwhelming.",
+      b: "Two ways in. Both have the core tools running for your business from day one."
+    },
+    'splash+signature': {
+      a: "You have built something that works. The question is whether you add to it or replace everything with one system.",
+      b: "Both are solid moves. Splash adds what you are missing. Signature replaces everything with the full platform."
+    },
+    'lite+splash': {
+      a: "You are ready to build something real — and you want it to feel manageable.",
+      b: "Two options depending on how fast you want to move. Either way, you are not piecing things together anymore."
+    },
+    'signature+lite': {
+      a: "You are ready to move — and you want a real system, not another tool.",
+      b: "The full platform or the full foundation. Either way, you stop duct-taping things together."
+    },
+    'signature+splash': {
+      a: "You are running something real — and it is ready to grow.",
+      b: "Signature is built for where you are headed. Splash is there if you want to start with one thing first."
+    },
+    'splash+lite+signature': {
+      a: "You have been making it work — but making it work is not the same as having it work.",
+      b: "A few options depending on how fast you want to move. Either way, AI is running for your business from day one."
+    }
+  };
+
+  if (combos[key]) return combos[key];
+
+  /* Single-tier personas */
+  var personas = {
+    'splash-one-thing': {
+      a: "You know exactly what needs fixing — and you are right to start there.",
+      b: "Splash is built for that. One thing, done right, running for your business from day one."
+    },
+    'splash-addon': {
+      a: "You have built something that works. Now it needs AI in the mix.",
+      b: "Splash puts AI Power Blend on top of what you already have — without starting over."
+    },
+    'lite': {
+      a: "You are ready to build something real — and you want it to feel manageable.",
+      b: "Lite gives you the full foundation — AI, website, phone, CRM — without the overwhelm."
+    },
+    'signature-forward': {
+      a: "You have been stitching things together. It is time for one system that actually works.",
+      b: "Signature brings everything under one roof — AI running 24/7, tools consolidated, business on autopilot."
+    },
+    'signature-team': {
+      a: "Your team is moving fast — your systems need to keep up.",
+      b: "Signature puts everyone on the same platform, with AI running for the whole operation."
+    },
+    'signature-large': {
+      a: "You are running a real operation — and it needs infrastructure that matches.",
+      b: "Signature gives you the full Business Smoothie platform — AI, automation, and scale — built for the complexity you are actually dealing with."
+    },
+    'signature-consolidate': {
+      a: "You have been stitching things together. It is time for one system that actually works.",
+      b: "Signature consolidates everything — AI, website, CRM, automations — into one platform that runs your business."
+    }
+  };
+
+  return personas[sig.personaKey] || {
+    a: "You are in the right place.",
+    b: "Here is what we recommend based on where you are and where you are headed."
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER RESULTS
+   ═══════════════════════════════════════════════════ */
+function renderResults() {
+  var sig    = calcSignals(answers);
+  var result = calcTiers(sig);
+  sig.personaKey = result.personaKey;
+
+  var intro = getReadBack(result.tiers, sig);
+  document.getElementById('r-line-a').textContent = intro.a;
+  document.getElementById('r-line-b').textContent = intro.b;
+
+  var container = document.getElementById('plan-cards');
+  container.innerHTML = '';
+  result.tiers.forEach(function(key, i) {
+    container.appendChild(buildCard(key, i));
+  });
+
+  document.getElementById('contact-form').style.display = '';
+  document.getElementById('contact-form').reset();
+  document.getElementById('contact-sent').style.display = 'none';
+}
+
+function buildCard(key, rank) {
+  var t = TIERS[key];
+  var labels  = ['Your Best Match', 'Also Worth a Look'];
+  var classes = ['badge-best', 'badge-also'];
+
+  var div = document.createElement('div');
+  div.className = 'plan-card' + (rank === 0 ? ' is-primary' : '');
+  div.innerHTML =
+    '<div class="plan-badge ' + classes[rank] + '">' + labels[rank] + '</div>' +
+    '<div class="plan-name">' + t.name + '</div>' +
+    '<div class="plan-tagline">' + t.tagline + '</div>' +
+    '<p class="plan-description">' + t.desc + '</p>' +
+    '<p class="plan-for"><strong>Who it is for:</strong> ' + t.forText + '</p>' +
+    '<div class="plan-ctas">' +
+    '<a class="btn btn-green" href="' + t.getUrl + '" target="_blank">Get the full details</a>' +
+    '<a class="btn btn-outline" href="' + t.callUrl + '">Talk it through</a>' +
+    '</div>';
+
+  return div;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACT CAPTURE
+   ═══════════════════════════════════════════════════ */
+function submitContact(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'block';
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════ */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function restartQuiz() {
+  qIndex = 0; answers = []; picked = null;
+  show('screen-intro');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
