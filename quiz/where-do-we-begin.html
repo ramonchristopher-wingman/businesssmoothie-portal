@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Where Do We Begin? | Business Smoothie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #00C45A;
+      --dark-green: #1A5C35;
+      --bg: #F9F8F5;
+      --white: #ffffff;
+      --dark: #1a1a1a;
+      --mid: #666;
+      --border: #ddd8ce;
+      --shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+    /* ── Header ── */
+    .site-header { width: 100%; background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; }
+    .logo { font-family: 'Fredoka One', cursive; font-size: 20px; color: var(--dark-green); }
+    .logo span { color: var(--green); }
+
+    /* ── Screens ── */
+    .screen { display: none; width: 100%; max-width: 660px; padding: 40px 24px 60px; animation: rise 0.3s ease both; }
+    .screen.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-bottom: 32px; }
+    .progress-meta { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+    .progress-bar { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
+
+    /* ── Intro ── */
+    .intro-wrap { text-align: center; padding: 16px 0 8px; }
+    .intro-icon { font-size: 60px; display: block; margin-bottom: 16px; }
+    .intro-title { font-family: 'Fredoka One', cursive; font-size: 44px; color: var(--dark-green); line-height: 1.1; margin-bottom: 14px; }
+    .intro-body { font-size: 17px; color: var(--mid); line-height: 1.65; max-width: 460px; margin: 0 auto 28px; }
+    .intro-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
+    .chip { background: var(--white); border: 1.5px solid var(--border); border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 700; color: var(--dark-green); }
+
+    /* ── Buttons ── */
+    .btn { display: inline-flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; border-radius: 12px; border: none; cursor: pointer; text-decoration: none; transition: all 0.18s; }
+    .btn-green { background: var(--green); color: var(--white); font-size: 17px; padding: 15px 36px; }
+    .btn-green:hover { background: #00ae50; transform: translateY(-1px); }
+    .btn-green:active { transform: translateY(0); }
+    .btn-green:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn-outline { background: transparent; color: var(--dark-green); border: 2px solid var(--dark-green); font-size: 15px; padding: 12px 24px; }
+    .btn-outline:hover { background: var(--dark-green); color: var(--white); }
+    .btn-ghost { background: none; border: none; color: var(--mid); font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; padding: 8px 0; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 24px; }
+    .btn-ghost:hover { color: var(--dark); }
+
+    /* ── Questions ── */
+    .q-label { font-size: 12px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
+    .q-text { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark); line-height: 1.25; margin-bottom: 26px; }
+    .options { display: flex; flex-direction: column; gap: 11px; }
+    .option { display: flex; align-items: flex-start; gap: 14px; background: var(--white); border: 2px solid var(--border); border-radius: 13px; padding: 15px 18px; cursor: pointer; transition: border-color 0.18s, background 0.18s; text-align: left; }
+    .option:hover { border-color: var(--green); background: #f1fdf6; }
+    .option.picked { border-color: var(--green); background: #f1fdf6; }
+    .opt-badge { min-width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--mid); transition: all 0.18s; flex-shrink: 0; }
+    .option.picked .opt-badge { background: var(--green); border-color: var(--green); color: var(--white); }
+    .opt-text { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.4; padding-top: 3px; }
+    .q-footer { margin-top: 22px; }
+
+    /* ── Results: Layer 1 dynamic response ── */
+    .result-line-a { font-family: 'Fredoka One', cursive; font-size: 30px; color: var(--dark); line-height: 1.2; margin-bottom: 10px; }
+    .result-line-b { font-size: 16px; color: var(--mid); line-height: 1.65; margin-bottom: 36px; }
+
+    /* ── Results: Layer 2 plan cards ── */
+    .plan-cards { display: flex; flex-direction: column; gap: 22px; margin-bottom: 40px; }
+    .plan-card { background: var(--white); border: 2px solid var(--border); border-radius: 18px; padding: 34px 26px 24px; box-shadow: var(--shadow); position: relative; }
+    .plan-card.is-primary { border-color: var(--green); }
+    .plan-badge { position: absolute; top: -13px; left: 22px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; padding: 4px 14px; border-radius: 99px; }
+    .badge-best { background: var(--green); color: var(--white); }
+    .badge-also { background: var(--dark-green); color: var(--white); }
+    .badge-alt  { background: #e2e0da; color: var(--dark); }
+
+    .plan-name { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark-green); margin-bottom: 10px; }
+    .plan-price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .plan-price { font-family: 'Fredoka One', cursive; font-size: 36px; color: var(--dark); }
+    .plan-mo { font-size: 14px; color: var(--mid); }
+    .plan-meta-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+    .plan-pill { background: #f2f0eb; color: var(--mid); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+
+    .plan-description { font-size: 14px; color: var(--dark); line-height: 1.6; margin-bottom: 14px; }
+    .plan-for { font-size: 13px; color: var(--mid); line-height: 1.5; margin-bottom: 4px; }
+    .plan-for strong { color: var(--dark-green); }
+    .plan-users { font-size: 13px; color: var(--mid); margin-bottom: 20px; }
+    .plan-users strong { color: var(--dark-green); }
+    .plan-footnote { font-size: 11px; color: var(--mid); margin-bottom: 16px; line-height: 1.5; }
+    .plan-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .plan-ctas .btn { flex: 1; font-size: 14px; padding: 12px 16px; }
+
+    /* ── Contact capture (after results, soft ask) ── */
+    .contact-section { background: var(--white); border: 1.5px solid var(--border); border-radius: 18px; padding: 28px 26px; margin-bottom: 32px; }
+    .contact-heading { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--dark-green); margin-bottom: 6px; }
+    .contact-sub { font-size: 14px; color: var(--mid); line-height: 1.55; margin-bottom: 22px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dark); margin-bottom: 7px; }
+    .field input { width: 100%; padding: 13px 15px; border: 2px solid var(--border); border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--dark); background: var(--white); outline: none; transition: border-color 0.18s; }
+    .field input:focus { border-color: var(--green); }
+    .form-note { font-size: 12px; color: var(--mid); margin-top: 10px; line-height: 1.5; }
+    .contact-sent { text-align: center; padding: 12px 0; font-size: 15px; color: var(--dark-green); font-weight: 700; }
+
+    /* ── Results footer ── */
+    .result-footer { text-align: center; font-size: 13px; color: var(--mid); line-height: 1.7; padding-top: 8px; }
+    .result-footer a { color: var(--dark-green); font-weight: 700; }
+    .restart-btn { background: none; border: none; color: var(--green); font-weight: 700; font-size: 13px; cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+    @media (max-width: 480px) {
+      .intro-title { font-size: 34px; }
+      .q-text { font-size: 22px; }
+      .result-line-a { font-size: 22px; }
+      .plan-ctas { flex-direction: column; }
+      .plan-ctas .btn { flex: unset; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Business Smoothie<span>.</span></div>
+</header>
+
+<!-- ── INTRO ── -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-wrap">
+    <span class="intro-icon">🥤</span>
+    <h1 class="intro-title">Where Do We Begin?</h1>
+    <p class="intro-body">AI is changing what's possible for every business. Let's find out where you are and what your next move should be. Takes about 3 minutes. No wrong answers.</p>
+    <div class="intro-chips">
+      <span class="chip">13 questions</span>
+      <span class="chip">~3 minutes</span>
+      <span class="chip">Personalized plan match</span>
+      <span class="chip">No pressure</span>
+    </div>
+    <button class="btn btn-green" onclick="startQuiz()">Let's find your blend →</button>
+  </div>
+</div>
+
+<!-- ── QUESTION ── -->
+<div class="screen" id="screen-question">
+  <button class="btn-ghost" onclick="goBack()">← Back</button>
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">Question 1 of 13</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="q-label" id="q-label">Question 1</div>
+  <div class="q-text" id="q-text"></div>
+  <div class="options" id="options"></div>
+  <div class="q-footer">
+    <button class="btn btn-green" id="btn-next" onclick="nextQ()" disabled>Continue →</button>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div class="screen" id="screen-results">
+  <!-- Layer 1: Dynamic response -->
+  <p class="result-line-a" id="r-line-a"></p>
+  <p class="result-line-b" id="r-line-b"></p>
+
+  <!-- Layer 2: Static plan cards (up to 3) -->
+  <div class="plan-cards" id="plan-cards"></div>
+
+  <!-- Contact capture: name + email only, soft ask after results -->
+  <div class="contact-section">
+    <h3 class="contact-heading">Want us to send this to you?</h3>
+    <p class="contact-sub">Drop your info and we will email your results.</p>
+    <form id="contact-form" onsubmit="submitContact(event)">
+      <div class="field">
+        <label for="f-name">First Name</label>
+        <input type="text" id="f-name" placeholder="Your first name" required />
+      </div>
+      <div class="field">
+        <label for="f-email">Email Address</label>
+        <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
+      </div>
+      <button class="btn btn-green" type="submit" style="width:100%;margin-top:4px">Send My Results →</button>
+      <p class="form-note">No spam. One email with your results — that's it.</p>
+    </form>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Got it — check your inbox.</div>
+  </div>
+
+  <div class="result-footer">
+    <p>Questions? <a href="https://calendly.com/ramon-christopher" target="_blank">Book a free 20-minute call</a> and we'll talk it through.</p>
+    <p style="margin-top:8px">Not seeing what you expected? <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
+  </div>
+</div>
+
+<script>
+/* ─── Question data — locked 2026-05-09 ─── */
+const QS = [
+  {
+    q: "How long have you been in business?",
+    opts: [
+      "Less than a year",
+      "1 to 3 years",
+      "3 to 10 years",
+      "10 years or more"
+    ]
+  },
+  {
+    q: "What is your website situation?",
+    opts: [
+      "No website yet",
+      "I have one but it is not doing much for me",
+      "I have one and it works pretty well",
+      "I have a presence but it feels scattered"
+    ]
+  },
+  {
+    q: "When it comes to AI, how are you feeling about it personally?",
+    opts: [
+      "Curious but have not done anything yet",
+      "A little intimidated — not sure where to start",
+      "Feeling behind and ready to catch up",
+      "Already in it and want to do more"
+    ]
+  },
+  {
+    q: "When it comes to AI, how does your business feel right now?",
+    opts: [
+      "Ahead of the curve — we are already using it",
+      "Keeping up — aware of it, doing some things",
+      "Falling behind — competitors are moving and I am not",
+      "I do not know what I am missing but I feel like something is",
+      "Honestly — I have not thought much about it yet"
+    ]
+  },
+  {
+    q: "If one thing could run on autopilot while you focus on your business, what would it be?",
+    opts: [
+      "Answering customers 24/7 — calls, texts, messages",
+      "Following up with leads automatically",
+      "Keeping my social media active and consistent",
+      "All of it — I want the whole thing running"
+    ]
+  },
+  {
+    q: "How are you managing your customers and follow-ups right now?",
+    opts: [
+      "It is all in my head — or a notebook",
+      "Spreadsheets and good intentions",
+      "I use something but it is not really working for me",
+      "I have a system I like — but it does not do everything I need",
+      "I have a system I trust — I am just missing the AI piece"
+    ]
+  },
+  {
+    q: "How do new customers find you today?",
+    opts: [
+      "Word of mouth and referrals mostly",
+      "They find me on social media",
+      "They search for me on Google",
+      "Honestly — I am not sure"
+    ]
+  },
+  {
+    q: "Are you posting on social media?",
+    opts: [
+      "Pretty quiet — I rarely post",
+      "I show up sometimes but not consistently",
+      "I am posting regularly and it is working",
+      "I am posting but it feels like shouting into the void"
+    ]
+  },
+  {
+    q: "Do you have an email list for your business?",
+    opts: [
+      "No — have not built one",
+      "I have one but barely use it",
+      "Yes and I send to them sometimes",
+      "Yes and it is a real part of how I stay in touch"
+    ]
+  },
+  {
+    q: "How big is your team?",
+    opts: [
+      "Just me",
+      "2 people",
+      "3 to 8 people",
+      "9 to 20 people",
+      "More than 20"
+    ]
+  },
+  {
+    q: "How many separate apps or pieces of software are you using to run your business right now?",
+    opts: [
+      "None — I am doing it manually",
+      "1 to 2",
+      "3 to 5",
+      "More than 5 — it is a lot to manage"
+    ]
+  },
+  {
+    q: "How ready are you to make changes to how you run things?",
+    opts: [
+      "I want to, but I need it to be simple — I do not have a lot of time",
+      "I am open to it if someone walks me through it",
+      "I am ready — I just need the right tools",
+      "I am already making moves and want to go faster"
+    ]
+  },
+  {
+    q: "What would make this worth it?",
+    opts: [
+      "Getting found online and looking legit",
+      "Never missing a lead or a customer again",
+      "Having my whole business running like a system",
+      "Solving one specific thing that has been bugging me"
+    ]
+  }
+];
+
+/* ─── Plan cards — static per spec Section 6 ─── */
+const PLANS = {
+  splash: {
+    name: "Smoothie Splash",
+    price: "$97", per: "/mo", yr: "$970/yr", setup: "Setup $600*",
+    desc: "The focused entry. One thing — done right, running for your business from day one. Pick your priority: AI Power Blend, Smart Website, or Freedom Phone. Add more when you are ready.",
+    forText: "Anyone who wants to start focused, add AI to what they already have, or move fast on one specific fix.",
+    users: "1",
+    sub: "https://businesssmoothie.com/get-started/splash",
+    call: "https://calendly.com/ramon-christopher"
+  },
+  lite: {
+    name: "Smoothie Lite",
+    price: "$197", per: "/mo", yr: "$1,970/yr", setup: "Setup $1,200*",
+    desc: "The full foundation. AI Power Blend, Smart Website, Freedom Phone, CRM Smoothie, social media scheduling, and Reporting Dashboard — all running for your business.",
+    forText: "Solo operators and small teams ready to stop piecing things together and run on a real system.",
+    users: "1",
+    sub: "https://businesssmoothie.com/get-started/lite",
+    call: "https://calendly.com/ramon-christopher"
+  },
+  solo: {
+    name: "Solo",
+    price: "$297", per: "/mo", yr: "$2,970/yr", setup: "Setup $1,500*",
+    desc: "The signature Business Smoothie system — complete feature set. Everything in Lite plus Automations and Funnels, Social Smoothie scheduling, and Reputation Smoothie.",
+    forText: "Solo operators and 2-person teams ready for the full platform.",
+    users: "2",
+    sub: "https://businesssmoothie.com/get-started/solo",
+    call: "https://calendly.com/ramon-christopher"
+  },
+  team: {
+    name: "Team",
+    price: "$497", per: "/mo", yr: "$4,970/yr", setup: "Setup $2,500*",
+    desc: "The signature Business Smoothie system built for a growing team. Everything in Solo — for up to 8 users.",
+    forText: "Teams of 3 to 8 who need everyone on the same platform.",
+    users: "Up to 8",
+    sub: "https://businesssmoothie.com/get-started/team",
+    call: "https://calendly.com/ramon-christopher"
+  },
+  enterprise: {
+    name: "Enterprise",
+    price: "$797", per: "/mo", yr: "$7,970/yr", setup: "Setup $5,000*",
+    desc: "The signature Business Smoothie system at full scale. Everything in Team — for organizations with real volume, complexity, and up to 50 users.",
+    forText: "Larger teams, multi-location operations, and businesses that need infrastructure that matches what they are running.",
+    users: "Up to 50 at $10/user/mo over 20",
+    sub: "https://businesssmoothie.com/get-started/enterprise",
+    call: "https://calendly.com/ramon-christopher"
+  }
+};
+
+/* ─── State ─── */
+let qIndex = 0;
+let answers = [];
+let picked = null;
+
+/* ─── Quiz flow ─── */
+function startQuiz() {
+  qIndex = 0; answers = []; picked = null;
+  renderQuestion();
+  show('screen-question');
+}
+
+function renderQuestion() {
+  const q = QS[qIndex];
+  picked = null;
+
+  const pct = Math.round((qIndex / QS.length) * 100);
+  document.getElementById('prog-label').textContent = 'Question ' + (qIndex + 1) + ' of ' + QS.length;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('q-label').textContent = 'Question ' + (qIndex + 1);
+  document.getElementById('q-text').textContent = q.q;
+
+  const letters = ['A','B','C','D','E'];
+  document.getElementById('options').innerHTML = q.opts.map(function(o, i) {
+    return '<div class="option" onclick="pick(this,' + i + ')">' +
+      '<div class="opt-badge">' + letters[i] + '</div>' +
+      '<div class="opt-text">' + o + '</div>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('btn-next').disabled = true;
+}
+
+function pick(el, idx) {
+  document.querySelectorAll('.option').forEach(function(o) { o.classList.remove('picked'); });
+  el.classList.add('picked');
+  picked = idx;
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQ() {
+  if (picked === null) return;
+  answers.push(picked);
+  if (qIndex < QS.length - 1) {
+    qIndex++;
+    renderQuestion();
+    window.scrollTo(0, 0);
+  } else {
+    renderResults();
+    show('screen-results');
+    window.scrollTo(0, 0);
+  }
+}
+
+function goBack() {
+  if (qIndex > 0) {
+    answers.pop();
+    qIndex--;
+    renderQuestion();
+  } else {
+    show('screen-intro');
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ─── Signal-based routing — Section 3 ─── */
+function calcSignals(ans) {
+  /* Q3 (idx 2) — AI personal */
+  var aiCurious    = ans[2] === 0;   /* curious, not acted */
+  var aiIntimid    = ans[2] === 1;   /* intimidated */
+  var aiBehindPers = ans[2] === 2;   /* feeling behind → FOMO */
+  var aiForwPers   = ans[2] === 3;   /* already in it */
+
+  /* Q4 (idx 3) — AI business */
+  var aiAheadBiz   = ans[3] === 0;   /* ahead of curve */
+  var aiKeepBiz    = ans[3] === 1;   /* keeping up */
+  var aiFallingBiz = ans[3] === 2;   /* falling behind → FOMO HIGH */
+  var aiMissingBiz = ans[3] === 3;   /* don't know what missing → FOMO HIGH */
+  var aiPassBiz    = ans[3] === 4;   /* haven't thought about it */
+
+  /* Q5 (idx 4) — autopilot want */
+  var autoAi  = ans[4] === 0;        /* answering customers 24/7 */
+  var autoAll = ans[4] === 3;        /* all of it */
+
+  /* Q6 (idx 5) — current system */
+  var sysHead    = ans[5] === 0;     /* in my head / notebook */
+  var sysSheet   = ans[5] === 1;     /* spreadsheets */
+  var sysBroken  = ans[5] === 2;     /* using something, not working */
+  var sysPartial = ans[5] === 3;     /* like it but missing things */
+  var sysTrustAi = ans[5] === 4;     /* trust it, just missing AI → addon */
+
+  /* Q10 (idx 9) — team size */
+  var tmSolo  = ans[9] === 0;        /* just me */
+  var tmSmall = ans[9] === 1;        /* 2 people */
+  var tmMed   = ans[9] === 2;        /* 3-8 people */
+  var tmLarge = ans[9] === 3;        /* 9-20 people */
+  var tmXL    = ans[9] === 4;        /* 20+ */
+  var isSmall = tmSolo || tmSmall;
+
+  /* Q11 (idx 10) — app count */
+  var manyApps = ans[10] === 3;      /* more than 5 → consolidate */
+
+  /* Q12 (idx 11) — readiness */
+  var rSimple  = ans[11] === 0;      /* needs simple */
+  var rGuided  = ans[11] === 1;      /* open if walked through */
+  var rNow     = ans[11] === 2;      /* ready now */
+  var rFast    = ans[11] === 3;      /* already making moves */
+
+  /* Q13 (idx 12) — outcome */
+  var oOneThing = ans[12] === 3;     /* solve one specific thing */
+  var oSystem   = ans[12] === 2;     /* whole business as system */
+  var oLeads    = ans[12] === 1;     /* never miss a lead */
+
+  /* ── Composite signals ── */
+  /* FOMO: any of the three high-signal AI concern answers */
+  var aiFomo = aiBehindPers || aiFallingBiz || aiMissingBiz;
+
+  /* AI-forward: already using + positive business posture */
+  var aiForward = aiForwPers && (aiAheadBiz || aiKeepBiz);
+
+  /* AI bolt-on: has a working system, just missing the AI layer */
+  var aiAddon = sysTrustAi;
+
+  /* AI-passive: curious/intimidated personally + hasn't thought about it for business */
+  var aiPassive = (aiCurious || aiIntimid) && aiPassBiz;
+
+  /* SPLASH RULE — surfaces whenever ANY of these fire (Section 3) */
+  var splashTrigger = aiFomo || aiAddon || oOneThing || rSimple || autoAi;
+
+  return {
+    aiFomo: aiFomo, aiForward: aiForward, aiAddon: aiAddon, aiPassive: aiPassive,
+    splashTrigger: splashTrigger,
+    autoAll: autoAll, autoAi: autoAi,
+    sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
+    isSmall: isSmall, tmMed: tmMed, tmLarge: tmLarge, tmXL: tmXL,
+    manyApps: manyApps,
+    rSimple: rSimple, rGuided: rGuided, rFast: rFast,
+    oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads
+  };
+}
+
+function calcPlans(sig) {
+  var plans, personaKey;
+
+  if (sig.tmXL) {
+    /* 20+ people → Enterprise primary */
+    plans = ['enterprise'];
+    if (sig.splashTrigger) plans.push('splash');
+    personaKey = 'enterprise';
+
+  } else if (sig.tmLarge) {
+    /* 9-20 people → Team, Enterprise secondary unless Splash triggered */
+    plans = sig.splashTrigger ? ['team', 'splash'] : ['team', 'enterprise'];
+    personaKey = 'enterprise';
+
+  } else if (sig.tmMed) {
+    /* 3-8 people → Team primary, Solo secondary */
+    plans = sig.splashTrigger ? ['team', 'splash', 'solo'] : ['team', 'solo'];
+    personaKey = 'team';
+
+  } else {
+    /* Small team (just me or 2 people) */
+    if (sig.aiAddon) {
+      /* Working system, just missing AI → Splash + Solo */
+      plans = ['splash', 'solo'];
+      personaKey = 'splash-addon';
+
+    } else if (sig.aiForward || (sig.autoAll && !sig.rSimple)) {
+      /* AI-forward or wants everything automated → Solo */
+      plans = sig.aiFomo ? ['splash', 'solo'] : ['solo'];
+      personaKey = 'solo';
+
+    } else if (sig.aiPassive && (sig.sysHead || sig.sysSheet)) {
+      /* Curious/intimidated, no real system → Splash + Lite */
+      plans = ['splash', 'lite'];
+      personaKey = 'lite';
+
+    } else if (sig.sysBroken || sig.manyApps) {
+      /* Unhappy with tools or too many apps → consolidate */
+      plans = ['splash', 'lite', 'solo'];
+      personaKey = 'solo';
+
+    } else if (sig.oOneThing) {
+      /* Wants to fix one specific thing → Splash */
+      plans = ['splash', 'lite'];
+      personaKey = 'splash-one-thing';
+
+    } else if (sig.rSimple || sig.rGuided) {
+      /* Needs simplicity or guidance → Lite */
+      plans = ['splash', 'lite'];
+      personaKey = 'lite';
+
+    } else {
+      /* Default small team */
+      plans = sig.splashTrigger ? ['splash', 'lite'] : ['lite'];
+      personaKey = 'lite';
+    }
+  }
+
+  /* Ensure Splash is present whenever splashTrigger fired */
+  if (sig.splashTrigger && plans.indexOf('splash') === -1) {
+    plans = ['splash'].concat(plans);
+  }
+
+  return { plans: plans.slice(0, 3), personaKey: personaKey };
+}
+
+/* ─── Dynamic response text — Sections 5 and 7 ─── */
+function getIntroText(plans, sig) {
+  var key = plans.join('+');
+
+  /* FOMO always takes the intro — Section 7: Splash FOMO + any plan */
+  if (sig.aiFomo) {
+    return {
+      a: "Your competitors are not waiting. Neither should you.",
+      b: "Here is what fits your business — and the fastest way to get AI running for you right now."
+    };
+  }
+
+  /* Named multi-plan combinations — Section 7 */
+  var multi = {
+    'splash+lite': {
+      a: "You are ready to start — and you want it to feel right, not overwhelming.",
+      b: "Two ways in. Both have AI working for your business from day one."
+    },
+    'splash+lite+solo': {
+      a: "You have been making it work — but making it work is not the same as having it work.",
+      b: "A few options depending on how fast you want to move. Either way, AI is running for your business from day one."
+    },
+    'splash+solo': {
+      a: "You have built something that works. The question is whether you add AI to it or replace everything with one system.",
+      b: "Both are solid. Splash adds AI Power Blend to what you have. Solo replaces everything with the full platform."
+    },
+    'team+solo': {
+      a: "You are running something real — and it is growing.",
+      b: "The difference between Solo and Team comes down to how many people need to be in the platform. We will sort that out on the call."
+    },
+    'solo+team': {
+      a: "You are running something real — and it is growing.",
+      b: "The difference between Solo and Team comes down to how many people need to be in the platform. We will sort that out on the call."
+    },
+    'team+enterprise': {
+      a: "You are running a real operation — and it needs infrastructure that matches.",
+      b: "The difference between Team and Enterprise comes down to your volume and user count. We will sort that out on the call."
+    }
+  };
+
+  if (multi[key]) return multi[key];
+
+  /* Single-plan and fallback personas — Section 5 */
+  var personas = {
+    'splash-one-thing': {
+      a: "You know exactly what needs fixing — and you are right to start there.",
+      b: "Splash is built for that. One thing, done right, running for your business from day one."
+    },
+    'splash-addon': {
+      a: "You have built something that works. Now it needs AI in the mix.",
+      b: "Splash puts AI Power Blend on top of what you already have — without starting over."
+    },
+    'lite': {
+      a: "You are ready to build something real — and you want it to feel manageable.",
+      b: "Lite gives you the full foundation — AI, website, phone, CRM — without the overwhelm."
+    },
+    'solo': {
+      a: "You have been stitching things together. It is time for one system that actually works.",
+      b: "Solo brings everything under one roof — AI running 24/7, tools consolidated, business on autopilot."
+    },
+    'team': {
+      a: "Your team is moving fast — your systems need to keep up.",
+      b: "Team puts everyone on the same platform, with AI running for the whole operation."
+    },
+    'enterprise': {
+      a: "You are running a real operation — and it needs infrastructure that matches.",
+      b: "Enterprise gives you the full Business Smoothie platform — AI, automation, and scale — built for the complexity you are actually dealing with."
+    }
+  };
+
+  return personas[sig.personaKey] || {
+    a: "You are in the right place.",
+    b: "Here is what we recommend based on where you are and where you are headed."
+  };
+}
+
+/* ─── Render results ─── */
+function renderResults() {
+  var sig = calcSignals(answers);
+  var result = calcPlans(sig);
+  sig.personaKey = result.personaKey;
+
+  var intro = getIntroText(result.plans, sig);
+  document.getElementById('r-line-a').textContent = intro.a;
+  document.getElementById('r-line-b').textContent = intro.b;
+
+  var container = document.getElementById('plan-cards');
+  container.innerHTML = '';
+  result.plans.forEach(function(key, i) {
+    container.appendChild(buildCard(key, i));
+  });
+
+  document.getElementById('contact-form').style.display = '';
+  document.getElementById('contact-form').reset();
+  document.getElementById('contact-sent').style.display = 'none';
+}
+
+function buildCard(key, rank) {
+  var p = PLANS[key];
+  var labels  = ['Your Best Match', 'Also Worth a Look', 'One More to Consider'];
+  var classes = ['badge-best',      'badge-also',        'badge-alt'];
+
+  var div = document.createElement('div');
+  div.className = 'plan-card' + (rank === 0 ? ' is-primary' : '');
+  div.innerHTML =
+    '<div class="plan-badge ' + classes[rank] + '">' + labels[rank] + '</div>' +
+    '<div class="plan-name">' + p.name + '</div>' +
+    '<div class="plan-price-row">' +
+      '<div class="plan-price">' + p.price + '</div>' +
+      '<div class="plan-mo">' + p.per + '</div>' +
+    '</div>' +
+    '<div class="plan-meta-row">' +
+      '<span class="plan-pill">' + p.yr + '</span>' +
+      '<span class="plan-pill">' + p.setup + '</span>' +
+    '</div>' +
+    '<p class="plan-description">' + p.desc + '</p>' +
+    '<p class="plan-for"><strong>For:</strong> ' + p.forText + '</p>' +
+    '<p class="plan-users"><strong>Users:</strong> ' + p.users + '</p>' +
+    '<p class="plan-footnote">*Setup fee can be spread over time — payment options are available.</p>' +
+    '<div class="plan-ctas">' +
+      '<a class="btn btn-green" href="' + p.sub + '" target="_blank">Get Started</a>' +
+      '<a class="btn btn-outline" href="' + p.call + '" target="_blank">Talk It Through</a>' +
+    '</div>';
+
+  return div;
+}
+
+/* ─── Contact capture ─── */
+function submitContact(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'block';
+}
+
+/* ─── Utils ─── */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function restartQuiz() {
+  qIndex = 0; answers = []; picked = null;
+  show('screen-intro');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
