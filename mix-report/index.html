@@ -198,22 +198,14 @@ body {
 <main class="wrap">
 
   <div class="hero">
-    <div class="tag">Business Mix Signals</div>
-    <h1 id="greeting">Here is what we see.</h1>
-    <p class="sub">Based on your answers, here are the signals that stood out.</p>
+    <div class="tag">Business Mix Report</div>
+    <h1>Your report is being built right now.</h1>
+    <p class="sub">Based on what you shared, we are putting together a personalized look at where your business stands and what your clearest next moves are.</p>
   </div>
 
-  <div id="signals" class="signals"></div>
-
   <div class="report-box">
-    <div class="report-icon">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A5C35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-        <polyline points="22,6 12,13 2,6"/>
-      </svg>
-    </div>
-    <h2>Your full Business Mix Report is on its way.</h2>
-    <p>We built it based on your specific answers. Expect it in your inbox within 20 minutes. It covers all 7 dimensions of your business with clear next moves and the products that address each one.</p>
+    <h2>Expect it in your inbox within 20 minutes.</h2>
+    <p>It will cover what is working, where the gaps are, and the specific things that would move the needle most for a business like yours.</p>
   </div>
 
   <a href="https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234" class="btn-primary">Talk it through</a>
@@ -225,89 +217,5 @@ body {
   </div>
 
 </main>
-
-<script>
-// ── URL param parser ───────────────────────────────────────────────────────────
-function getParams() {
-  const p = {};
-  const qs = window.location.search.slice(1);
-  if (!qs) return p;
-  qs.split("&").forEach(function(pair) {
-    const kv = pair.split("=");
-    if (kv[0]) p[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1] || "").replace(/\+/g, " "));
-  });
-  return p;
-}
-
-// ── SVG icons (24x24, stroke-based) ──────────────────────────────────────────
-const ICONS = {
-  globe:   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-3 4-3 14 0 18M12 3c3 4 3 14 0 18"/><line x1="3" y1="12" x2="21" y2="12"/></svg>',
-  leads:   '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-  crm:     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>',
-  social:  '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.7" x2="15.4" y2="6.3"/><line x1="8.6" y1="13.3" x2="15.4" y2="17.7"/></svg>',
-  reviews: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-  ai:      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-  ops:     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C45A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>'
-};
-
-// ── Signal logic ──────────────────────────────────────────────────────────────
-// URL params: q3-q8 are 1-indexed answer positions for each survey question.
-// Q3: online presence (1=none...4=active+working)
-// Q4: lead source    (1-3=ok, 4=not enough, 5=don't know)
-// Q5: CRM/follow-up  (1=head/notebook...5=system+missing AI)
-// Q6: social media   (1=not active...4=active+working)
-// Q7: reviews        (1=not at all...4=process working)
-// Q8: AI usage       (1=not using...4=AI is real part)
-function buildSignals(p) {
-  const q3 = parseInt(p.q3) || 0;
-  const q4 = parseInt(p.q4) || 0;
-  const q5 = parseInt(p.q5) || 0;
-  const q6 = parseInt(p.q6) || 0;
-  const q7 = parseInt(p.q7) || 0;
-  const q8 = parseInt(p.q8) || 0;
-
-  const all = [];
-
-  if (q3 >= 1 && q3 <= 2) all.push({ score: 10 - q3 * 2, icon: "globe",   text: "Your online presence is a gap. Most people searching for what you do are not finding you yet. That is leads going somewhere else." });
-  if (q4 >= 4)             all.push({ score: q4 * 2,       icon: "leads",   text: "Lead flow is unpredictable. There is no reliable engine bringing new people in consistently. Growth is leaning too hard on circumstances." });
-  if (q5 >= 1 && q5 <= 2) all.push({ score: 10 - q5 * 2, icon: "crm",     text: "Follow-up is slipping. Potential clients are going quiet because there is no system catching them after the first conversation." });
-  if (q6 >= 1 && q6 <= 2) all.push({ score: 8 - q6 * 2,  icon: "social",  text: "Social media is inconsistent or absent. That is a credibility gap your competitors are glad to fill." });
-  if (q7 >= 1 && q7 <= 2) all.push({ score: 7 - q7 * 2,  icon: "reviews", text: "Reviews are not being collected consistently. Most buyers check before they reach out. Your reputation is not building itself." });
-  if (q8 >= 1 && q8 <= 2) all.push({ score: 8 - q8 * 2,  icon: "ai",      text: "AI is not working for you yet. You are doing manually what could run automatically. That cost compounds every day." });
-  if (q5 === 5)            all.push({ score: 4,             icon: "crm",     text: "Your operational foundation is solid. The next move is layering AI on top of what already works. You are closer than most." });
-  if (q8 === 4)            all.push({ score: 4,             icon: "ai",      text: "AI is already part of your operation. The opportunity now is deeper integration across your full business stack." });
-
-  all.sort((a, b) => b.score - a.score);
-
-  const fallbacks = [
-    { icon: "ops",   text: "Consistent operations are what separate businesses that scale from ones that stall. The right systems change everything." },
-    { icon: "leads", text: "Consistent lead generation is the foundation everything else is built on. When leads are unpredictable, growth is too." },
-    { icon: "globe", text: "Your online presence needs to work harder as a 24/7 lead asset — not just a place people land once and leave." }
-  ];
-
-  let fi = 0;
-  while (all.length < 3) { all.push(fallbacks[fi++ % fallbacks.length]); }
-
-  return all.slice(0, 5);
-}
-
-// ── Render ────────────────────────────────────────────────────────────────────
-(function render() {
-  const p = getParams();
-
-  if (p.name) {
-    document.getElementById("greeting").textContent = "Here is what we see, " + p.name + ".";
-  }
-
-  const signals = buildSignals(p);
-  const html = signals.map(s =>
-    `<div class="signal-card">
-      <div class="signal-icon">${ICONS[s.icon] || ICONS.ops}</div>
-      <p class="signal-text">${s.text}</p>
-    </div>`
-  ).join("");
-  document.getElementById("signals").innerHTML = html;
-})();
-</script>
 </body>
 </html>
