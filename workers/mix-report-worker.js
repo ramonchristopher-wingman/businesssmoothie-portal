@@ -97,9 +97,14 @@ async function handleRequest(request) {
     return new Response("Invalid JSON body", { status: 400 });
   }
 
-  const contactId = body.contactId || (body.contact && body.contact.id);
+  console.log("Full payload:", JSON.stringify(body));
+
+  const contactId = body.contactId || body.contact_id || body.id || (body.contact && body.contact.id);
   if (!contactId) {
-    return new Response("Missing contactId in payload", { status: 400 });
+    return new Response(
+      JSON.stringify({ success: false, error: "contactId not found", receivedKeys: Object.keys(body) }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   // ── Call Claude API ────────────────────────────────────────────────────────
