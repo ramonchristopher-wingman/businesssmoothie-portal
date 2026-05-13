@@ -173,6 +173,42 @@ body {
   text-decoration: none;
 }
 
+/* ── Blender animation ── */
+.blender-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 22px;
+}
+.blender-body {
+  animation: blender-shake 0.1s ease-in-out infinite;
+}
+.blender-blades {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blender-spin 0.45s linear infinite;
+}
+.bubble {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.b1 { animation: bubble-rise 1.8s ease-out infinite 0s; }
+.b2 { animation: bubble-rise 1.8s ease-out infinite 0.6s; }
+.b3 { animation: bubble-rise 1.8s ease-out infinite 1.2s; }
+@keyframes blender-shake {
+  0%, 100% { transform: translateX(0); }
+  33%       { transform: translateX(-1px); }
+  66%       { transform: translateX(1px); }
+}
+@keyframes blender-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes bubble-rise {
+  0%   { transform: translateY(0);    opacity: 0; }
+  20%  { opacity: 0.55; }
+  100% { transform: translateY(-20px); opacity: 0; }
+}
+
 @media (max-width: 480px) {
   .hero h1 { font-size: 1.65rem; }
   .wrap { padding: 32px 18px 56px; }
@@ -200,6 +236,37 @@ body {
   <div class="hero">
     <div class="tag">Business Mix Report</div>
     <h1>Your report is being built right now.</h1>
+
+    <div class="blender-wrap">
+      <svg class="blender-body" width="80" height="100" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Lid knob -->
+        <rect x="35" y="1" width="10" height="5" rx="2" fill="#1A5C35"/>
+        <!-- Lid -->
+        <rect x="20" y="5" width="40" height="7" rx="3" fill="#1A5C35"/>
+        <!-- Jar outline -->
+        <path d="M20 12 L12 72 L68 72 L60 12 Z" stroke="#1A5C35" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- Smoothie fill (bottom third of jar) -->
+        <path d="M14 55 L12 72 L68 72 L66 55 Z" fill="#00C45A" opacity="0.22"/>
+        <!-- Bubbles -->
+        <circle class="bubble b1" cx="28" cy="60" r="3"   fill="#00C45A" opacity="0.5"/>
+        <circle class="bubble b2" cx="52" cy="56" r="2"   fill="#00C45A" opacity="0.4"/>
+        <circle class="bubble b3" cx="40" cy="63" r="2.5" fill="#00C45A" opacity="0.45"/>
+        <!-- Spinning blades (centered at 40,44) -->
+        <g class="blender-blades">
+          <line x1="22" y1="32" x2="58" y2="56" stroke="#1A5C35" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="58" y1="32" x2="22" y2="56" stroke="#1A5C35" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="40" cy="44" r="4" fill="#00C45A"/>
+        </g>
+        <!-- Base -->
+        <rect x="14" y="72" width="52" height="16" rx="5" fill="#1A5C35"/>
+        <!-- Power button -->
+        <circle cx="40" cy="80" r="4" fill="#00C45A"/>
+        <!-- Indicator dots -->
+        <circle cx="25" cy="80" r="2" fill="#00C45A" opacity="0.55"/>
+        <circle cx="55" cy="80" r="2" fill="#00C45A" opacity="0.55"/>
+      </svg>
+    </div>
+
     <p class="sub">Based on what you shared, we are putting together a personalized look at where your business stands and what your clearest next moves are.</p>
   </div>
 
