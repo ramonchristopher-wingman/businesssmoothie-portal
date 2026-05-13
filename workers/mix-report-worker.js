@@ -67,7 +67,7 @@ const FOOTER_HTML = `
 </p>
 <p style="font-family:sans-serif;font-size:15px;color:#444;line-height:1.6;margin-top:16px;">
   <strong style="color:#1A5C35;">Want to hear what AI sounds like for your business?</strong><br>
-  Call or text our demo line: <a href="tel:5154003057" style="color:#00C45A;">515.400.3057</a>
+  Call or text our demo line: <a href="tel:5154000448" style="color:#00C45A;">515.400.0448</a>
 </p>`;
 
 addEventListener("fetch", function(event) {
