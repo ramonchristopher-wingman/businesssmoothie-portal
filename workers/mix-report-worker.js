@@ -100,12 +100,6 @@ async function handleRequest(request) {
   console.log("Full payload:", JSON.stringify(body));
 
   const contactId = body.contactId || body.contact_id || body.id || (body.contact && body.contact.id);
-  if (!contactId) {
-    return new Response(
-      JSON.stringify({ success: false, error: "contactId not found", receivedKeys: Object.keys(body) }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  }
 
   // ── Call Claude API ────────────────────────────────────────────────────────
   let claudeRes;
@@ -138,32 +132,35 @@ async function handleRequest(request) {
   const claudeData = await claudeRes.json();
   const reportHtml = claudeData.content[0].text + FOOTER_HTML;
 
-  // ── Write report to GHL contact custom field ───────────────────────────────
-  try {
-    const ghlRes = await fetch("https://services.leadconnectorhq.com/contacts/" + contactId, {
-      method: "PUT",
-      headers: {
-        "Authorization": "Bearer " + GHL_API_KEY,
-        "Content-Type": "application/json",
-        "Version": "2021-07-28"
-      },
-      body: JSON.stringify({
-        customFields: [
-          { id: GHL_CUSTOM_FIELD_ID, field_value: reportHtml }
-        ]
-      })
-    });
+  // ── Write report to GHL contact custom field (skip if no contactId) ────────
+  if (contactId) {
+    try {
+      const ghlRes = await fetch("https://services.leadconnectorhq.com/contacts/" + contactId, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + GHL_API_KEY,
+          "Content-Type": "application/json",
+          "Version": "2021-07-28"
+        },
+        body: JSON.stringify({
+          customFields: [
+            { id: GHL_CUSTOM_FIELD_ID, field_value: reportHtml }
+          ]
+        })
+      });
 
-    if (!ghlRes.ok) {
-      const ghlErr = await ghlRes.text();
-      console.error("GHL write error " + ghlRes.status + ":", ghlErr);
-      // Do not return an error — Claude succeeded; GHL write failure is logged
+      if (!ghlRes.ok) {
+        const ghlErr = await ghlRes.text();
+        console.error("GHL write error " + ghlRes.status + ":", ghlErr);
+      }
+    } catch (e) {
+      console.error("GHL fetch error:", e.message);
     }
-  } catch (e) {
-    console.error("GHL fetch error:", e.message);
+  } else {
+    console.log("No contactId found — skipping GHL write. receivedKeys:", Object.keys(body));
   }
 
-  return new Response(JSON.stringify({ success: true, contactId: contactId }), {
+  return new Response(JSON.stringify({ success: true, contactId: contactId || null, report: reportHtml }), {
     status: 200,
     headers: { "Content-Type": "application/json" }
   });
