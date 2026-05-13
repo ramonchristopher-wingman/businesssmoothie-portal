@@ -112,7 +112,7 @@ async function handleRequest(request) {
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 2048,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: JSON.stringify(body) }]
@@ -126,7 +126,10 @@ async function handleRequest(request) {
   if (!claudeRes.ok) {
     const errText = await claudeRes.text();
     console.error("Claude API error " + claudeRes.status + ":", errText);
-    return new Response("Claude API error", { status: 502 });
+    return new Response(JSON.stringify({ success: false, claudeStatus: claudeRes.status, claudeError: errText }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 
   const claudeData = await claudeRes.json();
