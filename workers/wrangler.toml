@@ -1,0 +1,4 @@
+name = "mix-report-worker"
+main = "mix-report-worker.js"
+compatibility_date = "2026-05-13"
+account_id = "5d2c200edc4a94e8f6809775cd695b46"
