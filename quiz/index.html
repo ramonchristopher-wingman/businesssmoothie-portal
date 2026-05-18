@@ -4,37 +4,45 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Where Do We Begin? | Business Smoothie</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --green:      #00C45A;
-  --dark-green: #1A5C35;
-  --bg:         #F9F8F5;
-  --white:      #ffffff;
-  --dark:       #2C2C2C;
-  --mid:        #666;
-  --border:     #ddd8ce;
-  --shadow:     0 4px 24px rgba(0,0,0,0.07);
+  --green:         #00C45A;
+  --green-dim:     #00a34a;
+  --dark-green:    #1A5C35;
+  --bg:            #0a0a0a;
+  --surface:       #111111;
+  --surface-2:     #191919;
+  --border:        #2a2a2a;
+  --border-bright: #333333;
+  --text:          #f0f0f0;
+  --text-mid:      #b0b0b0;
+  --text-soft:     #6a6a6a;
+  --radius:        18px;
+  --radius-sm:     11px;
 }
 
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
-  color: var(--dark);
+  color: var(--text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* ── Header ── */
-.site-header {
+/* ── HEADER ── */
+.header {
   width: 100%;
-  background: var(--white);
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,22 +50,34 @@ body {
   top: 0;
   z-index: 10;
 }
-.logo { font-family: 'Fredoka One', cursive; font-size: 20px; color: var(--dark-green); }
-.logo span { color: var(--green); }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.logo-text span { color: var(--green); }
 
-/* ── Screens ── */
+/* ── SCREENS ── */
 .screen { display: none; width: 100%; max-width: 660px; padding: 40px 24px 60px; animation: rise 0.3s ease both; }
 .screen.active { display: block; }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── Progress ── */
+/* ── PROGRESS ── */
 .progress-wrap { margin-bottom: 32px; }
 .progress-meta {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
   font-weight: 700;
-  color: var(--mid);
+  color: var(--text-soft);
   text-transform: uppercase;
   letter-spacing: 0.6px;
   margin-bottom: 8px;
@@ -65,20 +85,36 @@ body {
 .progress-bar { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
 
-/* ── Intro ── */
+/* ── INTRO ── */
 .intro-wrap { text-align: center; padding: 16px 0 8px; }
 .intro-icon { font-size: 60px; display: block; margin-bottom: 16px; }
-.intro-title { font-family: 'Fredoka One', cursive; font-size: 44px; color: var(--dark-green); line-height: 1.1; margin-bottom: 14px; }
-.intro-body { font-size: 17px; color: var(--mid); line-height: 1.65; max-width: 460px; margin: 0 auto 28px; }
+.intro-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 44px;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 14px;
+  letter-spacing: -0.03em;
+}
+.intro-title em { font-style: normal; color: var(--green); }
+.intro-body { font-size: 17px; color: var(--text-mid); line-height: 1.65; max-width: 460px; margin: 0 auto 28px; }
 .intro-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
-.chip { background: var(--white); border: 1.5px solid var(--border); border-radius: 99px; padding: 6px 16px; font-size: 13px; font-weight: 700; color: var(--dark-green); }
+.chip {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-mid);
+}
 
-/* ── Buttons ── */
+/* ── BUTTONS ── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   border-radius: 12px;
   border: none;
@@ -86,17 +122,23 @@ body {
   text-decoration: none;
   transition: all 0.18s;
 }
-.btn-green { background: var(--green); color: var(--white); font-size: 17px; padding: 15px 36px; }
-.btn-green:hover { background: #00ae50; transform: translateY(-1px); }
+.btn-green { background: var(--green); color: #fff; font-size: 17px; padding: 15px 36px; }
+.btn-green:hover { background: var(--green-dim); transform: translateY(-1px); }
 .btn-green:active { transform: translateY(0); }
-.btn-green:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-.btn-outline { background: transparent; color: var(--dark-green); border: 2px solid var(--dark-green); font-size: 15px; padding: 12px 24px; }
-.btn-outline:hover { background: var(--dark-green); color: var(--white); }
+.btn-green:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+  font-size: 15px;
+  padding: 12px 24px;
+}
+.btn-outline:hover { background: var(--green); color: #fff; }
 .btn-ghost {
   background: none;
   border: none;
-  color: var(--mid);
-  font-family: 'Inter', sans-serif;
+  color: var(--text-soft);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -106,17 +148,24 @@ body {
   gap: 5px;
   margin-bottom: 24px;
 }
-.btn-ghost:hover { color: var(--dark); }
+.btn-ghost:hover { color: var(--text); }
 
-/* ── Questions ── */
+/* ── QUESTIONS ── */
 .q-label { font-size: 12px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
-.q-text { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark); line-height: 1.25; margin-bottom: 26px; }
+.q-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 26px;
+  letter-spacing: -0.02em;
+}
 .options { display: flex; flex-direction: column; gap: 11px; }
 .option {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  background: var(--white);
+  background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 13px;
   padding: 15px 18px;
@@ -125,38 +174,44 @@ body {
   text-align: left;
   width: 100%;
 }
-.option:hover { border-color: var(--green); background: #f1fdf6; }
-.option.picked { border-color: var(--green); background: #f1fdf6; }
+.option:hover { border-color: var(--green); background: var(--surface-2); }
+.option.picked { border-color: var(--green); background: var(--surface-2); }
 .opt-badge {
   min-width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 2px solid var(--border);
+  border: 2px solid var(--border-bright);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 800;
-  color: var(--mid);
+  color: var(--text-soft);
   transition: all 0.18s;
   flex-shrink: 0;
 }
-.option.picked .opt-badge { background: var(--green); border-color: var(--green); color: var(--white); }
-.opt-text { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.4; padding-top: 3px; }
+.option.picked .opt-badge { background: var(--green); border-color: var(--green); color: #fff; }
+.opt-text { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; padding-top: 3px; }
 .q-footer { margin-top: 22px; }
 
-/* ── Results: Layer 1 ── */
-.result-line-a { font-family: 'Fredoka One', cursive; font-size: 30px; color: var(--dark); line-height: 1.2; margin-bottom: 10px; }
-.result-line-b { font-size: 16px; color: var(--mid); line-height: 1.65; margin-bottom: 36px; }
+/* ── RESULTS: read-back ── */
+.result-line-a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 30px;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.result-line-b { font-size: 16px; color: var(--text-mid); line-height: 1.65; margin-bottom: 36px; }
 
-/* ── Results: Layer 2 — tier cards (NO PRICING per spec) ── */
+/* ── PLAN CARDS ── */
 .plan-cards { display: flex; flex-direction: column; gap: 22px; margin-bottom: 32px; }
 .plan-card {
-  background: var(--white);
+  background: var(--surface);
   border: 2px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius);
   padding: 34px 26px 24px;
-  box-shadow: var(--shadow);
   position: relative;
 }
 .plan-card.is-primary { border-color: var(--green); }
@@ -171,50 +226,94 @@ body {
   padding: 4px 14px;
   border-radius: 99px;
 }
-.badge-best { background: var(--green); color: var(--white); }
-.badge-also { background: var(--dark-green); color: var(--white); }
-.badge-alt { background: #e2e0da; color: var(--dark); }
-
-.plan-name { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--dark-green); margin-bottom: 8px; }
-.plan-tagline { font-size: 14px; font-weight: 700; color: var(--mid); margin-bottom: 14px; }
-.plan-description { font-size: 14px; color: var(--dark); line-height: 1.6; margin-bottom: 12px; }
-.plan-for { font-size: 13px; color: var(--mid); line-height: 1.5; margin-bottom: 20px; }
-.plan-for strong { color: var(--dark-green); }
+.badge-best { background: var(--green); color: #fff; }
+.badge-also { background: var(--dark-green); color: #fff; }
+.badge-alt  { background: var(--surface-2); color: var(--text-mid); }
+.plan-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
+  color: var(--green);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.plan-tagline { font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 14px; }
+.plan-description { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+.plan-for { font-size: 13px; color: var(--text-soft); line-height: 1.5; margin-bottom: 20px; }
+.plan-for strong { color: var(--green); }
 .plan-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
 .plan-ctas .btn { flex: 1; font-size: 14px; padding: 12px 16px; }
 
-/* ── Layer 3 — AI demo CTA ── */
+/* ── BRAND STORY ── */
+.brand-story {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+  margin-bottom: 28px;
+}
+.brand-story-eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+.brand-story-text { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; }
+
+/* ── AI DEMO CTA ── */
 .demo-cta {
   background: var(--dark-green);
-  border-radius: 18px;
+  border-radius: var(--radius);
   padding: 28px 26px;
   margin-bottom: 32px;
   text-align: center;
-  color: var(--white);
+  color: #fff;
 }
-.demo-cta-headline { font-family: 'Fredoka One', cursive; font-size: 22px; margin-bottom: 8px; }
+.demo-cta-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 22px;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
 .demo-cta-sub { font-size: 14px; opacity: 0.85; line-height: 1.5; margin-bottom: 18px; }
 .demo-cta-number {
   display: inline-block;
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 28px;
+  font-weight: 800;
   color: var(--green);
   text-decoration: none;
 }
 .demo-cta-number:hover { opacity: 0.85; }
 
-/* ── Contact capture ── */
+/* ── CONTACT CAPTURE ── */
 .contact-section {
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius);
   padding: 28px 26px;
   margin-bottom: 32px;
 }
-.contact-heading { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--dark-green); margin-bottom: 6px; }
-.contact-sub { font-size: 14px; color: var(--mid); line-height: 1.55; margin-bottom: 22px; }
+.contact-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.contact-sub { font-size: 14px; color: var(--text-mid); line-height: 1.55; margin-bottom: 22px; }
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--dark); margin-bottom: 7px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-soft);
+  margin-bottom: 7px;
+}
 .field input {
   width: 100%;
   padding: 13px 15px;
@@ -222,19 +321,29 @@ body {
   border-radius: 10px;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
-  color: var(--dark);
-  background: var(--white);
+  color: var(--text);
+  background: var(--surface-2);
   outline: none;
   transition: border-color 0.18s;
 }
 .field input:focus { border-color: var(--green); }
-.form-note { font-size: 12px; color: var(--mid); margin-top: 10px; line-height: 1.5; }
-.contact-sent { text-align: center; padding: 12px 0; font-size: 15px; color: var(--dark-green); font-weight: 700; }
+.field input::placeholder { color: var(--text-soft); }
+.form-note { font-size: 12px; color: var(--text-soft); margin-top: 10px; line-height: 1.5; }
+.contact-sent { text-align: center; padding: 12px 0; font-size: 15px; color: var(--green); font-weight: 700; }
 
-/* ── Results footer ── */
-.result-footer { text-align: center; font-size: 13px; color: var(--mid); line-height: 1.7; padding-top: 8px; }
-.result-footer a { color: var(--dark-green); font-weight: 700; }
-.restart-btn { background: none; border: none; color: var(--green); font-weight: 700; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; }
+/* ── RESULTS FOOTER ── */
+.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding-top: 8px; }
+.result-footer a { color: var(--green); font-weight: 700; text-decoration: none; }
+.result-footer a:hover { text-decoration: underline; }
+.restart-btn {
+  background: none;
+  border: none;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
 @media (max-width: 480px) {
   .intro-title { font-size: 34px; }
@@ -247,23 +356,17 @@ body {
 </head>
 <body>
 
-<header class="site-header">
-  <div class="logo-wrap" style="display:flex;align-items:center;gap:10px;">
+<header class="header">
+  <div class="logo">
     <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- straw -->
       <line x1="62" y1="2" x2="50" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
-      <!-- cup top -->
       <line x1="18" y1="22" x2="82" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
-      <!-- cup body -->
       <path d="M22 22 L28 90 L72 90 L78 22" stroke="#00C45A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <!-- left eye -->
       <circle cx="38" cy="52" r="4" fill="#00C45A"/>
-      <!-- right eye (wink) -->
       <path d="M54 48 Q62 44 66 50" stroke="#00C45A" stroke-width="4" stroke-linecap="round" fill="none"/>
-      <!-- smile -->
       <path d="M34 66 Q50 78 66 66" stroke="#00C45A" stroke-width="5" stroke-linecap="round" fill="none"/>
     </svg>
-    <div class="logo">Business Smoothie<span>.</span></div>
+    <span class="logo-text">Business Smoothie<span>.</span></span>
   </div>
 </header>
 
@@ -310,17 +413,23 @@ body {
   <p class="result-line-a" id="r-line-a"></p>
   <p class="result-line-b" id="r-line-b"></p>
 
-  <!-- Layer 2: Tier cards — NO PRICING per spec -->
+  <!-- Layer 2: Tier cards -->
   <div class="plan-cards" id="plan-cards"></div>
 
-  <!-- Layer 3: AI demo CTA — appears on every results page -->
+  <!-- Brand Story -->
+  <div class="brand-story">
+    <p class="brand-story-eyebrow">About Business Smoothie</p>
+    <p class="brand-story-text">We do the blending. You run the business. Business Smoothie brings together Business AI, your website, phone system, CRM, social media, and automation into one platform that works as a single system — so nothing falls through the cracks and your operation keeps moving whether you are in the room or not. Every plan is built around your business, not a one-size-fits-all package.</p>
+  </div>
+
+  <!-- Layer 3: AI demo CTA -->
   <div class="demo-cta">
     <div class="demo-cta-headline">Want to hear what AI sounds like for your business?</div>
     <div class="demo-cta-sub">Call or text our AI demo line and experience it yourself.</div>
     <a class="demo-cta-number" href="tel:5154003057">515.400.3057</a>
   </div>
 
-  <!-- Contact capture: soft ask, not a gate -->
+  <!-- Contact capture: name + email only -->
   <div class="contact-section">
     <h3 class="contact-heading">Want the full breakdown sent to you?</h3>
     <p class="contact-sub">Drop your info and we will email everything — including pricing and next steps.</p>
@@ -340,7 +449,7 @@ body {
   </div>
 
   <div class="result-footer">
-    <p>Questions? <a href="mailto:ramon@businesssmoothie.com">Talk it through with Ramon</a> or <a href="https://calendar.app.google/your-link" target="_blank">book a free call</a>.</p>
+    <p>Questions? <a href="mailto:ramon@businesssmoothie.com">Talk it through with Ramon</a> or <a href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">book a free call</a>.</p>
     <p style="margin-top:8px">Not seeing what you expected? <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
   </div>
 </div>
@@ -507,26 +616,26 @@ const TIERS = {
   splash: {
     name: "Splash",
     tagline: "The focused entry. One priority, done right, running for your business from day one.",
-    desc: "Pick your focus: AI Power Blend, Smart Website, or Freedom Phone. Complete on its own — and you can add more when you are ready.",
+    desc: "Pick your focus: Business AI, Smart Website, or Digital Freedom Phone. Complete on its own — and you can add more when you are ready.",
     forText: "Any business that wants to start focused, add one specific thing, or move fast without overhauling everything.",
-    callUrl: "mailto:ramon@businesssmoothie.com",
-    getUrl:  "https://businesssmoothie.com/get-started"
+    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
+    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
   },
   lite: {
     name: "Lite",
     tagline: "The full foundation. Everything you need to show up, stay connected, and never miss a lead.",
-    desc: "AI Power Blend, Smart Website, Freedom Phone, CRM Smoothie, social scheduling, and Reporting Dashboard — all running for your business.",
+    desc: "Business AI, Smart Website, Digital Freedom Phone, Integrated CRM, Integrated Social Media, and Reporting Dashboard — all running for your business.",
     forText: "Solo operators and small teams ready to stop piecing things together and run on one real system.",
-    callUrl: "mailto:ramon@businesssmoothie.com",
-    getUrl:  "https://businesssmoothie.com/get-started"
+    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
+    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
   },
   signature: {
     name: "Signature",
     tagline: "The complete Business Smoothie platform. Built to run the whole operation from one place.",
-    desc: "Everything in Lite plus Automations and Funnels, advanced social scheduling, and Reputation Smoothie. The right plan within Signature depends on how many people will use it — we will sort that out together.",
+    desc: "Everything in Lite plus Automations and Funnels, advanced Integrated Social Media, and Reputation and Review Management. The right plan within Signature depends on how many people will use it — we will sort that out together.",
     forText: "Teams who need multiple users, full automation, and a system that scales with them.",
-    callUrl: "mailto:ramon@businesssmoothie.com",
-    getUrl:  "https://businesssmoothie.com/get-started"
+    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
+    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
   }
 };
 
@@ -830,7 +939,7 @@ function getReadBack(tiers, sig) {
     },
     'splash-addon': {
       a: "You have built something that works. Now it needs AI in the mix.",
-      b: "Splash puts AI Power Blend on top of what you already have — without starting over."
+      b: "Splash puts Business AI on top of what you already have — without starting over."
     },
     'lite': {
       a: "You are ready to build something real — and you want it to feel manageable.",
@@ -897,8 +1006,8 @@ function buildCard(key, rank) {
     '<p class="plan-description">' + t.desc + '</p>' +
     '<p class="plan-for"><strong>Who it is for:</strong> ' + t.forText + '</p>' +
     '<div class="plan-ctas">' +
-    '<a class="btn btn-green" href="' + t.getUrl + '" target="_blank">Get the full details</a>' +
-    '<a class="btn btn-outline" href="' + t.callUrl + '">Talk it through</a>' +
+    '<a class="btn btn-green" href="' + t.getUrl + '" target="_blank">Get Your Business Mix Report</a>' +
+    '<a class="btn btn-outline" href="' + t.callUrl + '" target="_blank">Book a Strategy Call</a>' +
     '</div>';
 
   return div;
