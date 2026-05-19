@@ -193,20 +193,10 @@ body {
 .opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
 .q-footer { margin-top: 20px; }
 
-/* ── RESULTS: intro text (body style, not headline) ── */
-.result-intro-a {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.6;
-  margin-bottom: 6px;
-}
-.result-intro-b {
-  font-size: 0.95rem;
-  color: var(--text-mid);
-  line-height: 1.7;
-  margin-bottom: 32px;
-}
+/* ── RESULT INTRO (sections 1–2) ── */
+.result-intro  { margin-bottom: 28px; }
+.result-context { margin-bottom: 28px; }
+.result-intro-text { font-size: 0.97rem; color: var(--text-mid); line-height: 1.8; }
 
 /* ── PLAN CARDS ── */
 .plan-cards { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
@@ -214,19 +204,19 @@ body {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px 22px 22px;
+  padding: 36px 22px 24px;
   position: relative;
 }
 .plan-card.is-primary { border-color: var(--green); }
 .plan-badge {
   position: absolute;
-  top: -12px;
+  top: -14px;
   left: 20px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  padding: 3px 12px;
+  letter-spacing: 1px;
+  padding: 5px 16px;
   border-radius: 99px;
 }
 .badge-best { background: var(--green); color: #fff; }
@@ -274,7 +264,6 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
   transition: opacity 0.15s;
@@ -282,7 +271,6 @@ body {
 .plan-expand-toggle:hover { opacity: 0.75; }
 .toggle-icon { font-size: 10px; }
 .plan-full {
-  display: none;
   padding-top: 14px;
   margin-top: 10px;
   border-top: 1px solid var(--border);
@@ -300,76 +288,24 @@ body {
   padding: 3px 10px;
   border-radius: 99px;
 }
-.plan-cta-wrap {
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
-  margin-top: 18px;
-}
-.plan-transition {
-  font-size: 0.85rem;
-  color: var(--text-soft);
-  line-height: 1.6;
-  margin-bottom: 12px;
-}
-.plan-cta { width: 100%; font-size: 15px; padding: 14px 20px; border-radius: 10px; }
 
-/* ── BUSINESS MIX REPORT SECTION ── */
-.mix-report-section {
+/* ── CONTACT CAPTURE (section 3) ── */
+.capture-section {
   background: var(--surface);
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--green);
   border-radius: var(--radius);
-  padding: 26px 22px;
-  margin-bottom: 24px;
+  padding: 28px 22px;
+  margin-bottom: 28px;
 }
-.mix-report-eyebrow {
+.capture-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--green);
-  margin-bottom: 6px;
-}
-.mix-report-headline {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--text);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   letter-spacing: -0.02em;
 }
-.mix-report-body {
-  font-size: 0.9rem;
-  color: var(--text-mid);
-  line-height: 1.75;
-  margin-bottom: 8px;
-}
-.mix-report-support {
-  font-size: 0.85rem;
-  color: var(--text-soft);
-  font-style: italic;
-  margin-bottom: 18px;
-  line-height: 1.5;
-}
-.mix-report-cta { width: 100%; font-size: 14px; padding: 13px 20px; border-radius: 10px; }
-
-/* ── CONTACT CAPTURE ── */
-.contact-section {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px 22px;
-  margin-bottom: 24px;
-}
-.contact-heading {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
-}
-.contact-sub { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
+.capture-sub { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
 .field { margin-bottom: 14px; }
 .field label {
   display: block;
@@ -395,13 +331,41 @@ body {
 .field input:focus { border-color: var(--green); }
 .field input::placeholder { color: var(--text-soft); }
 .form-note { font-size: 11px; color: var(--text-soft); margin-top: 8px; line-height: 1.5; }
-.contact-sent { text-align: center; padding: 10px 0; font-size: 14px; color: var(--green); font-weight: 600; }
+.contact-sent { text-align: center; padding: 12px 0; font-size: 14px; color: var(--green); font-weight: 600; }
 .contact-submit { width: 100%; margin-top: 4px; font-size: 14px; padding: 13px; border-radius: 9px; }
 
+/* ── ACTION CARDS (sections 5–8) ── */
+.action-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 18px;
+  margin-bottom: 14px;
+}
+.action-card-accent { border-color: rgba(0,196,90,0.25); }
+.action-eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.action-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.action-body { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 14px; }
+.action-cta { font-size: 14px; padding: 11px 20px; border-radius: 8px; }
+
 /* ── RESULTS FOOTER ── */
-.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding-top: 4px; }
-.result-footer a { color: var(--green); font-weight: 600; text-decoration: none; }
-.result-footer a:hover { text-decoration: underline; }
+.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding: 12px 0 4px; }
 .restart-btn {
   background: none;
   border: none;
@@ -414,20 +378,6 @@ body {
 }
 .restart-btn:hover { color: var(--text-mid); }
 
-/* ── RESULTS SECTIONS ── */
-.results-section { margin-bottom: 26px; }
-.results-eyebrow {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--green);
-  margin-bottom: 6px;
-}
-.results-text { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; }
-.results-text-bright { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
-
 @media (max-width: 480px) {
   .intro-title { font-size: 30px; }
   .q-text { font-size: 20px; }
@@ -438,17 +388,7 @@ body {
 <body>
 
 <header class="header">
-  <div class="logo">
-    <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="62" y1="2" x2="50" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
-      <line x1="18" y1="22" x2="82" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
-      <path d="M22 22 L28 90 L72 90 L78 22" stroke="#00C45A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <circle cx="38" cy="52" r="4" fill="#00C45A"/>
-      <path d="M54 48 Q62 44 66 50" stroke="#00C45A" stroke-width="4" stroke-linecap="round" fill="none"/>
-      <path d="M34 66 Q50 78 66 66" stroke="#00C45A" stroke-width="5" stroke-linecap="round" fill="none"/>
-    </svg>
-    <span class="logo-text">Business Smoothie<span>.</span></span>
-  </div>
+  <span class="logo-text">Business Smoothie<span>.</span></span>
 </header>
 
 <!-- ── INTRO ── -->
@@ -491,40 +431,16 @@ body {
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- What We Heard -->
-  <div class="results-section">
-    <p class="results-eyebrow">What We Heard</p>
-    <p class="results-text" id="r-heard"></p>
-  </div>
+  <!-- Section 1: Thank You + Summary -->
+  <div class="result-intro" id="r-intro"></div>
 
-  <!-- What It Sounds Like You Need -->
-  <div class="results-section">
-    <p class="results-eyebrow">What It Sounds Like You Need</p>
-    <p class="results-text" id="r-need"></p>
-  </div>
+  <!-- Section 2: What You Need + How BS Fits -->
+  <div class="result-context" id="r-context"></div>
 
-  <!-- How Business Smoothie Fits -->
-  <div class="results-section">
-    <p class="results-eyebrow">How Business Smoothie Fits</p>
-    <p class="results-text results-text-bright" id="r-fits"></p>
-  </div>
-
-  <!-- Plan cards: populated by JS -->
-  <div class="plan-cards" id="plan-cards"></div>
-
-  <!-- Business Mix Report section -->
-  <div class="mix-report-section">
-    <p class="mix-report-eyebrow">Not ready to book yet?</p>
-    <h3 class="mix-report-headline">Start here.</h3>
-    <p class="mix-report-body">The Business Mix Report gives you a personalized breakdown of your business across 7 dimensions — delivered to your inbox in about 20 minutes. It is free, it is fast, and it gives you something real to work with before you talk to anyone.</p>
-    <p class="mix-report-support">Most businesses do not know where their biggest gap is. This does.</p>
-    <a class="btn btn-green mix-report-cta" href="https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH" target="_blank">Get Your Free Business Mix Report</a>
-  </div>
-
-  <!-- Contact capture: name + email only -->
-  <div class="contact-section">
-    <h3 class="contact-heading">Want us to send this to you?</h3>
-    <p class="contact-sub">Drop your name and email and we will send your results — including pricing and next steps.</p>
+  <!-- Section 3: Get Your Full Report -->
+  <div class="capture-section">
+    <h3 class="capture-heading">Want the full picture?</h3>
+    <p class="capture-sub">Enter your name and email and we will send your complete results — including your plan match, what your business needs, and your next steps.</p>
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
@@ -534,15 +450,46 @@ body {
         <label for="f-email">Email Address</label>
         <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
       </div>
-      <button class="btn btn-green contact-submit" type="submit">Send My Results →</button>
-      <p class="form-note">No spam. One email with your results — that's it.</p>
+      <button class="btn btn-green contact-submit" type="submit">Send My Quiz Results →</button>
+      <p class="form-note">No spam. Your results only.</p>
     </form>
-    <div class="contact-sent" id="contact-sent" style="display:none">✓ Got it — check your inbox.</div>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Your results are on the way — check your inbox in a few minutes.</div>
+  </div>
+
+  <!-- Section 4: Plan Cards -->
+  <div class="plan-cards" id="plan-cards"></div>
+
+  <!-- Section 5: Book a Specialist Call -->
+  <div class="action-card">
+    <h3 class="action-heading">Ready to talk through your results?</h3>
+    <p class="action-body">Book a 25-minute call with one of our specialists. We will look at your results together and map out exactly what makes sense for your business.</p>
+    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call</a>
+  </div>
+
+  <!-- Section 6: Call to Discuss -->
+  <div class="action-card">
+    <h3 class="action-heading">Have questions about what Business Smoothie could do for your business?</h3>
+    <p class="action-body">Call us and talk it through with our AI assistant — available now.</p>
+    <a class="btn btn-green action-cta" href="tel:5154000448">Call Now → 515.400.0448</a>
+  </div>
+
+  <!-- Section 7: Custom Blend -->
+  <div class="action-card action-card-accent">
+    <p class="action-eyebrow">Go deeper</p>
+    <h3 class="action-heading">Get your Custom Blend</h3>
+    <p class="action-body">The Custom Blend gives you a customized analysis of your business across 7 dimensions — where you are strong, where the gaps are, and what would move the needle most. Most business owners walk away with clarity they have been missing for years. Delivered to your inbox in under 5 minutes.</p>
+    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH" target="_blank">Get Your Custom Blend</a>
+  </div>
+
+  <!-- Section 8: Experience the AI -->
+  <div class="action-card">
+    <h3 class="action-heading">Hear what an AI assistant sounds like for your business</h3>
+    <p class="action-body">Call our demo line and experience it live — no setup, no commitment. Just call and hear what's possible.</p>
+    <a class="btn btn-green action-cta" href="tel:5154000332">Call the Demo Line → 515.400.0332</a>
   </div>
 
   <div class="result-footer">
-    <p>Questions? <a href="https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234" target="_blank">Book a Discovery Call and we will talk it through.</a></p>
-    <p style="margin-top:10px"><button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
+    <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button>
   </div>
 
 </div>
@@ -700,14 +647,14 @@ const PLANS = {
   },
   team: {
     name: "Business Smoothie — Team",
-    desc: "The complete Business Smoothie system built for a growing team. Everything in Solo — for up to 8 users.",
-    forText: "Teams of 3 to 8 who need everyone on the same platform.",
+    desc: "The complete Business Smoothie system — Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — built for teams of up to 8.",
+    forText: "Teams of 3 to 8 who need everyone on the same platform, with AI running for the whole operation.",
     users: "Up to 8 users",
     call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
   enterprise: {
     name: "Business Smoothie — Enterprise",
-    desc: "The complete Business Smoothie system at full scale. Everything in Team — for organizations with real volume, complexity, and up to 50 users.",
+    desc: "The complete Business Smoothie system — Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — built for larger organizations with real volume and complexity.",
     forText: "Larger teams, multi-location operations, and businesses that need infrastructure that matches what they are running.",
     users: "Up to 50 users",
     call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
@@ -715,11 +662,25 @@ const PLANS = {
 };
 
 /* ═══════════════════════════════════════════════════
+   CONFIG
+   ═══════════════════════════════════════════════════ */
+var QUIZ_SUBMIT_URL = 'https://quiz-submit.summer-mouse-2464.workers.dev';
+
+var PLAN_TAGS = {
+  splash:     'quiz-match-splash',
+  lite:       'quiz-match-lite',
+  solo:       'quiz-match-solo',
+  team:       'quiz-match-team',
+  enterprise: 'quiz-match-enterprise'
+};
+
+/* ═══════════════════════════════════════════════════
    STATE
    ═══════════════════════════════════════════════════ */
-let qIndex  = 0;
-let answers = [];   // indexed by question index — never popped
-let picked  = null;
+let qIndex             = 0;
+let answers            = [];   // indexed by question index — never popped
+let picked             = null;
+let recommendedPlanKey = '';
 
 /* ═══════════════════════════════════════════════════
    QUIZ FLOW
@@ -1103,9 +1064,15 @@ function renderResults() {
   var result = calcTiers(sig);
   sig.personaKey = result.personaKey;
 
-  document.getElementById('r-heard').textContent = getWhatWeHeard(sig, answers);
-  document.getElementById('r-need').textContent  = getWhatYouNeed(sig);
-  document.getElementById('r-fits').textContent  = getHowFits(sig);
+  recommendedPlanKey = result.tiers[0];
+
+  document.getElementById('r-intro').innerHTML =
+    '<p class="result-intro-text">Thanks for taking the time — we read every answer.</p>' +
+    '<p class="result-intro-text" style="margin-top:14px">' + getWhatWeHeard(sig, answers) + '</p>';
+
+  document.getElementById('r-context').innerHTML =
+    '<p class="result-intro-text">' + getWhatYouNeed(sig) + '</p>' +
+    '<p class="result-intro-text" style="margin-top:14px">' + getHowFits(sig) + '</p>';
 
   var container = document.getElementById('plan-cards');
   container.innerHTML = '';
@@ -1148,10 +1115,6 @@ function buildCard(key, rank, sig) {
       (remainder ? '<p class="plan-description">' + remainder + '</p>' : '') +
       '<p class="plan-for"><strong>Who it is for:</strong> ' + p.forText + '</p>' +
       (p.users ? '<div class="plan-users">' + p.users + '</div>' : '') +
-    '</div>' +
-    '<div class="plan-cta-wrap">' +
-      '<p class="plan-transition">A Discovery Call is a free conversation where we look at your business together and map out your clearest next move.</p>' +
-      '<a class="btn btn-green plan-cta" href="' + p.call + '" target="_blank">Book a Discovery Call</a>' +
     '</div>';
 
   return div;
@@ -1168,10 +1131,28 @@ function toggleCard(key) {
 }
 
 /* ═══════════════════════════════════════════════════
-   CONTACT CAPTURE
+   CONTACT CAPTURE — posts to GHL via Worker proxy
    ═══════════════════════════════════════════════════ */
 function submitContact(e) {
   e.preventDefault();
+  var firstName = document.getElementById('f-name').value.trim();
+  var email     = document.getElementById('f-email').value.trim();
+  var planTag   = PLAN_TAGS[recommendedPlanKey] || 'quiz-completed';
+  var planName  = (PLANS[recommendedPlanKey] || {}).name || '';
+
+  var btn = e.target.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  fetch(QUIZ_SUBMIT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ firstName: firstName, email: email, planTag: planTag, planName: planName })
+  })
+  .then(function() { showSent(); })
+  .catch(function() { showSent(); });
+}
+
+function showSent() {
   document.getElementById('contact-form').style.display = 'none';
   document.getElementById('contact-sent').style.display = 'block';
 }
