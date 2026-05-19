@@ -413,6 +413,20 @@ body {
 }
 .restart-btn:hover { color: var(--text-mid); }
 
+/* ── RESULTS SECTIONS ── */
+.results-section { margin-bottom: 26px; }
+.results-eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.results-text { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; }
+.results-text-bright { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
+
 @media (max-width: 480px) {
   .intro-title { font-size: 30px; }
   .q-text { font-size: 20px; }
@@ -475,9 +489,23 @@ body {
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- Intro paragraph: body text, not headline -->
-  <p class="result-intro-a" id="r-line-a"></p>
-  <p class="result-intro-b" id="r-line-b"></p>
+  <!-- What We Heard -->
+  <div class="results-section">
+    <p class="results-eyebrow">What We Heard</p>
+    <p class="results-text" id="r-heard"></p>
+  </div>
+
+  <!-- What It Sounds Like You Need -->
+  <div class="results-section">
+    <p class="results-eyebrow">What It Sounds Like You Need</p>
+    <p class="results-text" id="r-need"></p>
+  </div>
+
+  <!-- How Business Smoothie Fits -->
+  <div class="results-section">
+    <p class="results-eyebrow">How Business Smoothie Fits</p>
+    <p class="results-text results-text-bright" id="r-fits"></p>
+  </div>
 
   <!-- Plan cards: populated by JS -->
   <div class="plan-cards" id="plan-cards"></div>
@@ -563,10 +591,9 @@ const QS = [
     q: "How are you managing your customers and follow-ups right now?",
     opts: [
       "It is all in my head — or a notebook",
-      "Spreadsheets and good intentions",
-      "I use something but it is not really working for me",
-      "I have a system I like — but it does not do everything I need",
-      "I have a system I trust — I am just missing the AI piece"
+      "Spreadsheets or manual processes",
+      "We have something in place — it could be better",
+      "We have a solid system that is working well"
     ]
   },
   {
@@ -636,10 +663,10 @@ const QS = [
   {
     q: "What would make this a home run for your business?",
     opts: [
-      "More people finding me and taking me seriously",
+      "Showing up better online and more people finding us",
       "Never losing a lead or dropping the ball on a client",
-      "My whole operation running without me holding it together",
-      "AI actually doing the work — calls, follow-up, all of it"
+      "Getting help with the heavy lifting — calls, follow-ups, social, all of it",
+      "My whole operation running without me holding it together"
     ]
   }
 ];
@@ -652,21 +679,21 @@ const PLANS = {
     name: "Business Smoothie — Splash",
     desc: "The focused entry. One priority, done right, running for your business from day one. Pick your Focus — Business AI, Smart Website, Integrated CRM, Digital Freedom Phone, Integrated Social Media, or Reputation and Review Management. Complete on its own — and you can add more when you are ready.",
     forText: "Any business that wants to start focused, add one specific thing, or move fast without overhauling everything.",
-    users: "1 user",
+    users: "",
     call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
   lite: {
     name: "Business Smoothie — Lite",
     desc: "The full foundation. Business AI, Smart Website, and Integrated CRM — everything you need to show up, stay connected, and never miss a lead.",
     forText: "Solo operators ready to stop piecing things together and run on a real system.",
-    users: "1 user",
+    users: "",
     call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
   solo: {
     name: "Business Smoothie — Solo",
     desc: "The complete Business Smoothie system. Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — all running for your business.",
     forText: "Solo operators and 2-person teams ready for the full platform.",
-    users: "2 users",
+    users: "1–2 users",
     call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
   team: {
@@ -790,8 +817,7 @@ function calcSignals(ans) {
   var sysSheet   = ans[4] === 1;
   var sysBroken  = ans[4] === 2;
   var sysPartial = ans[4] === 3;
-  var sysTrustAi = ans[4] === 4; // has system, missing AI
-  var aiAddon    = sysTrustAi;
+  var aiAddon    = false; // Q5 reduced to 4 options — option 4 (sysTrustAi) removed
 
   /* Q9 (idx 8) — team size */
   var tmSolo  = ans[8] === 0;
@@ -1002,6 +1028,68 @@ function getWhyText(key, sig) {
 }
 
 /* ═══════════════════════════════════════════════════
+   WHAT WE HEARD — reflects actual answers back
+   ═══════════════════════════════════════════════════ */
+function getWhatWeHeard(sig, answers) {
+  var lines = [];
+
+  if (answers[2] === 0)      lines.push("You have not made a move with AI yet — and figuring out where to start is the real question.");
+  else if (answers[2] === 1) lines.push("You have experimented a little with AI, but have not found the right way to put it to work for your business.");
+  else if (answers[2] === 2) lines.push("You have AI in your toolkit — it just does not feel like everything is running together the way it should.");
+  else                       lines.push("AI is already working for your business — and you are looking for what makes it work even better.");
+
+  if (answers[4] === 0)      lines.push("Your customer follow-ups are running from memory right now, which means some things are probably slipping through.");
+  else if (answers[4] === 1) lines.push("Spreadsheets are holding your client management together — a real system would take that weight off.");
+  else if (answers[4] === 2) lines.push("You have something in place for managing clients, though you know it could be doing more.");
+  else                       lines.push("Your customer management system is solid — which gives you a strong foundation to build on.");
+
+  if (sig.isSmall && sig.tmSolo) lines.push("You are running this yourself, so every system you bring in needs to actually save you time, not add to it.");
+  else if (sig.isSmall)          lines.push("You are running a lean operation — the systems you use need to be tight and efficient, not complicated.");
+  else if (sig.puMed)            lines.push("You have a team working inside your systems, which means what you put in place needs to work for everyone, not just you.");
+  else                           lines.push("You are running a larger operation, and the complexity you are managing shows that you need real infrastructure.");
+
+  if (answers[6] === 0)      lines.push("Your social presence has been pretty quiet — which is one of the clearest places to create fast visibility.");
+  else if (answers[6] === 1) lines.push("You are showing up on social sometimes, but the consistency has not been there yet.");
+  else if (sig.manyApps)     lines.push("You are juggling a lot of different apps to run your business, and that kind of fragmentation has a real cost.");
+  else if (answers[5] === 0) lines.push("Most of your new clients come through referrals — a strong signal that you need a system that never lets one go cold.");
+  else                       lines.push("You are actively working to grow, and the question is making sure the right systems are in place to support that.");
+
+  return lines.join(' ');
+}
+
+/* ═══════════════════════════════════════════════════
+   WHAT IT SOUNDS LIKE YOU NEED
+   ═══════════════════════════════════════════════════ */
+function getWhatYouNeed(sig) {
+  var parts = [];
+
+  if (sig.isSmall) {
+    if (sig.aiPassive) parts.push("What you need is a system that handles the repetitive work — answering questions, following up on leads, staying visible online — so you can focus on the business itself.");
+    else               parts.push("What you need is a platform that ties your AI, your website, your CRM, and your communications together so everything runs from one place.");
+  } else if (sig.puMed) {
+    parts.push("What you need is a system your whole team can work from — with AI running in the background so nothing falls through the cracks across people, conversations, or follow-ups.");
+  } else {
+    parts.push("What you need is infrastructure that matches the scale of what you are running — AI and automation built into the core, not layered on top as an afterthought.");
+  }
+
+  if (sig.autoAll || sig.oSystem)   parts.push("The goal is an operation that runs without you holding it together — where the right things happen automatically and you have visibility into all of it.");
+  else if (sig.oLeads)              parts.push("Specifically, you need a system that captures every lead, follows up without you thinking about it, and never lets a prospect go cold.");
+  else if (sig.oFound)              parts.push("Getting found consistently means your website, your social presence, and your reputation all need to be working together — not as separate tasks on a to-do list.");
+  else                              parts.push("The short version: less friction, more automation, and tools that actually talk to each other.");
+
+  return parts.join(' ');
+}
+
+/* ═══════════════════════════════════════════════════
+   HOW BUSINESS SMOOTHIE FITS
+   ═══════════════════════════════════════════════════ */
+function getHowFits(sig) {
+  if (sig.puLarge) return "Business Smoothie is the operating system for a modern business running at real scale — AI, website, CRM, phone, social, reputation, and reporting, all connected from one place. At your size, having everything talk to each other is not a nice-to-have. It is how you keep pace with what you are building without adding headcount just to manage the tools.";
+  if (sig.puMed || sig.tmMed) return "Business Smoothie gives your team a single platform to work from — Business AI on the front lines, a shared CRM so nothing gets lost between people, automations running in the background, and a dashboard that shows you what is actually happening. When your systems are connected, your team runs cleaner and your business grows faster.";
+  return "Business Smoothie is built for businesses like yours — where the owner is close to the work, the team is lean, and the systems need to actually run without constant babysitting. It is not a collection of apps to figure out. It is one platform where Business AI answers your calls and texts, your website works, your leads do not disappear, and your social media stays active without you touching it every week.";
+}
+
+/* ═══════════════════════════════════════════════════
    RENDER RESULTS
    ═══════════════════════════════════════════════════ */
 function renderResults() {
@@ -1009,9 +1097,9 @@ function renderResults() {
   var result = calcTiers(sig);
   sig.personaKey = result.personaKey;
 
-  var intro = getIntroText(result.tiers, sig);
-  document.getElementById('r-line-a').textContent = intro.a;
-  document.getElementById('r-line-b').textContent = intro.b;
+  document.getElementById('r-heard').textContent = getWhatWeHeard(sig, answers);
+  document.getElementById('r-need').textContent  = getWhatYouNeed(sig);
+  document.getElementById('r-fits').textContent  = getHowFits(sig);
 
   var container = document.getElementById('plan-cards');
   container.innerHTML = '';
@@ -1025,7 +1113,8 @@ function renderResults() {
 }
 
 function buildCard(key, rank, sig) {
-  var p = PLANS[key];
+  var p      = PLANS[key];
+  var isOpen = rank === 0;
 
   /* Split desc into teaser (first 2 sentences) and remainder */
   var sentenceRe   = /[^.!?]*[.!?]+\s*/g;
@@ -1038,7 +1127,7 @@ function buildCard(key, rank, sig) {
   var whyText = getWhyText(key, sig);
 
   var div = document.createElement('div');
-  div.className = 'plan-card' + (rank === 0 ? ' is-primary' : '');
+  div.className = 'plan-card' + (isOpen ? ' is-primary' : '');
 
   div.innerHTML =
     '<div class="plan-badge ' + classes[rank] + '">' + labels[rank] + '</div>' +
@@ -1046,12 +1135,13 @@ function buildCard(key, rank, sig) {
     '<div class="plan-teaser">' + teaser + '</div>' +
     '<div class="plan-why"><span class="why-label">Why this fits you</span>' + whyText + '</div>' +
     '<button class="plan-expand-toggle" id="plan-toggle-' + key + '" onclick="toggleCard(\'' + key + '\')" type="button">' +
-      '<span class="toggle-icon">▸</span> <span class="toggle-text">See what\'s included</span>' +
+      '<span class="toggle-icon">' + (isOpen ? '▾' : '▸') + '</span>' +
+      '<span class="toggle-text">' + (isOpen ? 'Show less' : 'See what\'s included') + '</span>' +
     '</button>' +
-    '<div class="plan-full" id="plan-full-' + key + '">' +
+    '<div class="plan-full" id="plan-full-' + key + '" style="display:' + (isOpen ? 'block' : 'none') + '">' +
       (remainder ? '<p class="plan-description">' + remainder + '</p>' : '') +
       '<p class="plan-for"><strong>Who it is for:</strong> ' + p.forText + '</p>' +
-      '<div class="plan-users">' + p.users + '</div>' +
+      (p.users ? '<div class="plan-users">' + p.users + '</div>' : '') +
     '</div>' +
     '<div class="plan-cta-wrap">' +
       '<p class="plan-transition">A Discovery Call is a free conversation where we look at your business together and map out your clearest next move.</p>' +
