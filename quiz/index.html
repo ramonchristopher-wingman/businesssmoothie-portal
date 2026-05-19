@@ -149,6 +149,7 @@ body {
 
 /* ── QUESTIONS ── */
 .q-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 10px; }
+.q-sub { font-size: 0.85rem; color: var(--text-soft); line-height: 1.55; margin-top: -10px; margin-bottom: 20px; }
 .q-text {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: clamp(20px, 5vw, 26px);
@@ -480,6 +481,7 @@ body {
   </div>
   <div class="q-label" id="q-label">Question 1</div>
   <div class="q-text" id="q-text"></div>
+  <p class="q-sub" id="q-sub" style="display:none"></p>
   <div class="options" id="options"></div>
   <div class="q-footer">
     <button class="btn btn-green" id="btn-next" onclick="nextQ()" disabled>Continue →</button>
@@ -617,10 +619,10 @@ const QS = [
   {
     q: "Do you have an email list for your business?",
     opts: [
-      "No — have not built one",
+      "No email list yet",
       "I have one but barely use it",
-      "Yes and I send to them sometimes",
-      "Yes and it is a real part of how I stay in touch"
+      "I send to my list sometimes — no real system",
+      "Email is part of how I stay in touch and it is working"
     ]
   },
   {
@@ -629,12 +631,12 @@ const QS = [
       "Just me",
       "2 people",
       "3 to 8 people",
-      "9 to 20 people",
-      "More than 20"
+      "More than 8"
     ]
   },
   {
     q: "How many apps or systems are you currently using to run your business?",
+    sub: "Think CRM, email tools, scheduling, social media, messaging apps — the tools you use to run things day to day.",
     opts: [
       "None — I am doing it all manually",
       "1 to 2",
@@ -643,7 +645,7 @@ const QS = [
     ]
   },
   {
-    q: "How many people work in your business systems and applications day to day?",
+    q: "How many people work within your business systems day to day?",
     opts: [
       "Just me",
       "2 people",
@@ -654,10 +656,10 @@ const QS = [
   {
     q: "When are you looking to get something in place?",
     opts: [
-      "Still exploring — no timeline yet",
-      "Within the next few months",
+      "I needed this yesterday",
       "In the next few weeks",
-      "I needed this yesterday"
+      "Within the next few months",
+      "Still exploring — no timeline yet"
     ]
   },
   {
@@ -665,7 +667,7 @@ const QS = [
     opts: [
       "Showing up better online and more people finding us",
       "Never losing a lead or dropping the ball on a client",
-      "Getting help with the heavy lifting — calls, follow-ups, social, all of it",
+      "Getting help with the heavy lifting — calls, follow-ups, social media, etc.",
       "My whole operation running without me holding it together"
     ]
   }
@@ -740,6 +742,9 @@ function renderQuestion() {
   document.getElementById('prog-fill').style.width  = pct + '%';
   document.getElementById('q-label').textContent    = 'Question ' + (qIndex + 1);
   document.getElementById('q-text').textContent     = q.q;
+  var subEl = document.getElementById('q-sub');
+  if (q.sub) { subEl.textContent = q.sub; subEl.style.display = ''; }
+  else        { subEl.textContent = '';    subEl.style.display = 'none'; }
 
   var letters = ['A','B','C','D','E','F'];
   document.getElementById('options').innerHTML = q.opts.map(function(o, i) {
@@ -819,12 +824,13 @@ function calcSignals(ans) {
   var sysPartial = ans[4] === 3;
   var aiAddon    = false; // Q5 reduced to 4 options — option 4 (sysTrustAi) removed
 
-  /* Q9 (idx 8) — team size */
+  /* Q9 (idx 8) — team size (4 options, collapsed top end) */
   var tmSolo  = ans[8] === 0;
-  var tmTwo   = ans[8] === 1;
+  var tmSmall = ans[8] === 1; // 2 people
   var tmMed   = ans[8] === 2; // 3-8
-  var tmLarge = ans[8] === 3; // 9-20
-  var tmXL    = ans[8] === 4; // 20+
+  var tmLarge = ans[8] === 3; // more than 8
+  var tmTwo   = tmSmall;     // compat alias
+  var tmXL    = false;       // removed — collapsed into tmLarge
 
   /* Q10 (idx 9) — app count */
   var manyApps = ans[9] === 3; // more than 5
@@ -836,11 +842,11 @@ function calcSignals(ans) {
   var puLarge = ans[10] === 3; // 9+
   var isSmall = puSolo || puTwo;
 
-  /* Q12 (idx 11) — timeline / readiness */
-  var rLooking = ans[11] === 0; // still exploring
-  var rGuided  = ans[11] === 1; // within a few months
-  var rReady   = ans[11] === 2; // within a few weeks
-  var rMoving  = ans[11] === 3; // needed yesterday
+  /* Q12 (idx 11) — timeline / readiness (urgent-first order) */
+  var rMoving  = ans[11] === 0; // needed yesterday
+  var rReady   = ans[11] === 1; // in the next few weeks
+  var rGuided  = ans[11] === 2; // within a few months
+  var rLooking = ans[11] === 3; // still exploring
 
   /* Q13 (idx 12) — outcome */
   var oFound    = ans[12] === 0;
@@ -856,7 +862,7 @@ function calcSignals(ans) {
     autoAi: autoAi, autoAll: autoAll,
     sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
     isSmall: isSmall, puMed: puMed, puLarge: puLarge,
-    tmSolo: tmSolo, tmTwo: tmTwo, tmMed: tmMed, tmLarge: tmLarge, tmXL: tmXL,
+    tmSolo: tmSolo, tmSmall: tmSmall, tmTwo: tmTwo, tmMed: tmMed, tmLarge: tmLarge, tmXL: tmXL,
     manyApps: manyApps,
     rLooking: rLooking, rGuided: rGuided, rReady: rReady, rMoving: rMoving,
     oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads, oAi: oAi, oFound: oFound,
