@@ -1096,10 +1096,11 @@ function renderResults() {
   var recommend      = getRecommendation(sig, recommendedPlanKey);
 
   _quizPayload = {
-    whatWeHeard:    whatHeard,
-    bigIssue:       bigIssue,
-    recommendation: recommend,
-    howBSFits:      howFits
+    whatWeHeard:      whatHeard,
+    bigIssue:         bigIssue,
+    recommendation:   recommend,
+    howBSFits:        howFits,
+    secondaryPlanKey: result.tiers[1] || null
   };
 
   // Section 2: Big issue headline
@@ -1150,7 +1151,8 @@ function submitContact(e) {
       whatWeHeard:    _quizPayload.whatWeHeard    || '',
       bigIssue:       _quizPayload.bigIssue       || '',
       recommendation: _quizPayload.recommendation || '',
-      howBSFits:      _quizPayload.howBSFits      || ''
+      howBSFits:      _quizPayload.howBSFits      || '',
+      secondaryPlan:  _quizPayload.secondaryPlanKey || null
     })
   })
   .then(function() { showSent(); })
