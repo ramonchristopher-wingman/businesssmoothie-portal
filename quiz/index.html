@@ -178,11 +178,11 @@ body {
 /* ── RESULTS: BIG ISSUE HEADLINE ── */
 .result-headline {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(22px, 5vw, 30px);
-  font-weight: 800;
+  font-size: clamp(18px, 2.8vw, 22px);
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
   margin-bottom: 20px;
 }
 
@@ -395,12 +395,13 @@ a.result-footer-link { display: inline; }
   <h2 class="result-headline" id="r-headline"></h2>
 
   <!-- 3. What We Heard -->
+  <p class="result-heard" style="color:var(--text-soft);margin-bottom:10px;">Based on your answers, here is what we found.</p>
   <p class="result-heard" id="r-heard"></p>
 
   <!-- 4. Compact Form -->
   <div class="capture-compact">
     <h3 class="capture-heading">Get Your Full Quiz Results</h3>
-    <p class="capture-sub">An in-depth look at your technical needs, Business Smoothie options, and access to additional resources.</p>
+    <p class="capture-sub">Your full report covers your technical needs, Business Smoothie options, and access to additional resources.</p>
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
@@ -413,7 +414,7 @@ a.result-footer-link { display: inline; }
       <button class="btn btn-green contact-submit" type="submit">Send My Full Quiz Results →</button>
       <p class="form-note">No spam. Your results only.</p>
     </form>
-    <div class="contact-sent" id="contact-sent" style="display:none">✓ Check your inbox — your full results are on the way.</div>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Your full results are on the way — check your inbox in the next few minutes.</div>
   </div>
 
   <!-- 5. Plan Card -->
@@ -538,7 +539,7 @@ const QS = [
       "Just me",
       "2 people",
       "3 to 8 people",
-      "9 or more"
+      "More than 8"
     ]
   },
   {
