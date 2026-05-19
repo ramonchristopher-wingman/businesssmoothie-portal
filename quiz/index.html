@@ -37,28 +37,6 @@ body {
   align-items: center;
 }
 
-/* ── HEADER ── */
-.header {
-  width: 100%;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.logo-text {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-.logo-text span { color: var(--green); }
-
 /* ── SCREENS ── */
 .screen { display: none; width: 100%; max-width: 660px; padding: 40px 24px 60px; animation: rise 0.3s ease both; }
 .screen.active { display: block; }
@@ -187,137 +165,46 @@ body {
 .opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
 .q-footer { margin-top: 20px; }
 
-/* ── RESULT PAGE HEADING ── */
-.result-page-heading { margin-bottom: 28px; }
+/* ── RESULTS: EYEBROW ── */
 .result-eyebrow {
   font-size: 11px;
   font-weight: 700;
   color: var(--green);
   text-transform: uppercase;
   letter-spacing: 1.4px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
-.result-heading {
+
+/* ── RESULTS: BIG ISSUE HEADLINE ── */
+.result-headline {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(22px, 5vw, 28px);
+  font-size: clamp(22px, 5vw, 30px);
   font-weight: 800;
   color: var(--text);
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.02em;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
-.share-btn {
-  background: none;
-  border: 1px solid var(--border-bright);
-  border-radius: 99px;
+
+/* ── RESULTS: WHAT WE HEARD ── */
+.result-heard {
+  font-size: 0.95rem;
   color: var(--text-mid);
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 6px 16px;
-  transition: all 0.18s;
-}
-.share-btn:hover { border-color: var(--green); color: var(--green); }
-
-/* ── RESULT SUMMARY ── */
-.result-summary { margin-bottom: 28px; }
-.result-summary-text { font-size: 0.97rem; color: var(--text-mid); line-height: 1.8; }
-
-/* ── BIG ISSUE BLOCK ── */
-.big-issue {
-  background: rgba(0,196,90,0.06);
-  border-left: 3px solid var(--green);
-  padding: 12px 16px;
-  border-radius: 0 8px 8px 0;
-  font-size: 0.875rem;
-  color: var(--text-mid);
-  line-height: 1.6;
-  margin: 14px 0;
-}
-.big-issue-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  color: var(--green);
-  font-size: 0.78rem;
-  display: block;
-  margin-bottom: 3px;
+  line-height: 1.75;
+  margin-bottom: 28px;
 }
 
-/* ── SPLASH NUDGE ── */
-.splash-nudge {
-  font-size: 0.82rem;
-  color: var(--text-soft);
-  line-height: 1.6;
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-/* ── PLAN CARD ── */
-.plan-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 36px 22px 24px;
-  position: relative;
-}
-.plan-card.is-primary { border-color: var(--green); }
-.plan-badge {
-  position: absolute;
-  top: -14px;
-  left: 20px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 5px 16px;
-  border-radius: 99px;
-}
-.badge-best { background: var(--green); color: #fff; }
-.plan-name {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 10px;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-.plan-teaser {
-  font-size: 0.9rem;
-  color: var(--text-mid);
-  line-height: 1.7;
-  margin-bottom: 14px;
-}
-.plan-why {
-  background: rgba(0,196,90,0.07);
-  border-left: 3px solid var(--green);
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  font-size: 0.875rem;
-  color: var(--text-mid);
-  line-height: 1.6;
-}
-.why-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 700;
-  color: var(--green);
-  font-size: 0.78rem;
-  display: block;
-  margin-bottom: 3px;
-}
-
-/* ── CONTACT CAPTURE ── */
-.capture-section {
+/* ── COMPACT FORM ── */
+.capture-compact {
   background: var(--surface);
   border: 1.5px solid var(--green);
   border-radius: var(--radius);
-  padding: 28px 22px;
+  padding: 20px 18px;
   margin-bottom: 28px;
 }
+.capture-compact .capture-heading { font-size: 1.05rem; margin-bottom: 6px; }
+.capture-compact .capture-sub    { margin-bottom: 14px; }
+.capture-compact .field          { margin-bottom: 10px; }
 .capture-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.2rem;
@@ -355,7 +242,62 @@ body {
 .contact-sent { text-align: center; padding: 12px 0; font-size: 14px; color: var(--green); font-weight: 600; }
 .contact-submit { width: 100%; margin-top: 4px; font-size: 14px; padding: 13px; border-radius: 9px; }
 
-/* ── ACTION CARDS ── */
+/* ── PLAN CARD ── */
+.plan-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 22px 24px;
+  position: relative;
+  margin-bottom: 0;
+}
+.plan-card.is-primary { border-color: var(--green); }
+.plan-badge {
+  position: absolute;
+  top: -14px;
+  left: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 16px;
+  border-radius: 99px;
+}
+.badge-best { background: var(--green); color: #fff; }
+.plan-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.plan-teaser {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.plan-secondary {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ── SPLASH NUDGE ── */
+.splash-nudge {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ── ACTION CARD ── */
 .action-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -363,41 +305,40 @@ body {
   padding: 20px 18px;
   margin-bottom: 14px;
 }
-.action-card-accent { border-color: rgba(0,196,90,0.25); }
-.action-eyebrow {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--green);
-  margin-bottom: 4px;
-}
 .action-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.97rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: 14px;
   letter-spacing: -0.01em;
   line-height: 1.35;
 }
-.action-body { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 14px; }
 .action-cta { font-size: 14px; padding: 11px 20px; border-radius: 8px; }
 
 /* ── RESULTS FOOTER ── */
-.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding: 12px 0 4px; }
-.restart-btn {
+.result-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+.result-footer-link {
   background: none;
   border: none;
   color: var(--text-soft);
-  font-size: 13px;
-  cursor: pointer;
+  font-size: 12px;
   font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
   text-decoration: underline;
+  text-decoration-color: var(--text-soft);
   padding: 0;
+  transition: color 0.15s;
 }
-.restart-btn:hover { color: var(--text-mid); }
+.result-footer-link:hover { color: var(--text-mid); }
+a.result-footer-link { display: inline; }
 
 @media (max-width: 480px) {
   .intro-title { font-size: 30px; }
@@ -408,23 +349,18 @@ body {
 </head>
 <body>
 
-<header class="header">
-  <span class="logo-text">Business Smoothie<span>.</span></span>
-</header>
-
 <!-- ── INTRO ── -->
 <div class="screen active" id="screen-intro">
   <div class="intro-wrap">
     <img src="../assets/Copy_of_Business__10_.png" alt="Business Smoothie" class="intro-logo" />
     <h1 class="intro-title">Business Smoothie Biz Quiz</h1>
-    <p class="intro-body">AI is changing what's possible for every business. Let's find out where you are and what your next move should be. Takes about 3 minutes. No wrong answers.</p>
+    <p class="intro-body">Find out where your business stands and what your next move should be. Takes about 3 minutes.</p>
     <div class="intro-chips">
-      <span class="chip">13 questions</span>
       <span class="chip">~3 minutes</span>
       <span class="chip">Personalized plan match</span>
       <span class="chip">No pressure</span>
     </div>
-    <button class="btn btn-green" onclick="startQuiz()">Let's find your blend →</button>
+    <button class="btn btn-green" onclick="startQuiz()">Start the Quiz →</button>
   </div>
 </div>
 
@@ -452,23 +388,19 @@ body {
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- Section 1: Page Heading -->
-  <div class="result-page-heading">
-    <p class="result-eyebrow">Your Results</p>
-    <h2 class="result-heading" id="r-heading"></h2>
-    <button class="share-btn" onclick="shareQuiz()" id="share-btn">Share this quiz</button>
-  </div>
+  <!-- 1. Label -->
+  <p class="result-eyebrow">Your Results</p>
 
-  <!-- Section 2: Top Summary -->
-  <div class="result-summary" id="r-summary"></div>
+  <!-- 2. Big Issue Headline -->
+  <h2 class="result-headline" id="r-headline"></h2>
 
-  <!-- Section 3: Plan Card + optional nudge -->
-  <div id="r-plan-wrap" style="margin-bottom:28px"></div>
+  <!-- 3. What We Heard -->
+  <p class="result-heard" id="r-heard"></p>
 
-  <!-- Section 4: Get Full Results -->
-  <div class="capture-section">
-    <h3 class="capture-heading">Want the full picture?</h3>
-    <p class="capture-sub">Enter your name and email and we will send your complete results — including your plan match, what your business needs, and your next steps.</p>
+  <!-- 4. Compact Form -->
+  <div class="capture-compact">
+    <h3 class="capture-heading">Get Your Full Quiz Results</h3>
+    <p class="capture-sub">An in-depth look at your technical needs, Business Smoothie options, and access to additional resources.</p>
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
@@ -478,31 +410,27 @@ body {
         <label for="f-email">Email Address</label>
         <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
       </div>
-      <button class="btn btn-green contact-submit" type="submit">Send My Quiz Results →</button>
+      <button class="btn btn-green contact-submit" type="submit">Send My Full Quiz Results →</button>
       <p class="form-note">No spam. Your results only.</p>
     </form>
-    <div class="contact-sent" id="contact-sent" style="display:none">✓ Your results are on the way — check your inbox in a few minutes.</div>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Check your inbox — your full results are on the way.</div>
   </div>
 
-  <!-- Section 5: Custom Blend -->
-  <div class="action-card action-card-accent">
-    <p class="action-eyebrow">Go deeper</p>
-    <h3 class="action-heading">Get your Custom Blend</h3>
-    <p class="action-body">The Custom Blend gives you a customized analysis of your business across 7 dimensions — where you are strong, where the gaps are, and what would move the needle most. Most business owners walk away with clarity they have been missing for years. Delivered to your inbox in under 5 minutes.</p>
-    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH" target="_blank">Get Your Custom Blend</a>
-  </div>
+  <!-- 5. Plan Card -->
+  <div id="r-plan-wrap" style="margin-bottom:28px"></div>
 
-  <!-- Section 6: Specialist Call -->
+  <!-- 6. Book a Specialist Call -->
   <div class="action-card">
-    <h3 class="action-heading">Ready to talk through your results?</h3>
-    <p class="action-body">Book a 25-minute call with one of our specialists. We will look at your results together and map out exactly what makes sense for your business.</p>
-    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call</a>
+    <h3 class="action-heading">Ready to talk through your results and take the next step with Business Smoothie?</h3>
+    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call →</a>
   </div>
 
-  <div class="result-footer">
-    <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button>
-    &nbsp;·&nbsp;
-    <a href="https://businesssmoothie.com" style="color:var(--text-soft);font-size:13px;text-decoration:none;">businesssmoothie.com</a>
+  <!-- 7. Footer -->
+  <div class="result-footer-links">
+    <a class="result-footer-link" href="tel:5154000448">Call Us</a>
+    <a class="result-footer-link" href="tel:5154000332">Experience the AI Demo</a>
+    <button class="result-footer-link" onclick="shareQuiz(this)">Share the Biz Quiz</button>
+    <button class="result-footer-link" onclick="restartQuiz()">Retake the Quiz</button>
   </div>
 
 </div>
@@ -691,7 +619,7 @@ var PLAN_TAGS = {
    STATE
    ═══════════════════════════════════════════════════ */
 let qIndex             = 0;
-let answers            = [];   // indexed by question index — never popped
+let answers            = [];
 let picked             = null;
 let recommendedPlanKey = '';
 let _quizPayload       = {};
@@ -707,8 +635,6 @@ function startQuiz() {
 
 function renderQuestion() {
   var q = QS[qIndex];
-
-  // Restore prior answer for this question (preserves forward answers on back)
   picked = (answers[qIndex] !== undefined) ? answers[qIndex] : null;
 
   var pct = Math.round((qIndex / QS.length) * 100);
@@ -758,7 +684,7 @@ function nextQ() {
 function goBack() {
   if (qIndex > 0) {
     qIndex--;
-    renderQuestion(); // forward answers preserved — nothing cleared
+    renderQuestion();
   } else {
     show('screen-intro');
   }
@@ -775,19 +701,18 @@ function goBack() {
 function calcSignals(ans) {
 
   /* Q3 (idx 2) — AI business stance */
-  var aiNotStarted = ans[2] === 0; // haven't gone there yet
-  var aiToeIn      = ans[2] === 1; // dipping toe in
-  var aiDisconn    = ans[2] === 2; // has AI, not connected
-  var aiAheadBiz   = ans[2] === 3; // AI running well
+  var aiNotStarted = ans[2] === 0;
+  var aiToeIn      = ans[2] === 1;
+  var aiDisconn    = ans[2] === 2;
+  var aiAheadBiz   = ans[2] === 3;
 
-  /* Derived compat signals */
   var aiForward = aiAheadBiz;
   var aiPassive = aiNotStarted || aiToeIn;
-  var aiFomo    = false; // no FOMO option in new Q3
-  var noAi      = false; // no "not interested" option in new Q4
+  var aiFomo    = false;
+  var noAi      = false;
 
   /* Q4 (idx 3) — autopilot want */
-  var autoAi     = ans[3] === 0; // 24/7 answering
+  var autoAi     = ans[3] === 0;
   var autoLeads  = ans[3] === 1;
   var autoSocial = ans[3] === 2;
   var autoAll    = ans[3] === 3;
@@ -797,38 +722,38 @@ function calcSignals(ans) {
   var sysSheet   = ans[4] === 1;
   var sysBroken  = ans[4] === 2;
   var sysPartial = ans[4] === 3;
-  var aiAddon    = false; // Q5 reduced to 4 options — option 4 (sysTrustAi) removed
+  var aiAddon    = false;
 
-  /* Q9 (idx 8) — team size (4 options, collapsed top end) */
+  /* Q9 (idx 8) — team size */
   var tmSolo  = ans[8] === 0;
-  var tmSmall = ans[8] === 1; // 2 people
-  var tmMed   = ans[8] === 2; // 3-8
-  var tmLarge = ans[8] === 3; // more than 8
-  var tmTwo   = tmSmall;     // compat alias
-  var tmXL    = false;       // removed — collapsed into tmLarge
+  var tmSmall = ans[8] === 1;
+  var tmMed   = ans[8] === 2;
+  var tmLarge = ans[8] === 3;
+  var tmTwo   = tmSmall;
+  var tmXL    = false;
 
   /* Q10 (idx 9) — app count */
-  var manyApps = ans[9] === 3; // more than 5
+  var manyApps = ans[9] === 3;
 
-  /* Q11 (idx 10) — platform users (daily) */
+  /* Q11 (idx 10) — platform users */
   var puSolo  = ans[10] === 0;
   var puTwo   = ans[10] === 1;
-  var puMed   = ans[10] === 2; // 3-8
-  var puLarge = ans[10] === 3; // 9+
+  var puMed   = ans[10] === 2;
+  var puLarge = ans[10] === 3;
   var isSmall = puSolo || puTwo;
 
-  /* Q12 (idx 11) — timeline / readiness (urgent-first order) */
-  var rMoving  = ans[11] === 0; // needed yesterday
-  var rReady   = ans[11] === 1; // in the next few weeks
-  var rGuided  = ans[11] === 2; // within a few months
-  var rLooking = ans[11] === 3; // still exploring
+  /* Q12 (idx 11) — timeline */
+  var rMoving  = ans[11] === 0;
+  var rReady   = ans[11] === 1;
+  var rGuided  = ans[11] === 2;
+  var rLooking = ans[11] === 3;
 
   /* Q13 (idx 12) — outcome */
   var oFound    = ans[12] === 0;
   var oLeads    = ans[12] === 1;
   var oSystem   = ans[12] === 2;
   var oAi       = ans[12] === 3;
-  var oOneThing = false; // no "one specific thing" option in new Q13
+  var oOneThing = false;
 
   var splashTrigger = aiAddon || rLooking || autoAi;
 
@@ -851,17 +776,14 @@ function calcTiers(sig) {
   var tiers, personaKey;
 
   if (sig.puLarge) {
-    /* 9+ platform users → Enterprise primary */
     tiers = ['enterprise', 'team'];
     personaKey = 'signature-large';
 
   } else if (sig.puMed) {
-    /* 3-8 platform users → Team primary */
     tiers = ['team', 'solo'];
     personaKey = 'signature-team';
 
   } else {
-    /* 1-2 platform users → Solo is always primary per spec */
     var secondary = 'lite';
     personaKey = 'lite';
 
@@ -988,8 +910,8 @@ function getWhyText(key, sig) {
     return "Solo gives you the complete Business Smoothie system — every tool running together for your business from day one.";
   }
   if (key === 'team') {
-    if (sig.tmMed)      return "Your team of 3 to 8 needs everyone working in the same system — Team puts them all on one platform with AI running for all of it.";
-    if (sig.oSystem)    return "When the whole operation needs to run together, everyone on your team needs to work from the same tools — Team is built for exactly that.";
+    if (sig.tmMed)   return "Your team of 3 to 8 needs everyone working in the same system — Team puts them all on one platform with AI running for all of it.";
+    if (sig.oSystem) return "When the whole operation needs to run together, everyone on your team needs to work from the same tools — Team is built for exactly that.";
     return "Team keeps your growing team connected and your systems running without things falling through the cracks.";
   }
   if (key === 'enterprise') {
@@ -997,13 +919,13 @@ function getWhyText(key, sig) {
     return "Enterprise gives your organization the full Business Smoothie platform with the user capacity and depth to match what you are running.";
   }
   if (key === 'lite') {
-    if (sig.rLooking)   return "You are still figuring out your next move — Lite gives you the full foundation to work from without overcommitting.";
-    if (sig.aiPassive)  return "Starting with Business AI, Smart Website, and Integrated CRM gives you something real to build on as you get comfortable.";
+    if (sig.rLooking)  return "You are still figuring out your next move — Lite gives you the full foundation to work from without overcommitting.";
+    if (sig.aiPassive) return "Starting with Business AI, Smart Website, and Integrated CRM gives you something real to build on as you get comfortable.";
     return "Lite gives you the three tools that move the needle most — Business AI, Smart Website, and Integrated CRM — all running from day one.";
   }
   if (key === 'splash') {
-    if (sig.aiAddon)    return "You have a system you trust — Splash adds the one thing you are missing without touching what is working.";
-    if (sig.rLooking)   return "If you are not ready to commit to the full platform, Splash lets you start with one focused priority and prove it out first.";
+    if (sig.aiAddon)  return "You have a system you trust — Splash adds the one thing you are missing without touching what is working.";
+    if (sig.rLooking) return "If you are not ready to commit to the full platform, Splash lets you start with one focused priority and prove it out first.";
     return "Splash is the fastest way to get one thing working well — no overhaul, no overwhelm.";
   }
   return "This plan fits where you are and gives you the tools to move forward.";
@@ -1011,8 +933,9 @@ function getWhyText(key, sig) {
 
 /* ═══════════════════════════════════════════════════
    WHAT WE HEARD — reflects actual answers back
+   maxLines: optional cap on number of sentences returned
    ═══════════════════════════════════════════════════ */
-function getWhatWeHeard(sig, answers) {
+function getWhatWeHeard(sig, answers, maxLines) {
   var lines = [];
 
   if (answers[2] === 0)      lines.push("You have not made a move with AI yet — and figuring out where to start is the real question.");
@@ -1036,6 +959,7 @@ function getWhatWeHeard(sig, answers) {
   else if (answers[5] === 0) lines.push("Most of your new clients come through referrals — a strong signal that you need a system that never lets one go cold.");
   else                       lines.push("You are actively working to grow, and the question is making sure the right systems are in place to support that.");
 
+  if (maxLines) lines = lines.slice(0, maxLines);
   return lines.join(' ');
 }
 
@@ -1054,10 +978,10 @@ function getWhatYouNeed(sig) {
     parts.push("What you need is infrastructure that matches the scale of what you are running — AI and automation built into the core, not layered on top as an afterthought.");
   }
 
-  if (sig.autoAll || sig.oSystem)   parts.push("The goal is an operation that runs without you holding it together — where the right things happen automatically and you have visibility into all of it.");
-  else if (sig.oLeads)              parts.push("Specifically, you need a system that captures every lead, follows up without you thinking about it, and never lets a prospect go cold.");
-  else if (sig.oFound)              parts.push("Getting found consistently means your website, your social presence, and your reputation all need to be working together — not as separate tasks on a to-do list.");
-  else                              parts.push("The short version: less friction, more automation, and tools that actually talk to each other.");
+  if (sig.autoAll || sig.oSystem)  parts.push("The goal is an operation that runs without you holding it together — where the right things happen automatically and you have visibility into all of it.");
+  else if (sig.oLeads)             parts.push("Specifically, you need a system that captures every lead, follows up without you thinking about it, and never lets a prospect go cold.");
+  else if (sig.oFound)             parts.push("Getting found consistently means your website, your social presence, and your reputation all need to be working together — not as separate tasks on a to-do list.");
+  else                             parts.push("The short version: less friction, more automation, and tools that actually talk to each other.");
 
   return parts.join(' ');
 }
@@ -1095,21 +1019,20 @@ function getRecommendation(sig, planKey) {
   if (planKey === 'enterprise') return name + " gives your organization the complete platform — AI, automation, and the user depth to match the complexity you are running.";
   if (planKey === 'team')       return name + " puts your whole team on one platform with Business AI running for everyone — so nothing falls through the cracks across people and conversations.";
   if (planKey === 'splash') {
-    if (sig.aiAddon)   return name + " — add Business AI to what you already have without starting over. One thing, done right, running for your business.";
-    if (sig.rLooking)  return name + " — start with one focused priority and prove it out before committing to the full platform.";
+    if (sig.aiAddon)  return name + " — add Business AI to what you already have without starting over. One thing, done right, running for your business.";
+    if (sig.rLooking) return name + " — start with one focused priority and prove it out before committing to the full platform.";
     return name + " — the fastest way to get one high-leverage thing working well for your business.";
   }
-  if (planKey === 'lite')  return name + " — Business AI, Smart Website, and Integrated CRM, all running together. The full foundation without the complexity.";
-  if (sig.isSmall)    return name + " — the complete Business Smoothie platform built for solo operators and 2-person teams. Everything running from one place.";
+  if (planKey === 'lite')   return name + " — Business AI, Smart Website, and Integrated CRM, all running together. The full foundation without the complexity.";
+  if (sig.isSmall)          return name + " — the complete Business Smoothie platform built for solo operators and 2-person teams. Everything running from one place.";
   return name + " — the complete Business Smoothie system running for your business from day one.";
 }
 
 /* ═══════════════════════════════════════════════════
    SHARE QUIZ
    ═══════════════════════════════════════════════════ */
-function shareQuiz() {
+function shareQuiz(el) {
   var url = window.location.href;
-  var btn = document.getElementById('share-btn');
 
   if (navigator.share) {
     navigator.share({
@@ -1119,23 +1042,27 @@ function shareQuiz() {
     }).catch(function() {});
   } else {
     navigator.clipboard.writeText(url).then(function() {
-      btn.textContent = 'Link copied!';
-      setTimeout(function() { btn.textContent = 'Share this quiz'; }, 2000);
+      if (el) {
+        var orig = el.textContent;
+        el.textContent = 'Link copied!';
+        setTimeout(function() { el.textContent = orig; }, 2000);
+      }
     }).catch(function() {
-      btn.textContent = 'Link copied!';
-      setTimeout(function() { btn.textContent = 'Share this quiz'; }, 2000);
+      if (el) {
+        var orig = el.textContent;
+        el.textContent = 'Link copied!';
+        setTimeout(function() { el.textContent = orig; }, 2000);
+      }
     });
   }
 }
 
 /* ═══════════════════════════════════════════════════
-   BUILD PLAN CARD — primary only, no toggle
+   BUILD PLAN CARD — minimal, no why block, no CTA
    ═══════════════════════════════════════════════════ */
 function buildCard(key, sig) {
-  var p        = PLANS[key];
-  var whyText  = getWhyText(key, sig);
+  var p = PLANS[key];
 
-  // First sentence of desc as the one-liner
   var match   = p.desc.match(/[^.!?]*[.!?]+/);
   var oneLine = match ? match[0].trim() : p.desc;
 
@@ -1146,7 +1073,7 @@ function buildCard(key, sig) {
     '<div class="plan-badge badge-best">Your Best Match</div>' +
     '<div class="plan-name">' + p.name + '</div>' +
     '<div class="plan-teaser">' + oneLine + '</div>' +
-    '<div class="plan-why"><span class="why-label">Why this fits you</span>' + whyText + '</div>';
+    '<p class="plan-secondary">See your full quiz results for the complete recommendation.</p>';
 
   return div;
 }
@@ -1161,14 +1088,13 @@ function renderResults() {
 
   recommendedPlanKey = result.tiers[0];
 
-  var intro     = getIntroText(result.tiers, sig);
-  var whatHeard = getWhatWeHeard(sig, answers);
-  var bigIssue  = getBigIssueOrOpportunity(sig);
-  var whatNeed  = getWhatYouNeed(sig);
-  var howFits   = getHowFits(sig);
-  var recommend = getRecommendation(sig, recommendedPlanKey);
+  var whatHeard      = getWhatWeHeard(sig, answers);        // full — for email payload
+  var whatHeardShort = getWhatWeHeard(sig, answers, 2);     // 2 sentences — for display
+  var bigIssue       = getBigIssueOrOpportunity(sig);
+  var whatNeed       = getWhatYouNeed(sig);
+  var howFits        = getHowFits(sig);
+  var recommend      = getRecommendation(sig, recommendedPlanKey);
 
-  // Store for submitContact
   _quizPayload = {
     whatWeHeard:    whatHeard,
     bigIssue:       bigIssue,
@@ -1176,16 +1102,13 @@ function renderResults() {
     howBSFits:      howFits
   };
 
-  // Section 1: Page heading
-  document.getElementById('r-heading').textContent = intro.a;
+  // Section 2: Big issue headline
+  document.getElementById('r-headline').textContent = bigIssue;
 
-  // Section 2: Top summary
-  document.getElementById('r-summary').innerHTML =
-    '<p class="result-summary-text">' + whatHeard + '</p>' +
-    '<div class="big-issue"><span class="big-issue-label">What this means for you</span>' + bigIssue + '</div>' +
-    '<p class="result-summary-text" style="margin-top:14px">' + whatNeed + '</p>';
+  // Section 3: What we heard (short)
+  document.getElementById('r-heard').textContent = whatHeardShort;
 
-  // Section 3: Plan card + optional nudge
+  // Section 5: Plan card + optional nudge
   var wrap = document.getElementById('r-plan-wrap');
   wrap.innerHTML = '';
   wrap.appendChild(buildCard(recommendedPlanKey, sig));
