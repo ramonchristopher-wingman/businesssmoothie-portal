@@ -6,7 +6,7 @@
 <title>Where Do We Begin? | Business Smoothie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,16 +14,16 @@
   --green:         #00C45A;
   --green-dim:     #00a34a;
   --dark-green:    #1A5C35;
-  --bg:            #0a0a0a;
-  --surface:       #111111;
-  --surface-2:     #191919;
-  --border:        #2a2a2a;
-  --border-bright: #333333;
-  --text:          #f0f0f0;
-  --text-mid:      #b0b0b0;
-  --text-soft:     #6a6a6a;
-  --radius:        18px;
-  --radius-sm:     11px;
+  --bg:            #0f0f0f;
+  --surface:       #1a1a1a;
+  --surface-2:     #222222;
+  --border:        rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.14);
+  --text:          #ffffff;
+  --text-mid:      #999999;
+  --text-soft:     #555555;
+  --radius:        16px;
+  --radius-sm:     10px;
 }
 
 html { scroll-behavior: smooth; }
@@ -76,36 +76,41 @@ body {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-soft);
   text-transform: uppercase;
   letter-spacing: 0.6px;
   margin-bottom: 8px;
 }
-.progress-bar { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
 
 /* ── INTRO ── */
 .intro-wrap { text-align: center; padding: 16px 0 8px; }
-.intro-icon { font-size: 60px; display: block; margin-bottom: 16px; }
+.intro-logo {
+  width: 200px;
+  display: block;
+  margin: 0 auto 28px;
+  mix-blend-mode: screen;
+}
 .intro-title {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 44px;
+  font-size: clamp(32px, 8vw, 44px);
+  font-weight: 800;
   color: var(--text);
   line-height: 1.1;
   margin-bottom: 14px;
   letter-spacing: -0.03em;
 }
-.intro-title em { font-style: normal; color: var(--green); }
-.intro-body { font-size: 17px; color: var(--text-mid); line-height: 1.65; max-width: 460px; margin: 0 auto 28px; }
-.intro-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
+.intro-body { font-size: 1rem; color: var(--text-mid); line-height: 1.7; max-width: 460px; margin: 0 auto 28px; }
+.intro-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 36px; }
 .chip {
   background: var(--surface);
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border-bright);
   border-radius: 99px;
-  padding: 6px 16px;
-  font-size: 13px;
-  font-weight: 700;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-mid);
 }
 
@@ -116,31 +121,23 @@ body {
   justify-content: center;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
-  border-radius: 12px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.18s;
 }
-.btn-green { background: var(--green); color: #fff; font-size: 17px; padding: 15px 36px; }
+.btn-green { background: var(--green); color: #fff; font-size: 16px; padding: 14px 32px; }
 .btn-green:hover { background: var(--green-dim); transform: translateY(-1px); }
 .btn-green:active { transform: translateY(0); }
 .btn-green:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.btn-outline {
-  background: transparent;
-  color: var(--green);
-  border: 2px solid var(--green);
-  font-size: 15px;
-  padding: 12px 24px;
-}
-.btn-outline:hover { background: var(--green); color: #fff; }
 .btn-ghost {
   background: none;
   border: none;
   color: var(--text-soft);
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   padding: 8px 0;
   display: inline-flex;
@@ -148,27 +145,28 @@ body {
   gap: 5px;
   margin-bottom: 24px;
 }
-.btn-ghost:hover { color: var(--text); }
+.btn-ghost:hover { color: var(--text-mid); }
 
 /* ── QUESTIONS ── */
-.q-label { font-size: 12px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
+.q-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 10px; }
 .q-text {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 28px;
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.25;
-  margin-bottom: 26px;
+  line-height: 1.3;
+  margin-bottom: 24px;
   letter-spacing: -0.02em;
 }
-.options { display: flex; flex-direction: column; gap: 11px; }
+.options { display: flex; flex-direction: column; gap: 10px; }
 .option {
   display: flex;
   align-items: flex-start;
   gap: 14px;
   background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 13px;
-  padding: 15px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
   cursor: pointer;
   transition: border-color 0.18s, background 0.18s;
   text-align: left;
@@ -177,150 +175,217 @@ body {
 .option:hover { border-color: var(--green); background: var(--surface-2); }
 .option.picked { border-color: var(--green); background: var(--surface-2); }
 .opt-badge {
-  min-width: 28px;
-  height: 28px;
+  min-width: 26px;
+  height: 26px;
   border-radius: 50%;
-  border: 2px solid var(--border-bright);
+  border: 1.5px solid var(--border-bright);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-soft);
   transition: all 0.18s;
   flex-shrink: 0;
 }
 .option.picked .opt-badge { background: var(--green); border-color: var(--green); color: #fff; }
-.opt-text { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; padding-top: 3px; }
-.q-footer { margin-top: 22px; }
+.opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
+.q-footer { margin-top: 20px; }
 
-/* ── RESULTS: read-back ── */
-.result-line-a {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 30px;
+/* ── RESULTS: intro text (body style, not headline) ── */
+.result-intro-a {
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--text);
-  line-height: 1.2;
-  margin-bottom: 10px;
-  letter-spacing: -0.02em;
+  line-height: 1.6;
+  margin-bottom: 6px;
 }
-.result-line-b { font-size: 16px; color: var(--text-mid); line-height: 1.65; margin-bottom: 36px; }
+.result-intro-b {
+  font-size: 0.95rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
 
 /* ── PLAN CARDS ── */
-.plan-cards { display: flex; flex-direction: column; gap: 22px; margin-bottom: 32px; }
+.plan-cards { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
 .plan-card {
   background: var(--surface);
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 34px 26px 24px;
+  padding: 32px 22px 22px;
   position: relative;
 }
 .plan-card.is-primary { border-color: var(--green); }
 .plan-badge {
   position: absolute;
-  top: -13px;
-  left: 22px;
-  font-size: 11px;
+  top: -12px;
+  left: 20px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 4px 14px;
+  letter-spacing: 0.7px;
+  padding: 3px 12px;
   border-radius: 99px;
 }
 .badge-best { background: var(--green); color: #fff; }
 .badge-also { background: var(--dark-green); color: #fff; }
-.badge-alt  { background: var(--surface-2); color: var(--text-mid); }
 .plan-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 28px;
-  color: var(--green);
-  margin-bottom: 8px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
-.plan-tagline { font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 14px; }
-.plan-description { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
-.plan-for { font-size: 13px; color: var(--text-soft); line-height: 1.5; margin-bottom: 20px; }
-.plan-for strong { color: var(--green); }
-.plan-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-.plan-ctas .btn { flex: 1; font-size: 14px; padding: 12px 16px; }
+.plan-teaser {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.plan-why {
+  background: rgba(0,196,90,0.07);
+  border-left: 3px solid var(--green);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.why-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--green);
+  font-size: 0.78rem;
+  display: block;
+  margin-bottom: 3px;
+}
+.plan-expand-toggle {
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  color: var(--green);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  transition: opacity 0.15s;
+}
+.plan-expand-toggle:hover { opacity: 0.75; }
+.toggle-icon { font-size: 10px; }
+.plan-full {
+  display: none;
+  padding-top: 14px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.plan-description { font-size: 0.875rem; color: var(--text); line-height: 1.7; margin-bottom: 12px; }
+.plan-for { font-size: 0.85rem; color: var(--text-mid); line-height: 1.55; margin-bottom: 12px; }
+.plan-for strong { color: var(--text); font-weight: 600; }
+.plan-users {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green);
+  background: rgba(0,196,90,0.1);
+  border: 1px solid rgba(0,196,90,0.2);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.plan-cta-wrap {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+.plan-transition {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.plan-cta { width: 100%; font-size: 15px; padding: 14px 20px; border-radius: 10px; }
 
-/* ── BRAND STORY ── */
-.brand-story {
+/* ── BUSINESS MIX REPORT SECTION ── */
+.mix-report-section {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 26px 24px;
-  margin-bottom: 28px;
+  padding: 26px 22px;
+  margin-bottom: 24px;
 }
-.brand-story-eyebrow {
+.mix-report-eyebrow {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--green);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
-.brand-story-text { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; }
-
-/* ── AI DEMO CTA ── */
-.demo-cta {
-  background: var(--dark-green);
-  border-radius: var(--radius);
-  padding: 28px 26px;
-  margin-bottom: 32px;
-  text-align: center;
-  color: #fff;
-}
-.demo-cta-headline {
+.mix-report-headline {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 22px;
-  margin-bottom: 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 12px;
   letter-spacing: -0.02em;
 }
-.demo-cta-sub { font-size: 14px; opacity: 0.85; line-height: 1.5; margin-bottom: 18px; }
-.demo-cta-number {
-  display: inline-block;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--green);
-  text-decoration: none;
+.mix-report-body {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.75;
+  margin-bottom: 8px;
 }
-.demo-cta-number:hover { opacity: 0.85; }
+.mix-report-support {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  font-style: italic;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.mix-report-cta { width: 100%; font-size: 14px; padding: 13px 20px; border-radius: 10px; }
 
 /* ── CONTACT CAPTURE ── */
 .contact-section {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px 26px;
-  margin-bottom: 32px;
+  padding: 24px 22px;
+  margin-bottom: 24px;
 }
 .contact-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 24px;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--text);
   margin-bottom: 6px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
-.contact-sub { font-size: 14px; color: var(--text-mid); line-height: 1.55; margin-bottom: 22px; }
-.field { margin-bottom: 16px; }
+.contact-sub { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
+.field { margin-bottom: 14px; }
 .field label {
   display: block;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.7px;
   color: var(--text-soft);
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
 .field input {
   width: 100%;
-  padding: 13px 15px;
-  border: 2px solid var(--border);
-  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text);
   background: var(--surface-2);
   outline: none;
@@ -328,29 +393,30 @@ body {
 }
 .field input:focus { border-color: var(--green); }
 .field input::placeholder { color: var(--text-soft); }
-.form-note { font-size: 12px; color: var(--text-soft); margin-top: 10px; line-height: 1.5; }
-.contact-sent { text-align: center; padding: 12px 0; font-size: 15px; color: var(--green); font-weight: 700; }
+.form-note { font-size: 11px; color: var(--text-soft); margin-top: 8px; line-height: 1.5; }
+.contact-sent { text-align: center; padding: 10px 0; font-size: 14px; color: var(--green); font-weight: 600; }
+.contact-submit { width: 100%; margin-top: 4px; font-size: 14px; padding: 13px; border-radius: 9px; }
 
 /* ── RESULTS FOOTER ── */
-.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding-top: 8px; }
-.result-footer a { color: var(--green); font-weight: 700; text-decoration: none; }
+.result-footer { text-align: center; font-size: 13px; color: var(--text-soft); line-height: 1.7; padding-top: 4px; }
+.result-footer a { color: var(--green); font-weight: 600; text-decoration: none; }
 .result-footer a:hover { text-decoration: underline; }
 .restart-btn {
   background: none;
   border: none;
-  color: var(--green);
-  font-weight: 700;
+  color: var(--text-soft);
   font-size: 13px;
   cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
+  text-decoration: underline;
+  padding: 0;
 }
+.restart-btn:hover { color: var(--text-mid); }
 
 @media (max-width: 480px) {
-  .intro-title { font-size: 34px; }
-  .q-text { font-size: 22px; }
-  .result-line-a { font-size: 22px; }
-  .plan-ctas { flex-direction: column; }
-  .plan-ctas .btn { flex: unset; width: 100%; }
+  .intro-title { font-size: 30px; }
+  .q-text { font-size: 20px; }
+  .plan-name { font-size: 1.15rem; }
 }
 </style>
 </head>
@@ -358,7 +424,7 @@ body {
 
 <header class="header">
   <div class="logo">
-    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <line x1="62" y1="2" x2="50" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
       <line x1="18" y1="22" x2="82" y2="22" stroke="#00C45A" stroke-width="7" stroke-linecap="round"/>
       <path d="M22 22 L28 90 L72 90 L78 22" stroke="#00C45A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -373,11 +439,11 @@ body {
 <!-- ── INTRO ── -->
 <div class="screen active" id="screen-intro">
   <div class="intro-wrap">
-    <span class="intro-icon">🥤</span>
+    <img src="../assets/Copy_of_Business__10_.png" alt="Business Smoothie" class="intro-logo" />
     <h1 class="intro-title">Where Do We Begin?</h1>
     <p class="intro-body">AI is changing what's possible for every business. Let's find out where you are and what your next move should be. Takes about 3 minutes. No wrong answers.</p>
     <div class="intro-chips">
-      <span class="chip">14 questions</span>
+      <span class="chip">13 questions</span>
       <span class="chip">~3 minutes</span>
       <span class="chip">Personalized plan match</span>
       <span class="chip">No pressure</span>
@@ -391,7 +457,7 @@ body {
   <button class="btn-ghost" onclick="goBack()">← Back</button>
   <div class="progress-wrap">
     <div class="progress-meta">
-      <span id="prog-label">Question 1 of 14</span>
+      <span id="prog-label">Question 1 of 13</span>
       <span id="prog-pct">0%</span>
     </div>
     <div class="progress-bar">
@@ -409,30 +475,26 @@ body {
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- Layer 1: Dynamic read-back -->
-  <p class="result-line-a" id="r-line-a"></p>
-  <p class="result-line-b" id="r-line-b"></p>
+  <!-- Intro paragraph: body text, not headline -->
+  <p class="result-intro-a" id="r-line-a"></p>
+  <p class="result-intro-b" id="r-line-b"></p>
 
-  <!-- Layer 2: Tier cards -->
+  <!-- Plan cards: populated by JS -->
   <div class="plan-cards" id="plan-cards"></div>
 
-  <!-- Brand Story -->
-  <div class="brand-story">
-    <p class="brand-story-eyebrow">About Business Smoothie</p>
-    <p class="brand-story-text">We do the blending. You run the business. Business Smoothie brings together Business AI, your website, phone system, CRM, social media, and automation into one platform that works as a single system — so nothing falls through the cracks and your operation keeps moving whether you are in the room or not. Every plan is built around your business, not a one-size-fits-all package.</p>
-  </div>
-
-  <!-- Layer 3: AI demo CTA -->
-  <div class="demo-cta">
-    <div class="demo-cta-headline">Want to hear what AI sounds like for your business?</div>
-    <div class="demo-cta-sub">Call or text our AI demo line and experience it yourself.</div>
-    <a class="demo-cta-number" href="tel:5154003057">515.400.3057</a>
+  <!-- Business Mix Report section -->
+  <div class="mix-report-section">
+    <p class="mix-report-eyebrow">Not ready to book yet?</p>
+    <h3 class="mix-report-headline">Start here.</h3>
+    <p class="mix-report-body">The Business Mix Report gives you a personalized breakdown of your business across 7 dimensions — delivered to your inbox in about 20 minutes. It is free, it is fast, and it gives you something real to work with before you talk to anyone.</p>
+    <p class="mix-report-support">Most businesses do not know where their biggest gap is. This does.</p>
+    <a class="btn btn-green mix-report-cta" href="https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH" target="_blank">Get Your Free Business Mix Report</a>
   </div>
 
   <!-- Contact capture: name + email only -->
   <div class="contact-section">
-    <h3 class="contact-heading">Want the full breakdown sent to you?</h3>
-    <p class="contact-sub">Drop your info and we will email everything — including pricing and next steps.</p>
+    <h3 class="contact-heading">Want us to send this to you?</h3>
+    <p class="contact-sub">Drop your name and email and we will send your results — including pricing and next steps.</p>
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
@@ -442,91 +504,63 @@ body {
         <label for="f-email">Email Address</label>
         <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
       </div>
-      <button class="btn btn-green" type="submit" style="width:100%;margin-top:4px">Send My Results →</button>
+      <button class="btn btn-green contact-submit" type="submit">Send My Results →</button>
       <p class="form-note">No spam. One email with your results — that's it.</p>
     </form>
     <div class="contact-sent" id="contact-sent" style="display:none">✓ Got it — check your inbox.</div>
   </div>
 
   <div class="result-footer">
-    <p>Questions? <a href="mailto:ramon@businesssmoothie.com">Talk it through with Ramon</a> or <a href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">book a free call</a>.</p>
-    <p style="margin-top:8px">Not seeing what you expected? <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
+    <p>Questions? <a href="https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234" target="_blank">Book a Discovery Call and we will talk it through.</a></p>
+    <p style="margin-top:10px"><button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button></p>
   </div>
+
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════
-   QUESTION DATA — locked Saturday May 9 2026, Session 8
-   14 questions per spec Section 2
+   QUESTION DATA
+   13 questions — locked May 2026
    ═══════════════════════════════════════════════════ */
 const QS = [
-  /* Q1 — business tenure */
   {
     q: "How long have you been in business?",
     opts: [
-      "Just getting started",
+      "Less than a year",
       "1 to 3 years",
       "3 to 10 years",
       "10 years or more"
     ]
   },
-  /* Q2 — business type (added Session 8 — used for results language, not branching) */
-  {
-    q: "What best describes your business?",
-    opts: [
-      "Local service business",
-      "Professional services",
-      "Food, beverage, or entertainment",
-      "Retail or e-commerce",
-      "Nonprofit or community organization",
-      "Something else"
-    ]
-  },
-  /* Q3 — website */
   {
     q: "What is your website situation?",
     opts: [
       "No website yet",
       "I have one but it is not doing much for me",
-      "I have one and it works pretty well",
-      "I have a presence but it feels scattered"
+      "I have one and it feels scattered — hard to point people to",
+      "I have one and it is working well for me"
     ]
   },
-  /* Q4 — AI personal feeling */
-  {
-    q: "When it comes to AI, how are you feeling about it personally?",
-    opts: [
-      "Curious but have not done anything yet",
-      "A little intimidated — not sure where to start",
-      "Feeling behind and ready to catch up",
-      "Already in it and want to do more"
-    ]
-  },
-  /* Q5 — AI business standing */
   {
     q: "When it comes to AI, where does your business stand right now?",
     opts: [
-      "Ahead of the curve — we are already using it",
-      "Keeping up — aware of it, doing some things",
-      "Falling behind — competitors are moving and I am not",
-      "I do not know what I am missing but I feel like something is",
-      "Honestly — I have not thought much about it yet"
+      "Haven't gone there yet — not sure where to start",
+      "Just dipping a toe in — tried a thing or two",
+      "We have AI in our tools — but it just doesn't feel connected",
+      "AI is running well for us — and we're always looking for what's next"
     ]
   },
-  /* Q6 — autopilot want (includes no-ai signal per Session 8) */
   {
-    q: "If AI could handle one thing for your business automatically, what would matter most?",
+    q: "If one thing could run on autopilot while you focus on your business, what would it be?",
     opts: [
-      "Being there for the people I serve 24/7 — calls, texts, messages",
-      "Following up with new leads and clients automatically",
+      "Answering customers 24/7 — calls, texts, messages",
+      "Following up with leads automatically",
       "Keeping my social media active and consistent",
-      "All of it — I want the whole operation running on autopilot",
-      "I am not interested in AI for my business"
+      "All of it — I want the whole thing running"
     ]
   },
-  /* Q7 — current system */
   {
-    q: "How are you managing your contacts, clients, and follow-ups right now?",
+    q: "How are you managing your customers and follow-ups right now?",
     opts: [
       "It is all in my head — or a notebook",
       "Spreadsheets and good intentions",
@@ -535,9 +569,8 @@ const QS = [
       "I have a system I trust — I am just missing the AI piece"
     ]
   },
-  /* Q8 — discovery */
   {
-    q: "How do new clients or customers find you today?",
+    q: "How do new customers find you today?",
     opts: [
       "Word of mouth and referrals mostly",
       "They find me on social media",
@@ -545,29 +578,45 @@ const QS = [
       "Honestly — I am not sure"
     ]
   },
-  /* Q9 — social presence */
   {
-    q: "How is your social media presence?",
+    q: "Are you posting on social media?",
     opts: [
       "Pretty quiet — I rarely post",
       "I show up sometimes but not consistently",
-      "I am posting regularly and it is working",
-      "I am active but it feels like shouting into the void"
+      "I post regularly but it feels like shouting into the void",
+      "I am posting regularly and it is working"
     ]
   },
-  /* Q10 — email list */
   {
-    q: "Do you have an email list or a way to stay in touch with your audience?",
+    q: "Do you have an email list for your business?",
     opts: [
       "No — have not built one",
-      "I have something but barely use it",
-      "Yes and I reach out sometimes",
-      "Yes and it is a real part of how I stay connected"
+      "I have one but barely use it",
+      "Yes and I send to them sometimes",
+      "Yes and it is a real part of how I stay in touch"
     ]
   },
-  /* Q11 — platform users (NOT team size — updated Session 8) */
   {
-    q: "How many people will actually use the platform day to day?",
+    q: "How big is your team?",
+    opts: [
+      "Just me",
+      "2 people",
+      "3 to 8 people",
+      "9 to 20 people",
+      "More than 20"
+    ]
+  },
+  {
+    q: "How many apps or systems are you currently using to run your business?",
+    opts: [
+      "None — I am doing it all manually",
+      "1 to 2",
+      "3 to 5",
+      "More than 5 — it is a lot to manage"
+    ]
+  },
+  {
+    q: "How many people work in your business systems and applications day to day?",
     opts: [
       "Just me",
       "2 people",
@@ -575,67 +624,64 @@ const QS = [
       "9 or more"
     ]
   },
-  /* Q12 — app count */
   {
-    q: "How many apps or tools are you currently using to run your business?",
+    q: "When are you looking to get something in place?",
     opts: [
-      "None — I am doing it all manually",
-      "1 to 3",
-      "4 to 6",
-      "More than 6 — it is a lot to manage"
+      "Still exploring — no timeline yet",
+      "Within the next few months",
+      "In the next few weeks",
+      "I needed this yesterday"
     ]
   },
-  /* Q13 — readiness (stronger language per Session 8) */
   {
-    q: "How ready are you to make a change?",
+    q: "What would make this a home run for your business?",
     opts: [
-      "I am not ready — just looking around for now",
-      "I would need someone to hold my hand through it",
-      "I am ready — point me in the right direction",
-      "I am moving right now — I just need the right partner"
-    ]
-  },
-  /* Q14 — outcome */
-  {
-    q: "What would make this worth it?",
-    opts: [
-      "Getting found online and looking credible",
-      "Never missing a lead or losing touch with someone I serve",
-      "Having my whole business running like a system",
-      "Getting AI actually working in my business",
-      "Solving one specific thing that has been bugging me"
+      "More people finding me and taking me seriously",
+      "Never losing a lead or dropping the ball on a client",
+      "My whole operation running without me holding it together",
+      "AI actually doing the work — calls, follow-up, all of it"
     ]
   }
 ];
 
 /* ═══════════════════════════════════════════════════
-   TIER CARDS — NO PRICING per spec Section 4 / Section 6
-   Pricing lives in follow-up email only
+   PLANS — NO PRICING
    ═══════════════════════════════════════════════════ */
-const TIERS = {
+const PLANS = {
   splash: {
-    name: "Splash",
-    tagline: "The focused entry. One priority, done right, running for your business from day one.",
-    desc: "Pick your focus: Business AI, Smart Website, or Digital Freedom Phone. Complete on its own — and you can add more when you are ready.",
+    name: "Business Smoothie — Splash",
+    desc: "The focused entry. One priority, done right, running for your business from day one. Pick your Focus — Business AI, Smart Website, Integrated CRM, Digital Freedom Phone, Integrated Social Media, or Reputation and Review Management. Complete on its own — and you can add more when you are ready.",
     forText: "Any business that wants to start focused, add one specific thing, or move fast without overhauling everything.",
-    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
-    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
+    users: "1 user",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
   lite: {
-    name: "Lite",
-    tagline: "The full foundation. Everything you need to show up, stay connected, and never miss a lead.",
-    desc: "Business AI, Smart Website, Digital Freedom Phone, Integrated CRM, Integrated Social Media, and Reporting Dashboard — all running for your business.",
-    forText: "Solo operators and small teams ready to stop piecing things together and run on one real system.",
-    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
-    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
+    name: "Business Smoothie — Lite",
+    desc: "The full foundation. Business AI, Smart Website, and Integrated CRM — everything you need to show up, stay connected, and never miss a lead.",
+    forText: "Solo operators ready to stop piecing things together and run on a real system.",
+    users: "1 user",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   },
-  signature: {
-    name: "Signature",
-    tagline: "The complete Business Smoothie platform. Built to run the whole operation from one place.",
-    desc: "Everything in Lite plus Automations and Funnels, advanced Integrated Social Media, and Reputation and Review Management. The right plan within Signature depends on how many people will use it — we will sort that out together.",
-    forText: "Teams who need multiple users, full automation, and a system that scales with them.",
-    callUrl: "https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU",
-    getUrl:  "https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH"
+  solo: {
+    name: "Business Smoothie — Solo",
+    desc: "The complete Business Smoothie system. Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — all running for your business.",
+    forText: "Solo operators and 2-person teams ready for the full platform.",
+    users: "2 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  team: {
+    name: "Business Smoothie — Team",
+    desc: "The complete Business Smoothie system built for a growing team. Everything in Solo — for up to 8 users.",
+    forText: "Teams of 3 to 8 who need everyone on the same platform.",
+    users: "Up to 8 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  enterprise: {
+    name: "Business Smoothie — Enterprise",
+    desc: "The complete Business Smoothie system at full scale. Everything in Team — for organizations with real volume, complexity, and up to 50 users.",
+    forText: "Larger teams, multi-location operations, and businesses that need infrastructure that matches what they are running.",
+    users: "Up to 50 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
   }
 };
 
@@ -643,7 +689,7 @@ const TIERS = {
    STATE
    ═══════════════════════════════════════════════════ */
 let qIndex  = 0;
-let answers = [];
+let answers = [];   // indexed by question index — never popped
 let picked  = null;
 
 /* ═══════════════════════════════════════════════════
@@ -657,7 +703,9 @@ function startQuiz() {
 
 function renderQuestion() {
   var q = QS[qIndex];
-  picked = null;
+
+  // Restore prior answer for this question (preserves forward answers on back)
+  picked = (answers[qIndex] !== undefined) ? answers[qIndex] : null;
 
   var pct = Math.round((qIndex / QS.length) * 100);
   document.getElementById('prog-label').textContent = 'Question ' + (qIndex + 1) + ' of ' + QS.length;
@@ -668,25 +716,27 @@ function renderQuestion() {
 
   var letters = ['A','B','C','D','E','F'];
   document.getElementById('options').innerHTML = q.opts.map(function(o, i) {
-    return '<button class="option" onclick="pick(this,' + i + ')">' +
+    var cls = 'option' + (picked === i ? ' picked' : '');
+    return '<button class="' + cls + '" onclick="pick(this,' + i + ')">' +
            '<div class="opt-badge">' + letters[i] + '</div>' +
            '<div class="opt-text">' + o + '</div>' +
            '</button>';
   }).join('');
 
-  document.getElementById('btn-next').disabled = true;
+  document.getElementById('btn-next').disabled = (picked === null);
 }
 
 function pick(el, idx) {
   document.querySelectorAll('.option').forEach(function(o) { o.classList.remove('picked'); });
   el.classList.add('picked');
   picked = idx;
+  answers[qIndex] = idx;
   document.getElementById('btn-next').disabled = false;
 }
 
 function nextQ() {
   if (picked === null) return;
-  answers.push(picked);
+  answers[qIndex] = picked;
   if (qIndex < QS.length - 1) {
     qIndex++;
     renderQuestion();
@@ -700,9 +750,8 @@ function nextQ() {
 
 function goBack() {
   if (qIndex > 0) {
-    answers.pop();
     qIndex--;
-    renderQuestion();
+    renderQuestion(); // forward answers preserved — nothing cleared
   } else {
     show('screen-intro');
   }
@@ -710,182 +759,133 @@ function goBack() {
 }
 
 /* ═══════════════════════════════════════════════════
-   SIGNAL-BASED ROUTING — Section 3 of spec
-   Index map (0-based):
-   Q1=0  Q2=1  Q3=2  Q4=3  Q5=4  Q6=5  Q7=6
-   Q8=7  Q9=8  Q10=9 Q11=10 Q12=11 Q13=12 Q14=13
+   SIGNAL CALCULATION
+   Index map (0-based, 13 questions):
+   Q1=0  Q2=1  Q3=2  Q4=3  Q5=4
+   Q6=5  Q7=6  Q8=7  Q9=8  Q10=9
+   Q11=10 Q12=11 Q13=12
    ═══════════════════════════════════════════════════ */
 function calcSignals(ans) {
 
-  /* Q4 (idx 3) — AI personal feeling */
-  var aiCurious     = ans[3] === 0;
-  var aiIntimid     = ans[3] === 1;
-  var aiBehindPers  = ans[3] === 2; /* FOMO signal */
-  var aiForwPers    = ans[3] === 3; /* already in it */
+  /* Q3 (idx 2) — AI business stance */
+  var aiNotStarted = ans[2] === 0; // haven't gone there yet
+  var aiToeIn      = ans[2] === 1; // dipping toe in
+  var aiDisconn    = ans[2] === 2; // has AI, not connected
+  var aiAheadBiz   = ans[2] === 3; // AI running well
 
-  /* Q5 (idx 4) — AI business standing */
-  var aiAheadBiz    = ans[4] === 0;
-  var aiKeepBiz     = ans[4] === 1;
-  var aiFallingBiz  = ans[4] === 2; /* FOMO HIGH */
-  var aiMissingBiz  = ans[4] === 3; /* FOMO HIGH */
-  var aiPassBiz     = ans[4] === 4; /* passive */
+  /* Derived compat signals */
+  var aiForward = aiAheadBiz;
+  var aiPassive = aiNotStarted || aiToeIn;
+  var aiFomo    = false; // no FOMO option in new Q3
+  var noAi      = false; // no "not interested" option in new Q4
 
-  /* Q6 (idx 5) — autopilot / no-ai signal */
-  var autoAi        = ans[5] === 0; /* 24/7 answering */
-  var autoLeads     = ans[5] === 1;
-  var autoSocial    = ans[5] === 2;
-  var autoAll       = ans[5] === 3;
-  var noAi          = ans[5] === 4; /* NOT interested in AI */
+  /* Q4 (idx 3) — autopilot want */
+  var autoAi     = ans[3] === 0; // 24/7 answering
+  var autoLeads  = ans[3] === 1;
+  var autoSocial = ans[3] === 2;
+  var autoAll    = ans[3] === 3;
 
-  /* Q7 (idx 6) — current system */
-  var sysHead       = ans[6] === 0;
-  var sysSheet      = ans[6] === 1;
-  var sysBroken     = ans[6] === 2;
-  var sysPartial    = ans[6] === 3;
-  var sysTrustAi    = ans[6] === 4; /* addon signal */
-
-  /* Q11 (idx 10) — platform users (NOT team size) */
-  var puSolo        = ans[10] === 0; /* just me */
-  var puTwo         = ans[10] === 1; /* 2 people */
-  var puMed         = ans[10] === 2; /* 3-8 */
-  var puLarge       = ans[10] === 3; /* 9+ */
-  var isSmall       = puSolo || puTwo;
-
-  /* Q12 (idx 11) — app count */
-  var manyApps      = ans[11] === 3; /* more than 6 */
-
-  /* Q13 (idx 12) — readiness */
-  var rLooking      = ans[12] === 0; /* just looking */
-  var rGuided       = ans[12] === 1; /* needs hand-holding */
-  var rReady        = ans[12] === 2; /* ready, point me */
-  var rMoving       = ans[12] === 3; /* moving right now */
-
-  /* Q14 (idx 13) — outcome */
-  var oFound        = ans[13] === 0;
-  var oLeads        = ans[13] === 1; /* never miss a lead */
-  var oSystem       = ans[13] === 2; /* whole system */
-  var oAi           = ans[13] === 3; /* get AI working */
-  var oOneThing     = ans[13] === 4; /* one specific thing */
-
-  /* ── Composite signals ── */
-  var aiFomo     = aiBehindPers || aiFallingBiz || aiMissingBiz;
-  var aiForward  = aiForwPers && (aiAheadBiz || aiKeepBiz);
+  /* Q5 (idx 4) — current system */
+  var sysHead    = ans[4] === 0;
+  var sysSheet   = ans[4] === 1;
+  var sysBroken  = ans[4] === 2;
+  var sysPartial = ans[4] === 3;
+  var sysTrustAi = ans[4] === 4; // has system, missing AI
   var aiAddon    = sysTrustAi;
-  var aiPassive  = (aiCurious || aiIntimid) && aiPassBiz;
 
-  /* SPLASH RULE — surfaces whenever any of these fire */
-  var splashTrigger = aiFomo || aiAddon || oOneThing || rLooking || rGuided || autoAi;
+  /* Q9 (idx 8) — team size */
+  var tmSolo  = ans[8] === 0;
+  var tmTwo   = ans[8] === 1;
+  var tmMed   = ans[8] === 2; // 3-8
+  var tmLarge = ans[8] === 3; // 9-20
+  var tmXL    = ans[8] === 4; // 20+
+
+  /* Q10 (idx 9) — app count */
+  var manyApps = ans[9] === 3; // more than 5
+
+  /* Q11 (idx 10) — platform users (daily) */
+  var puSolo  = ans[10] === 0;
+  var puTwo   = ans[10] === 1;
+  var puMed   = ans[10] === 2; // 3-8
+  var puLarge = ans[10] === 3; // 9+
+  var isSmall = puSolo || puTwo;
+
+  /* Q12 (idx 11) — timeline / readiness */
+  var rLooking = ans[11] === 0; // still exploring
+  var rGuided  = ans[11] === 1; // within a few months
+  var rReady   = ans[11] === 2; // within a few weeks
+  var rMoving  = ans[11] === 3; // needed yesterday
+
+  /* Q13 (idx 12) — outcome */
+  var oFound    = ans[12] === 0;
+  var oLeads    = ans[12] === 1;
+  var oSystem   = ans[12] === 2;
+  var oAi       = ans[12] === 3;
+  var oOneThing = false; // no "one specific thing" option in new Q13
+
+  var splashTrigger = aiAddon || rLooking || autoAi;
 
   return {
-    /* AI signals */
     aiFomo: aiFomo, aiForward: aiForward, aiAddon: aiAddon, aiPassive: aiPassive, noAi: noAi,
-    /* autopilot */
     autoAi: autoAi, autoAll: autoAll,
-    /* system */
     sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
-    /* platform users */
     isSmall: isSmall, puMed: puMed, puLarge: puLarge,
-    /* other */
+    tmSolo: tmSolo, tmTwo: tmTwo, tmMed: tmMed, tmLarge: tmLarge, tmXL: tmXL,
     manyApps: manyApps,
     rLooking: rLooking, rGuided: rGuided, rReady: rReady, rMoving: rMoving,
-    oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads, oAi: oAi,
+    oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads, oAi: oAi, oFound: oFound,
     splashTrigger: splashTrigger,
-    /* business type for language (Q2 idx 1) */
-    bizType: ans[1]
+    bizType: null
   };
 }
 
 function calcTiers(sig) {
   var tiers, personaKey;
 
-  /* Platform users drives primary structure (Section 3 — PRIMARY signal) */
   if (sig.puLarge) {
-    /* 9+ users → Signature primary */
-    tiers = sig.splashTrigger ? ['signature', 'splash'] : ['signature'];
+    /* 9+ platform users → Enterprise primary */
+    tiers = ['enterprise', 'team'];
     personaKey = 'signature-large';
 
   } else if (sig.puMed) {
-    /* 3-8 users → Signature primary */
-    tiers = sig.splashTrigger ? ['signature', 'splash'] : ['signature', 'lite'];
+    /* 3-8 platform users → Team primary */
+    tiers = ['team', 'solo'];
     personaKey = 'signature-team';
 
   } else {
-    /* Small (just me or 2 people) */
+    /* 1-2 platform users → Solo is always primary per spec */
+    var secondary = 'lite';
+    personaKey = 'lite';
+
     if (sig.aiAddon) {
-      /* Working system, just missing AI → Splash + Signature */
-      tiers = ['splash', 'signature'];
+      secondary  = 'splash';
       personaKey = 'splash-addon';
-
-    } else if (sig.aiForward || (sig.autoAll && !sig.rLooking && !sig.rGuided)) {
-      /* AI-forward or wants everything → Signature */
-      tiers = sig.aiFomo ? ['splash', 'signature'] : ['signature'];
+    } else if (sig.aiForward || sig.autoAll || sig.oAi) {
+      secondary  = 'lite';
       personaKey = 'signature-forward';
-
-    } else if (sig.aiPassive && (sig.sysHead || sig.sysSheet)) {
-      /* Curious/intimidated, no real system → Splash + Lite */
-      tiers = ['splash', 'lite'];
-      personaKey = 'lite';
-
     } else if (sig.sysBroken || sig.manyApps) {
-      /* Unhappy tools or too many apps → consolidate */
-      tiers = ['splash', 'lite', 'signature'];
+      secondary  = 'lite';
       personaKey = 'signature-consolidate';
-
-    } else if (sig.oOneThing) {
-      /* One specific fix → Splash */
-      tiers = ['splash', 'lite'];
-      personaKey = 'splash-one-thing';
-
-    } else if (sig.rMoving || sig.rReady) {
-      /* Ready to move → Lite or Signature */
-      tiers = sig.oSystem ? ['signature', 'lite'] : ['lite', 'splash'];
-      personaKey = sig.oSystem ? 'signature-forward' : 'lite';
-
-    } else if (sig.rLooking || sig.rGuided) {
-      /* Just looking or needs help → Splash + Lite */
-      tiers = ['splash', 'lite'];
+    } else if (sig.rLooking && !sig.aiForward) {
+      secondary  = 'splash';
       personaKey = 'lite';
-
-    } else {
-      /* Default small */
-      tiers = sig.splashTrigger ? ['splash', 'lite'] : ['lite'];
-      personaKey = 'lite';
+    } else if (sig.oSystem) {
+      secondary  = 'lite';
+      personaKey = 'signature-forward';
     }
-  }
 
-  /* Ensure Splash surfaces whenever splashTrigger fired */
-  if (sig.splashTrigger && tiers.indexOf('splash') === -1) {
-    tiers = ['splash'].concat(tiers);
+    tiers = ['solo', secondary];
   }
 
   return { tiers: tiers.slice(0, 2), personaKey: personaKey };
 }
 
 /* ═══════════════════════════════════════════════════
-   READ-BACK TEXT — Sections 5 + 4
-   Business-type aware, wingman tone
+   INTRO TEXT — DO NOT EDIT COPY
    ═══════════════════════════════════════════════════ */
-
-/* Business type language (Q2, idx 1) */
-var BIZ_LANG = [
-  /* 0 — local service */
-  "You have built something real — and your reputation is what keeps the phone ringing. The question is whether that phone is being answered every time, and whether the people who find you online see the same business you have worked hard to build.",
-  /* 1 — professional services */
-  "Your expertise is the product — and the businesses that stand out right now are the ones showing up consistently and following up without dropping the ball. The gap between a great reputation and a full calendar is usually systems, not skill.",
-  /* 2 — food / bev / entertainment */
-  "Your business runs on experience and word of mouth — and right now AI is changing how people find you, choose you, and come back. The operations side should be running quietly in the background so you can focus on what happens in the room.",
-  /* 3 — retail / e-commerce */
-  "You are competing for attention every single day — and the businesses winning right now are the ones that show up consistently online and never let a customer fall through the cracks after the first visit.",
-  /* 4 — nonprofit */
-  "Your work matters — and the people you serve deserve an organization that is easy to reach, easy to trust, and always present. The right systems free up your time for the mission, not the administration.",
-  /* 5 — something else */
-  "Whatever your business looks like, the fundamentals are the same — show up, stay connected, and never let someone who is ready to work with you slip away. That is what this platform is built to do."
-];
-
-function getReadBack(tiers, sig) {
+function getIntroText(tiers, sig) {
   var key = tiers.join('+');
 
-  /* FOMO always takes the opener */
   if (sig.aiFomo) {
     return {
       a: "Your competitors are not waiting. Neither should you.",
@@ -893,7 +893,6 @@ function getReadBack(tiers, sig) {
     };
   }
 
-  /* No-AI signal — shift language away from AI */
   if (sig.noAi) {
     return {
       a: "You know your business. Let's build the right foundation.",
@@ -901,7 +900,6 @@ function getReadBack(tiers, sig) {
     };
   }
 
-  /* Named combos */
   var combos = {
     'splash+lite': {
       a: "You are ready to start — and you want it to feel right, not overwhelming.",
@@ -931,7 +929,6 @@ function getReadBack(tiers, sig) {
 
   if (combos[key]) return combos[key];
 
-  /* Single-tier personas */
   var personas = {
     'splash-one-thing': {
       a: "You know exactly what needs fixing — and you are right to start there.",
@@ -970,6 +967,41 @@ function getReadBack(tiers, sig) {
 }
 
 /* ═══════════════════════════════════════════════════
+   WHY THIS FITS YOU — per plan + signal
+   ═══════════════════════════════════════════════════ */
+function getWhyText(key, sig) {
+  if (key === 'solo') {
+    if (sig.aiForward)  return "You already have AI working — Solo wraps the complete system around it so everything runs together on one platform.";
+    if (sig.aiAddon)    return "You have a system you trust — Solo adds Business AI and the full suite without replacing what is already working.";
+    if (sig.oSystem)    return "You want the whole operation running — Solo gives you every tool on one platform, built to work as a single system.";
+    if (sig.autoAll)    return "You want the whole thing on autopilot — Solo is the complete platform that makes that possible.";
+    if (sig.oLeads)     return "Never missing a lead means having Business AI, CRM, and follow-up working together — Solo has all of it.";
+    if (sig.isSmall)    return "For a solo operator or 2-person team, Solo gives you the complete Business Smoothie platform without the enterprise footprint.";
+    return "Solo gives you the complete Business Smoothie system — every tool running together for your business from day one.";
+  }
+  if (key === 'team') {
+    if (sig.tmMed)      return "Your team of 3 to 8 needs everyone working in the same system — Team puts them all on one platform with AI running for all of it.";
+    if (sig.oSystem)    return "When the whole operation needs to run together, everyone on your team needs to work from the same tools — Team is built for exactly that.";
+    return "Team keeps your growing team connected and your systems running without things falling through the cracks.";
+  }
+  if (key === 'enterprise') {
+    if (sig.tmLarge || sig.tmXL) return "At your scale, you need infrastructure that handles the volume and complexity — Enterprise is purpose-built for that.";
+    return "Enterprise gives your organization the full Business Smoothie platform with the user capacity and depth to match what you are running.";
+  }
+  if (key === 'lite') {
+    if (sig.rLooking)   return "You are still figuring out your next move — Lite gives you the full foundation to work from without overcommitting.";
+    if (sig.aiPassive)  return "Starting with Business AI, Smart Website, and Integrated CRM gives you something real to build on as you get comfortable.";
+    return "Lite gives you the three tools that move the needle most — Business AI, Smart Website, and Integrated CRM — all running from day one.";
+  }
+  if (key === 'splash') {
+    if (sig.aiAddon)    return "You have a system you trust — Splash adds the one thing you are missing without touching what is working.";
+    if (sig.rLooking)   return "If you are not ready to commit to the full platform, Splash lets you start with one focused priority and prove it out first.";
+    return "Splash is the fastest way to get one thing working well — no overhaul, no overwhelm.";
+  }
+  return "This plan fits where you are and gives you the tools to move forward.";
+}
+
+/* ═══════════════════════════════════════════════════
    RENDER RESULTS
    ═══════════════════════════════════════════════════ */
 function renderResults() {
@@ -977,14 +1009,14 @@ function renderResults() {
   var result = calcTiers(sig);
   sig.personaKey = result.personaKey;
 
-  var intro = getReadBack(result.tiers, sig);
+  var intro = getIntroText(result.tiers, sig);
   document.getElementById('r-line-a').textContent = intro.a;
   document.getElementById('r-line-b').textContent = intro.b;
 
   var container = document.getElementById('plan-cards');
   container.innerHTML = '';
   result.tiers.forEach(function(key, i) {
-    container.appendChild(buildCard(key, i));
+    container.appendChild(buildCard(key, i, sig));
   });
 
   document.getElementById('contact-form').style.display = '';
@@ -992,25 +1024,51 @@ function renderResults() {
   document.getElementById('contact-sent').style.display = 'none';
 }
 
-function buildCard(key, rank) {
-  var t = TIERS[key];
-  var labels  = ['Your Best Match', 'Also Worth a Look'];
+function buildCard(key, rank, sig) {
+  var p = PLANS[key];
+
+  /* Split desc into teaser (first 2 sentences) and remainder */
+  var sentenceRe   = /[^.!?]*[.!?]+\s*/g;
+  var allSentences = p.desc.match(sentenceRe) || [p.desc];
+  var teaser       = allSentences.slice(0, 2).join('').trim();
+  var remainder    = allSentences.slice(2).join('').trim();
+
+  var labels  = ['Your Best Match', 'A Lighter Starting Point'];
   var classes = ['badge-best', 'badge-also'];
+  var whyText = getWhyText(key, sig);
 
   var div = document.createElement('div');
   div.className = 'plan-card' + (rank === 0 ? ' is-primary' : '');
+
   div.innerHTML =
     '<div class="plan-badge ' + classes[rank] + '">' + labels[rank] + '</div>' +
-    '<div class="plan-name">' + t.name + '</div>' +
-    '<div class="plan-tagline">' + t.tagline + '</div>' +
-    '<p class="plan-description">' + t.desc + '</p>' +
-    '<p class="plan-for"><strong>Who it is for:</strong> ' + t.forText + '</p>' +
-    '<div class="plan-ctas">' +
-    '<a class="btn btn-green" href="' + t.getUrl + '" target="_blank">Get Your Business Mix Report</a>' +
-    '<a class="btn btn-outline" href="' + t.callUrl + '" target="_blank">Book a Strategy Call</a>' +
+    '<div class="plan-name">' + p.name + '</div>' +
+    '<div class="plan-teaser">' + teaser + '</div>' +
+    '<div class="plan-why"><span class="why-label">Why this fits you</span>' + whyText + '</div>' +
+    '<button class="plan-expand-toggle" id="plan-toggle-' + key + '" onclick="toggleCard(\'' + key + '\')" type="button">' +
+      '<span class="toggle-icon">▸</span> <span class="toggle-text">See what\'s included</span>' +
+    '</button>' +
+    '<div class="plan-full" id="plan-full-' + key + '">' +
+      (remainder ? '<p class="plan-description">' + remainder + '</p>' : '') +
+      '<p class="plan-for"><strong>Who it is for:</strong> ' + p.forText + '</p>' +
+      '<div class="plan-users">' + p.users + '</div>' +
+    '</div>' +
+    '<div class="plan-cta-wrap">' +
+      '<p class="plan-transition">A Discovery Call is a free conversation where we look at your business together and map out your clearest next move.</p>' +
+      '<a class="btn btn-green plan-cta" href="' + p.call + '" target="_blank">Book a Discovery Call</a>' +
     '</div>';
 
   return div;
+}
+
+function toggleCard(key) {
+  var full   = document.getElementById('plan-full-' + key);
+  var toggle = document.getElementById('plan-toggle-' + key);
+  if (!full || !toggle) return;
+  var isHidden = (full.style.display === 'none' || full.style.display === '');
+  full.style.display   = isHidden ? 'block' : 'none';
+  toggle.querySelector('.toggle-icon').textContent = isHidden ? '▾' : '▸';
+  toggle.querySelector('.toggle-text').textContent = isHidden ? 'Show less' : 'See what\'s included';
 }
 
 /* ═══════════════════════════════════════════════════
