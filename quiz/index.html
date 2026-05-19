@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Where Do We Begin? | Business Smoothie</title>
+<title>Business Smoothie Biz Quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
@@ -49,12 +49,6 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
 }
 .logo-text {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -193,13 +187,76 @@ body {
 .opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
 .q-footer { margin-top: 20px; }
 
-/* ── RESULT INTRO (sections 1–2) ── */
-.result-intro  { margin-bottom: 28px; }
-.result-context { margin-bottom: 28px; }
-.result-intro-text { font-size: 0.97rem; color: var(--text-mid); line-height: 1.8; }
+/* ── RESULT PAGE HEADING ── */
+.result-page-heading { margin-bottom: 28px; }
+.result-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 8px;
+}
+.result-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.share-btn {
+  background: none;
+  border: 1px solid var(--border-bright);
+  border-radius: 99px;
+  color: var(--text-mid);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 16px;
+  transition: all 0.18s;
+}
+.share-btn:hover { border-color: var(--green); color: var(--green); }
 
-/* ── PLAN CARDS ── */
-.plan-cards { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
+/* ── RESULT SUMMARY ── */
+.result-summary { margin-bottom: 28px; }
+.result-summary-text { font-size: 0.97rem; color: var(--text-mid); line-height: 1.8; }
+
+/* ── BIG ISSUE BLOCK ── */
+.big-issue {
+  background: rgba(0,196,90,0.06);
+  border-left: 3px solid var(--green);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin: 14px 0;
+}
+.big-issue-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--green);
+  font-size: 0.78rem;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* ── SPLASH NUDGE ── */
+.splash-nudge {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ── PLAN CARD ── */
 .plan-card {
   background: var(--surface);
   border: 1.5px solid var(--border);
@@ -220,7 +277,6 @@ body {
   border-radius: 99px;
 }
 .badge-best { background: var(--green); color: #fff; }
-.badge-also { background: var(--dark-green); color: #fff; }
 .plan-name {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.35rem;
@@ -244,7 +300,6 @@ body {
   font-size: 0.875rem;
   color: var(--text-mid);
   line-height: 1.6;
-  margin-bottom: 14px;
 }
 .why-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -254,42 +309,8 @@ body {
   display: block;
   margin-bottom: 3px;
 }
-.plan-expand-toggle {
-  background: none;
-  border: none;
-  font-size: 0.82rem;
-  color: var(--green);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  transition: opacity 0.15s;
-}
-.plan-expand-toggle:hover { opacity: 0.75; }
-.toggle-icon { font-size: 10px; }
-.plan-full {
-  padding-top: 14px;
-  margin-top: 10px;
-  border-top: 1px solid var(--border);
-}
-.plan-description { font-size: 0.875rem; color: var(--text); line-height: 1.7; margin-bottom: 12px; }
-.plan-for { font-size: 0.85rem; color: var(--text-mid); line-height: 1.55; margin-bottom: 12px; }
-.plan-for strong { color: var(--text); font-weight: 600; }
-.plan-users {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--green);
-  background: rgba(0,196,90,0.1);
-  border: 1px solid rgba(0,196,90,0.2);
-  padding: 3px 10px;
-  border-radius: 99px;
-}
 
-/* ── CONTACT CAPTURE (section 3) ── */
+/* ── CONTACT CAPTURE ── */
 .capture-section {
   background: var(--surface);
   border: 1.5px solid var(--green);
@@ -334,7 +355,7 @@ body {
 .contact-sent { text-align: center; padding: 12px 0; font-size: 14px; color: var(--green); font-weight: 600; }
 .contact-submit { width: 100%; margin-top: 4px; font-size: 14px; padding: 13px; border-radius: 9px; }
 
-/* ── ACTION CARDS (sections 5–8) ── */
+/* ── ACTION CARDS ── */
 .action-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -395,7 +416,7 @@ body {
 <div class="screen active" id="screen-intro">
   <div class="intro-wrap">
     <img src="../assets/Copy_of_Business__10_.png" alt="Business Smoothie" class="intro-logo" />
-    <h1 class="intro-title">Where Do We Begin?</h1>
+    <h1 class="intro-title">Business Smoothie Biz Quiz</h1>
     <p class="intro-body">AI is changing what's possible for every business. Let's find out where you are and what your next move should be. Takes about 3 minutes. No wrong answers.</p>
     <div class="intro-chips">
       <span class="chip">13 questions</span>
@@ -431,13 +452,20 @@ body {
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- Section 1: Thank You + Summary -->
-  <div class="result-intro" id="r-intro"></div>
+  <!-- Section 1: Page Heading -->
+  <div class="result-page-heading">
+    <p class="result-eyebrow">Your Results</p>
+    <h2 class="result-heading" id="r-heading"></h2>
+    <button class="share-btn" onclick="shareQuiz()" id="share-btn">Share this quiz</button>
+  </div>
 
-  <!-- Section 2: What You Need + How BS Fits -->
-  <div class="result-context" id="r-context"></div>
+  <!-- Section 2: Top Summary -->
+  <div class="result-summary" id="r-summary"></div>
 
-  <!-- Section 3: Get Your Full Report -->
+  <!-- Section 3: Plan Card + optional nudge -->
+  <div id="r-plan-wrap" style="margin-bottom:28px"></div>
+
+  <!-- Section 4: Get Full Results -->
   <div class="capture-section">
     <h3 class="capture-heading">Want the full picture?</h3>
     <p class="capture-sub">Enter your name and email and we will send your complete results — including your plan match, what your business needs, and your next steps.</p>
@@ -456,24 +484,7 @@ body {
     <div class="contact-sent" id="contact-sent" style="display:none">✓ Your results are on the way — check your inbox in a few minutes.</div>
   </div>
 
-  <!-- Section 4: Plan Cards -->
-  <div class="plan-cards" id="plan-cards"></div>
-
-  <!-- Section 5: Book a Specialist Call -->
-  <div class="action-card">
-    <h3 class="action-heading">Ready to talk through your results?</h3>
-    <p class="action-body">Book a 25-minute call with one of our specialists. We will look at your results together and map out exactly what makes sense for your business.</p>
-    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call</a>
-  </div>
-
-  <!-- Section 6: Call to Discuss -->
-  <div class="action-card">
-    <h3 class="action-heading">Have questions about what Business Smoothie could do for your business?</h3>
-    <p class="action-body">Call us and talk it through with our AI assistant — available now.</p>
-    <a class="btn btn-green action-cta" href="tel:5154000448">Call Now → 515.400.0448</a>
-  </div>
-
-  <!-- Section 7: Custom Blend -->
+  <!-- Section 5: Custom Blend -->
   <div class="action-card action-card-accent">
     <p class="action-eyebrow">Go deeper</p>
     <h3 class="action-heading">Get your Custom Blend</h3>
@@ -481,15 +492,17 @@ body {
     <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/form/u6l8EB1POcs5IHurDfAH" target="_blank">Get Your Custom Blend</a>
   </div>
 
-  <!-- Section 8: Experience the AI -->
+  <!-- Section 6: Specialist Call -->
   <div class="action-card">
-    <h3 class="action-heading">Hear what an AI assistant sounds like for your business</h3>
-    <p class="action-body">Call our demo line and experience it live — no setup, no commitment. Just call and hear what's possible.</p>
-    <a class="btn btn-green action-cta" href="tel:5154000332">Call the Demo Line → 515.400.0332</a>
+    <h3 class="action-heading">Ready to talk through your results?</h3>
+    <p class="action-body">Book a 25-minute call with one of our specialists. We will look at your results together and map out exactly what makes sense for your business.</p>
+    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call</a>
   </div>
 
   <div class="result-footer">
     <button class="restart-btn" onclick="restartQuiz()">Retake the quiz</button>
+    &nbsp;·&nbsp;
+    <a href="https://businesssmoothie.com" style="color:var(--text-soft);font-size:13px;text-decoration:none;">businesssmoothie.com</a>
   </div>
 
 </div>
@@ -681,6 +694,7 @@ let qIndex             = 0;
 let answers            = [];   // indexed by question index — never popped
 let picked             = null;
 let recommendedPlanKey = '';
+let _quizPayload       = {};
 
 /* ═══════════════════════════════════════════════════
    QUIZ FLOW
@@ -820,6 +834,7 @@ function calcSignals(ans) {
 
   return {
     aiFomo: aiFomo, aiForward: aiForward, aiAddon: aiAddon, aiPassive: aiPassive, noAi: noAi,
+    aiDisconn: aiDisconn,
     autoAi: autoAi, autoAll: autoAll,
     sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
     isSmall: isSmall, puMed: puMed, puLarge: puLarge,
@@ -1057,6 +1072,86 @@ function getHowFits(sig) {
 }
 
 /* ═══════════════════════════════════════════════════
+   BIG ISSUE OR OPPORTUNITY
+   ═══════════════════════════════════════════════════ */
+function getBigIssueOrOpportunity(sig) {
+  if (sig.sysHead)     return "The biggest thing standing in your way right now is doing everything from memory — there is no system catching what you miss, which means leads and clients are slipping through without you knowing it.";
+  if (sig.sysSheet)    return "Spreadsheets are a starting point, not a system — and running client management manually is costing you time and momentum every single week.";
+  if (sig.aiDisconn || sig.sysBroken) return "You have pieces in place, but they are not talking to each other — the real cost is the time you spend bridging the gaps and the things that fall through when you cannot.";
+  if (sig.aiForward && sig.puLarge)   return "At your scale, the opportunity is less about adding tools and more about making the infrastructure you have run smarter and more connected across your whole team.";
+  if (sig.aiForward)   return "AI is already working in your business — the opportunity is connecting it to your full platform so it runs everything together, not just individual tasks.";
+  if (sig.manyApps)    return "You are managing too many disconnected tools — consolidating onto one platform would save you time, money, and the mental overhead of keeping everything stitched together.";
+  if (sig.aiPassive)   return "The biggest opportunity for your business right now is getting AI working for you — not as an experiment, but as a real part of how your business runs day to day.";
+  if (sig.oLeads)      return "Leads are the lifeblood of any business, and right now there is no system making sure every one of them gets followed up on. That gap has a real cost.";
+  if (sig.oFound)      return "Getting found consistently requires your website, your social media, and your reputation to work together — right now those pieces are not connected in a way that compounds.";
+  return "Your biggest opportunity is getting the right systems working together — so your business runs with less manual effort and fewer things falling through the cracks.";
+}
+
+/* ═══════════════════════════════════════════════════
+   RECOMMENDATION — 1-2 sentences per plan
+   ═══════════════════════════════════════════════════ */
+function getRecommendation(sig, planKey) {
+  var name = (PLANS[planKey] || {}).name || 'Business Smoothie';
+  if (planKey === 'enterprise') return name + " gives your organization the complete platform — AI, automation, and the user depth to match the complexity you are running.";
+  if (planKey === 'team')       return name + " puts your whole team on one platform with Business AI running for everyone — so nothing falls through the cracks across people and conversations.";
+  if (planKey === 'splash') {
+    if (sig.aiAddon)   return name + " — add Business AI to what you already have without starting over. One thing, done right, running for your business.";
+    if (sig.rLooking)  return name + " — start with one focused priority and prove it out before committing to the full platform.";
+    return name + " — the fastest way to get one high-leverage thing working well for your business.";
+  }
+  if (planKey === 'lite')  return name + " — Business AI, Smart Website, and Integrated CRM, all running together. The full foundation without the complexity.";
+  if (sig.isSmall)    return name + " — the complete Business Smoothie platform built for solo operators and 2-person teams. Everything running from one place.";
+  return name + " — the complete Business Smoothie system running for your business from day one.";
+}
+
+/* ═══════════════════════════════════════════════════
+   SHARE QUIZ
+   ═══════════════════════════════════════════════════ */
+function shareQuiz() {
+  var url = window.location.href;
+  var btn = document.getElementById('share-btn');
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'Business Smoothie Biz Quiz',
+      text:  'Take the Business Smoothie Biz Quiz — find out which plan fits your business.',
+      url:   url
+    }).catch(function() {});
+  } else {
+    navigator.clipboard.writeText(url).then(function() {
+      btn.textContent = 'Link copied!';
+      setTimeout(function() { btn.textContent = 'Share this quiz'; }, 2000);
+    }).catch(function() {
+      btn.textContent = 'Link copied!';
+      setTimeout(function() { btn.textContent = 'Share this quiz'; }, 2000);
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   BUILD PLAN CARD — primary only, no toggle
+   ═══════════════════════════════════════════════════ */
+function buildCard(key, sig) {
+  var p        = PLANS[key];
+  var whyText  = getWhyText(key, sig);
+
+  // First sentence of desc as the one-liner
+  var match   = p.desc.match(/[^.!?]*[.!?]+/);
+  var oneLine = match ? match[0].trim() : p.desc;
+
+  var div = document.createElement('div');
+  div.className = 'plan-card is-primary';
+
+  div.innerHTML =
+    '<div class="plan-badge badge-best">Your Best Match</div>' +
+    '<div class="plan-name">' + p.name + '</div>' +
+    '<div class="plan-teaser">' + oneLine + '</div>' +
+    '<div class="plan-why"><span class="why-label">Why this fits you</span>' + whyText + '</div>';
+
+  return div;
+}
+
+/* ═══════════════════════════════════════════════════
    RENDER RESULTS
    ═══════════════════════════════════════════════════ */
 function renderResults() {
@@ -1066,68 +1161,46 @@ function renderResults() {
 
   recommendedPlanKey = result.tiers[0];
 
-  document.getElementById('r-intro').innerHTML =
-    '<p class="result-intro-text">Thanks for taking the time — we read every answer.</p>' +
-    '<p class="result-intro-text" style="margin-top:14px">' + getWhatWeHeard(sig, answers) + '</p>';
+  var intro     = getIntroText(result.tiers, sig);
+  var whatHeard = getWhatWeHeard(sig, answers);
+  var bigIssue  = getBigIssueOrOpportunity(sig);
+  var whatNeed  = getWhatYouNeed(sig);
+  var howFits   = getHowFits(sig);
+  var recommend = getRecommendation(sig, recommendedPlanKey);
 
-  document.getElementById('r-context').innerHTML =
-    '<p class="result-intro-text">' + getWhatYouNeed(sig) + '</p>' +
-    '<p class="result-intro-text" style="margin-top:14px">' + getHowFits(sig) + '</p>';
+  // Store for submitContact
+  _quizPayload = {
+    whatWeHeard:    whatHeard,
+    bigIssue:       bigIssue,
+    recommendation: recommend,
+    howBSFits:      howFits
+  };
 
-  var container = document.getElementById('plan-cards');
-  container.innerHTML = '';
-  result.tiers.forEach(function(key, i) {
-    container.appendChild(buildCard(key, i, sig));
-  });
+  // Section 1: Page heading
+  document.getElementById('r-heading').textContent = intro.a;
 
+  // Section 2: Top summary
+  document.getElementById('r-summary').innerHTML =
+    '<p class="result-summary-text">' + whatHeard + '</p>' +
+    '<div class="big-issue"><span class="big-issue-label">What this means for you</span>' + bigIssue + '</div>' +
+    '<p class="result-summary-text" style="margin-top:14px">' + whatNeed + '</p>';
+
+  // Section 3: Plan card + optional nudge
+  var wrap = document.getElementById('r-plan-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(buildCard(recommendedPlanKey, sig));
+
+  if (sig.aiForward && sig.sysPartial) {
+    var nudge = document.createElement('p');
+    nudge.className = 'splash-nudge';
+    nudge.textContent = 'Or add one specific thing with Business Smoothie — Splash. Social media scheduling, Integrated CRM, Reputation and Review Management — pick your focus.';
+    wrap.appendChild(nudge);
+  }
+
+  // Reset form
   document.getElementById('contact-form').style.display = '';
   document.getElementById('contact-form').reset();
   document.getElementById('contact-sent').style.display = 'none';
-}
-
-function buildCard(key, rank, sig) {
-  var p      = PLANS[key];
-  var isOpen = rank === 0;
-
-  /* Split desc into teaser (first 2 sentences) and remainder */
-  var sentenceRe   = /[^.!?]*[.!?]+\s*/g;
-  var allSentences = p.desc.match(sentenceRe) || [p.desc];
-  var teaser       = allSentences.slice(0, 2).join('').trim();
-  var remainder    = allSentences.slice(2).join('').trim();
-
-  var labels  = ['Your Best Match', 'A Lighter Starting Point'];
-  var classes = ['badge-best', 'badge-also'];
-  var whyText = getWhyText(key, sig);
-
-  var div = document.createElement('div');
-  div.className = 'plan-card' + (isOpen ? ' is-primary' : '');
-
-  div.innerHTML =
-    '<div class="plan-badge ' + classes[rank] + '">' + labels[rank] + '</div>' +
-    '<div class="plan-name">' + p.name + '</div>' +
-    '<div class="plan-teaser">' + teaser + '</div>' +
-    '<div class="plan-why"><span class="why-label">Why this fits you</span>' + whyText + '</div>' +
-    '<button class="plan-expand-toggle" id="plan-toggle-' + key + '" onclick="toggleCard(\'' + key + '\')" type="button">' +
-      '<span class="toggle-icon">' + (isOpen ? '▾' : '▸') + '</span>' +
-      '<span class="toggle-text">' + (isOpen ? 'Show less' : 'See what\'s included') + '</span>' +
-    '</button>' +
-    '<div class="plan-full" id="plan-full-' + key + '" style="display:' + (isOpen ? 'block' : 'none') + '">' +
-      (remainder ? '<p class="plan-description">' + remainder + '</p>' : '') +
-      '<p class="plan-for"><strong>Who it is for:</strong> ' + p.forText + '</p>' +
-      (p.users ? '<div class="plan-users">' + p.users + '</div>' : '') +
-    '</div>';
-
-  return div;
-}
-
-function toggleCard(key) {
-  var full   = document.getElementById('plan-full-' + key);
-  var toggle = document.getElementById('plan-toggle-' + key);
-  if (!full || !toggle) return;
-  var isHidden = (full.style.display === 'none' || full.style.display === '');
-  full.style.display   = isHidden ? 'block' : 'none';
-  toggle.querySelector('.toggle-icon').textContent = isHidden ? '▾' : '▸';
-  toggle.querySelector('.toggle-text').textContent = isHidden ? 'Show less' : 'See what\'s included';
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1146,7 +1219,16 @@ function submitContact(e) {
   fetch(QUIZ_SUBMIT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ firstName: firstName, email: email, planTag: planTag, planName: planName })
+    body: JSON.stringify({
+      firstName:      firstName,
+      email:          email,
+      planTag:        planTag,
+      planName:       planName,
+      whatWeHeard:    _quizPayload.whatWeHeard    || '',
+      bigIssue:       _quizPayload.bigIssue       || '',
+      recommendation: _quizPayload.recommendation || '',
+      howBSFits:      _quizPayload.howBSFits      || ''
+    })
   })
   .then(function() { showSent(); })
   .catch(function() { showSent(); });
@@ -1166,7 +1248,7 @@ function show(id) {
 }
 
 function restartQuiz() {
-  qIndex = 0; answers = []; picked = null;
+  qIndex = 0; answers = []; picked = null; _quizPayload = {};
   show('screen-intro');
   window.scrollTo(0, 0);
 }
