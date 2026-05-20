@@ -430,13 +430,13 @@ a.result-footer-link { display: inline; }
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
-        <input type="text" id="f-name" placeholder="Your first name" required />
+        <input type="text" id="f-name" placeholder="Your first name" required oninput="checkContactForm()" />
       </div>
       <div class="field">
         <label for="f-email">Email Address</label>
-        <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
+        <input type="email" id="f-email" placeholder="you@yourbusiness.com" required oninput="checkContactForm()" />
       </div>
-      <button class="btn btn-green contact-submit" type="submit">Get Your Full Results →</button>
+      <button class="btn btn-green contact-submit" id="contact-submit-btn" type="submit" disabled>Get Your Full Results →</button>
     </form>
     <div class="contact-sent" id="contact-sent" style="display:none">✓ Your full results are on the way — check your inbox in the next few minutes.</div>
   </div>
@@ -1234,19 +1234,28 @@ function renderResults() {
   document.getElementById('contact-form').style.display = '';
   document.getElementById('contact-form').reset();
   document.getElementById('contact-sent').style.display = 'none';
+  var submitBtn = document.getElementById('contact-submit-btn');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Get Your Full Results →'; }
 }
 
 /* ═══════════════════════════════════════════════════
    CONTACT CAPTURE — posts to GHL via Worker proxy
    ═══════════════════════════════════════════════════ */
+function checkContactForm() {
+  var ok = !!(document.getElementById('f-name').value.trim() && document.getElementById('f-email').value.trim());
+  document.getElementById('contact-submit-btn').disabled = !ok;
+}
+
 function submitContact(e) {
   e.preventDefault();
   var firstName = document.getElementById('f-name').value.trim();
   var email     = document.getElementById('f-email').value.trim();
+  if (!firstName || !email) return;
+
   var planTag   = PLAN_TAGS[recommendedPlanKey] || 'quiz-completed';
   var planName  = (PLANS[recommendedPlanKey] || {}).name || '';
 
-  var btn = e.target.querySelector('button[type="submit"]');
+  var btn = document.getElementById('contact-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
   fetch(QUIZ_SUBMIT_URL, {
@@ -1265,7 +1274,9 @@ function submitContact(e) {
     })
   })
   .then(function() { showSent(); })
-  .catch(function() { showSent(); });
+  .catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Get Your Full Results →'; }
+  });
 }
 
 function showSent() {
