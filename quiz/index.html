@@ -165,14 +165,22 @@ body {
 .opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
 .q-footer { margin-top: 20px; }
 
-/* ── RESULTS: EYEBROW ── */
+/* ── RESULTS: LABELS ── */
 .result-eyebrow {
   font-size: 11px;
   font-weight: 700;
   color: var(--green);
   text-transform: uppercase;
   letter-spacing: 1.4px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+}
+.result-label-lg {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 14px;
 }
 
 /* ── RESULTS: OPENING LINE ── */
@@ -185,22 +193,33 @@ body {
   margin-bottom: 28px;
 }
 
+/* ── RESULTS: SECTION HEADING ── */
+.result-section-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(22px, 4vw, 26px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
 /* ── RESULTS: BULLET LIST ── */
 .result-bullets {
   list-style: none;
   padding: 0;
-  margin: 0 0 28px;
+  margin: 0 0 32px;
 }
 .result-bullet {
   position: relative;
-  padding-left: 18px;
-  font-size: 0.95rem;
-  color: var(--text-mid);
+  padding-left: 20px;
+  font-size: 16px;
+  color: var(--text);
   line-height: 1.65;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .result-bullet::before {
-  content: '—';
+  content: '•';
   position: absolute;
   left: 0;
   top: 0;
@@ -208,13 +227,11 @@ body {
   font-weight: 700;
 }
 
-/* ── RESULTS: QUICK TAKE ── */
-.quick-take {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(18px, 2.8vw, 22px);
-  font-weight: 700;
+/* ── RESULTS: FIRST TAKE ── */
+.first-take {
+  font-size: 0.95rem;
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.75;
   margin-bottom: 28px;
 }
 
@@ -246,7 +263,7 @@ body {
 .field input::placeholder { color: var(--text-soft); }
 .form-note { font-size: 11px; color: var(--text-soft); margin-top: 8px; line-height: 1.5; }
 .contact-sent { text-align: center; padding: 12px 0; font-size: 14px; color: var(--green); font-weight: 600; }
-.contact-submit { width: 100%; margin-top: 4px; font-size: 14px; padding: 13px; border-radius: 9px; }
+.contact-submit { width: 100%; margin-top: 4px; font-size: 17px; padding: 15px; border-radius: 9px; }
 
 /* ── PLAN CARD ── */
 .plan-card {
@@ -398,14 +415,17 @@ a.result-footer-link { display: inline; }
   <p class="result-opening">Congratulations — you took the first step.</p>
 
   <!-- 2. WHAT WE HEARD -->
-  <p class="result-eyebrow">What We Heard</p>
+  <p class="result-label-lg">What We Heard</p>
   <ul class="result-bullets" id="r-bullets"></ul>
 
-  <!-- 3. QUICK TAKE -->
-  <p class="result-eyebrow" style="margin-top:28px;">Quick Take</p>
-  <p class="quick-take" id="r-quick-take"></p>
+  <!-- 3. YOUR RESULTS heading -->
+  <h2 class="result-section-heading">Your Results</h2>
 
-  <!-- 4. Inline form -->
+  <!-- 4. FIRST TAKE -->
+  <p class="result-eyebrow">First Take</p>
+  <p class="first-take" id="r-first-take"></p>
+
+  <!-- 5. Inline form -->
   <div class="result-form">
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
@@ -417,21 +437,20 @@ a.result-footer-link { display: inline; }
         <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
       </div>
       <button class="btn btn-green contact-submit" type="submit">Get Your Full Results →</button>
-      <p class="form-note">Your full report covers your technical needs, Business Smoothie options, and access to additional resources.</p>
     </form>
     <div class="contact-sent" id="contact-sent" style="display:none">✓ Your full results are on the way — check your inbox in the next few minutes.</div>
   </div>
 
-  <!-- 5. Plan Card -->
+  <!-- 6. Plan Card -->
   <div id="r-plan-wrap" style="margin-bottom:28px"></div>
 
-  <!-- 6. Book a Specialist Call -->
+  <!-- 7. Book a Specialist Call -->
   <div class="action-card">
     <h3 class="action-heading">Ready to talk through your results and take the next step with Business Smoothie?</h3>
     <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call →</a>
   </div>
 
-  <!-- 7. Footer -->
+  <!-- 8. Footer -->
   <div class="result-footer-links">
     <a class="result-footer-link" href="tel:5154000448">Call Us</a>
     <a class="result-footer-link" href="tel:5154000332">Experience the AI Demo</a>
@@ -1137,6 +1156,35 @@ function buildCard(key, sig) {
 }
 
 /* ═══════════════════════════════════════════════════
+   FIRST TAKE — warm 3-4 sentence read on their situation
+   No product names, no plan names
+   ═══════════════════════════════════════════════════ */
+function getFirstTake(sig) {
+  if (sig.aiForward && sig.puLarge) {
+    return "You have built something real here — AI is in the mix, your systems have some structure, and you are running at a scale that most businesses never reach. The challenge at your level is not about adding new tools, it is about making sure everything you have is actually connected and running at full capacity. The complexity you are managing is significant, and the gap between what your business could do on autopilot versus what it is doing right now is where the real opportunity lives. You have put in the work — the next move is making sure your infrastructure matches the operation you have built.";
+  }
+  if (sig.aiForward && sig.puMed) {
+    return "You have done something most businesses have not — you have AI actually working for you, and you have a team to back it up. That combination puts you ahead of most of the businesses you are competing with. The opportunity now is making sure your team is all working from the same systems, with AI running for everyone, not just in pockets. When that clicks, the whole operation runs cleaner and the ceiling gets higher.";
+  }
+  if (sig.aiForward && sig.isSmall) {
+    return "You are running lean and you have AI working — that is a stronger position than you might realize. Most businesses your size are still figuring out where AI fits, and you have already moved past that question. The work now is making sure your systems are tight enough to let AI do more of the heavy lifting, so your time goes toward the business and not toward managing the tools. There is real upside here, and you are closer to it than you think.";
+  }
+  if (sig.aiDisconn && (sig.sysBroken || sig.sysSheet || sig.sysHead)) {
+    return "You have made some real moves — AI is in your toolkit and you are managing a business that is actively operating. But there is a gap between having these pieces and having them work as one system, and that gap is probably costing you more than you realize on a daily basis. The things slipping through the cracks, the manual steps that slow everything down, the follow-ups that do not happen automatically — that is what a connected system solves. You are not starting from zero, which means the path forward is shorter than it might feel.";
+  }
+  if (sig.puLarge || sig.tmLarge) {
+    return "You are running a real operation — multiple people, real complexity, and a business that needs infrastructure that can actually keep up. At your scale, the cost of disconnected systems is not just inefficiency, it is opportunity that slips away every day because the tools are not talking to each other. The good news is that the complexity you are managing is exactly what the right platform is designed for. The businesses that get this right at your size do not just run cleaner — they grow faster.";
+  }
+  if (sig.puMed || sig.tmMed) {
+    return "You have a team, which means you have already built something worth protecting and growing. The challenge for businesses at your stage is that the informal systems that worked when it was just you start to break down as more people get involved. Leads fall through between conversations, follow-ups depend on whoever remembers to do them, and the consistency you built early gets harder to maintain. Getting everyone working from the same tools is the move that changes all of that.";
+  }
+  if ((sig.sysHead || sig.sysSheet) && sig.aiPassive) {
+    return "You have been running on grit and good instincts — and that gets a business further than most people give it credit for. But you are also at the point where doing it all manually is starting to cost you more than it saves. Client follow-ups running from memory, AI still on the shelf, social presence inconsistent — each of those is a real gap, and they compound. The good news is that any one of those moving in the right direction would change how the whole operation feels to run.";
+  }
+  return "You have built something here — and the answers you gave show a business that is actively working to get better, not one that is standing still. There are real gaps to close, but there are also clear strengths to build on. The difference between where you are now and where you want to be is mostly about which systems are in place and which ones are not yet. That is a more solvable problem than it usually feels like from the inside.";
+}
+
+/* ═══════════════════════════════════════════════════
    RENDER RESULTS
    ═══════════════════════════════════════════════════ */
 function renderResults() {
@@ -1167,8 +1215,8 @@ function renderResults() {
     return '<li class="result-bullet">' + b + '</li>';
   }).join('');
 
-  // Section 3: QUICK TAKE
-  document.getElementById('r-quick-take').textContent = bigIssue;
+  // Section 4: FIRST TAKE
+  document.getElementById('r-first-take').textContent = getFirstTake(sig);
 
   // Section 5: Plan card + optional nudge
   var wrap = document.getElementById('r-plan-wrap');
