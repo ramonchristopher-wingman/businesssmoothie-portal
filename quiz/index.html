@@ -175,45 +175,51 @@ body {
   margin-bottom: 12px;
 }
 
-/* ── RESULTS: BIG ISSUE HEADLINE ── */
-.result-headline {
+/* ── RESULTS: OPENING LINE ── */
+.result-opening {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(20px, 4vw, 24px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 28px;
+}
+
+/* ── RESULTS: BULLET LIST ── */
+.result-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+}
+.result-bullet {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.95rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.result-bullet::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ── RESULTS: QUICK TAKE ── */
+.quick-take {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: clamp(18px, 2.8vw, 22px);
   font-weight: 700;
   color: var(--text);
-  line-height: 1.45;
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
-}
-
-/* ── RESULTS: WHAT WE HEARD ── */
-.result-heard {
-  font-size: 0.95rem;
-  color: var(--text-mid);
-  line-height: 1.75;
+  line-height: 1.4;
   margin-bottom: 28px;
 }
 
-/* ── COMPACT FORM ── */
-.capture-compact {
-  background: var(--surface);
-  border: 1.5px solid var(--green);
-  border-radius: var(--radius);
-  padding: 20px 18px;
-  margin-bottom: 28px;
-}
-.capture-compact .capture-heading { font-size: 1.05rem; margin-bottom: 6px; }
-.capture-compact .capture-sub    { margin-bottom: 14px; }
-.capture-compact .field          { margin-bottom: 10px; }
-.capture-heading {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
-  letter-spacing: -0.02em;
-}
-.capture-sub { font-size: 0.875rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
+/* ── RESULTS: INLINE FORM ── */
+.result-form { margin-bottom: 28px; }
 .field { margin-bottom: 14px; }
 .field label {
   display: block;
@@ -388,20 +394,19 @@ a.result-footer-link { display: inline; }
 <!-- ── RESULTS ── -->
 <div class="screen" id="screen-results">
 
-  <!-- 1. Label -->
-  <p class="result-eyebrow">Your Results</p>
+  <!-- 1. Opening line -->
+  <p class="result-opening">Congratulations — you took the first step.</p>
 
-  <!-- 2. Big Issue Headline -->
-  <h2 class="result-headline" id="r-headline"></h2>
+  <!-- 2. WHAT WE HEARD -->
+  <p class="result-eyebrow">What We Heard</p>
+  <ul class="result-bullets" id="r-bullets"></ul>
 
-  <!-- 3. What We Heard -->
-  <p class="result-heard" style="color:var(--text-soft);margin-bottom:10px;">Based on your answers, here is what we found.</p>
-  <p class="result-heard" id="r-heard"></p>
+  <!-- 3. QUICK TAKE -->
+  <p class="result-eyebrow" style="margin-top:28px;">Quick Take</p>
+  <p class="quick-take" id="r-quick-take"></p>
 
-  <!-- 4. Compact Form -->
-  <div class="capture-compact">
-    <h3 class="capture-heading">Get Your Full Quiz Results</h3>
-    <p class="capture-sub">Your full report covers your technical needs, Business Smoothie options, and access to additional resources.</p>
+  <!-- 4. Inline form -->
+  <div class="result-form">
     <form id="contact-form" onsubmit="submitContact(event)">
       <div class="field">
         <label for="f-name">First Name</label>
@@ -411,8 +416,8 @@ a.result-footer-link { display: inline; }
         <label for="f-email">Email Address</label>
         <input type="email" id="f-email" placeholder="you@yourbusiness.com" required />
       </div>
-      <button class="btn btn-green contact-submit" type="submit">Send My Full Quiz Results →</button>
-      <p class="form-note">No spam. Your results only.</p>
+      <button class="btn btn-green contact-submit" type="submit">Get Your Full Results →</button>
+      <p class="form-note">Your full report covers your technical needs, Business Smoothie options, and access to additional resources.</p>
     </form>
     <div class="contact-sent" id="contact-sent" style="display:none">✓ Your full results are on the way — check your inbox in the next few minutes.</div>
   </div>
@@ -965,6 +970,58 @@ function getWhatWeHeard(sig, answers, maxLines) {
 }
 
 /* ═══════════════════════════════════════════════════
+   WHAT WE HEARD — BULLETS
+   3-4 signal-driven observations, read as a connected story
+   ═══════════════════════════════════════════════════ */
+function getWhatWeHeardBullets(sig, answers) {
+  var bullets = [];
+
+  // AI stance — always add one
+  if (sig.aiForward)
+    bullets.push("Your AI is working — the opportunity now is making sure everything else runs with the same efficiency.");
+  else if (sig.aiDisconn)
+    bullets.push("You have AI in your toolkit — it just does not feel like one connected system yet.");
+  else
+    bullets.push("You have not fully committed to AI yet — figuring out where it fits for your specific business is the real starting point.");
+
+  // Systems / client management — always add one
+  if (sig.sysHead)
+    bullets.push("Client follow-ups are running from memory right now — which means things are slipping through without you knowing it.");
+  else if (sig.sysSheet)
+    bullets.push("Client management is held together by spreadsheets — a real system would take that weight off.");
+  else if (sig.sysBroken)
+    bullets.push("You have something in place for managing clients, but you know it could be doing more.");
+  else
+    bullets.push("Your client management system is solid — the next move is making sure it scales without adding overhead.");
+
+  // Team context — always add one
+  if (sig.tmSolo)
+    bullets.push("You are running this yourself, so every system you bring in needs to actually save you time, not add to it.");
+  else if (sig.isSmall)
+    bullets.push("You are running a lean operation — the tools you use need to be tight and efficient, not complicated.");
+  else if (sig.puMed)
+    bullets.push("You have a team working inside your systems, which means what you put in place needs to work for everyone, not just you.");
+  else
+    bullets.push("You are running a larger operation — the complexity you are managing means you need infrastructure that actually scales.");
+
+  // Fourth bullet — strongest remaining signal
+  if (sig.manyApps)
+    bullets.push("You are juggling multiple tools to run your business — consolidating them would save time and reduce mistakes.");
+  else if (answers[6] === 0)
+    bullets.push("Your social presence has been pretty quiet — which is one of the clearest places to create visibility quickly.");
+  else if (answers[6] === 1)
+    bullets.push("You are showing up on social sometimes, but consistency has not been there yet.");
+  else if (answers[5] === 0)
+    bullets.push("Most of your new clients come through referrals, which means you need a system that never lets one go cold.");
+  else if (sig.rMoving || sig.rReady)
+    bullets.push("You are ready to move — the question is what to put in place first.");
+  else if (answers[7] === 0)
+    bullets.push("You do not have an email list yet — which means you are leaving a direct line to your audience on the table.");
+
+  return bullets;
+}
+
+/* ═══════════════════════════════════════════════════
    WHAT IT SOUNDS LIKE YOU NEED
    ═══════════════════════════════════════════════════ */
 function getWhatYouNeed(sig) {
@@ -1089,12 +1146,11 @@ function renderResults() {
 
   recommendedPlanKey = result.tiers[0];
 
-  var whatHeard      = getWhatWeHeard(sig, answers);        // full — for email payload
-  var whatHeardShort = getWhatWeHeard(sig, answers, 2);     // 2 sentences — for display
-  var bigIssue       = getBigIssueOrOpportunity(sig);
-  var whatNeed       = getWhatYouNeed(sig);
-  var howFits        = getHowFits(sig);
-  var recommend      = getRecommendation(sig, recommendedPlanKey);
+  var whatHeard = getWhatWeHeard(sig, answers);
+  var bigIssue  = getBigIssueOrOpportunity(sig);
+  var whatNeed  = getWhatYouNeed(sig);
+  var howFits   = getHowFits(sig);
+  var recommend = getRecommendation(sig, recommendedPlanKey);
 
   _quizPayload = {
     whatWeHeard:      whatHeard,
@@ -1104,11 +1160,15 @@ function renderResults() {
     secondaryPlanKey: result.tiers[1] || null
   };
 
-  // Section 2: Big issue headline
-  document.getElementById('r-headline').textContent = bigIssue;
+  // Section 2: WHAT WE HEARD bullets
+  var bullets = getWhatWeHeardBullets(sig, answers);
+  var ul = document.getElementById('r-bullets');
+  ul.innerHTML = bullets.map(function(b) {
+    return '<li class="result-bullet">' + b + '</li>';
+  }).join('');
 
-  // Section 3: What we heard (short)
-  document.getElementById('r-heard').textContent = whatHeardShort;
+  // Section 3: QUICK TAKE
+  document.getElementById('r-quick-take').textContent = bigIssue;
 
   // Section 5: Plan card + optional nudge
   var wrap = document.getElementById('r-plan-wrap');
@@ -1118,7 +1178,7 @@ function renderResults() {
   if (sig.aiForward && sig.sysPartial) {
     var nudge = document.createElement('p');
     nudge.className = 'splash-nudge';
-    nudge.textContent = 'Or add one specific thing with Business Smoothie — Splash. Social media scheduling, Integrated CRM, Reputation and Review Management — pick your focus.';
+    nudge.textContent = 'Or start with one specific thing through Business Smoothie — Splash.';
     wrap.appendChild(nudge);
   }
 
