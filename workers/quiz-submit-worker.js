@@ -1,9 +1,9 @@
 /**
  * Quiz Submit Worker — Cloudflare Worker
  *
- * 1. Upserts GHL contact with quiz tags and custom field
+ * 1. Upserts GHL contact with quiz plan tag
  * 2. Calls Claude API to generate personalized email sections
- * 3. Builds and sends HTML results email via GHL conversations API
+ * 3. Builds HTML results email and sends it directly via GHL conversations API
  *
  * Required environment variables (Cloudflare Workers dashboard):
  *   GHL_API_KEY       — GHL Private Integration Token
@@ -17,6 +17,7 @@
  */
 
 const LOCATION_ID = 'vawIXBjgzYfIQJECet2z';
+const EMAIL_FROM  = 'info@businesssmoothie.com'; // must be a verified sending address in GHL
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -60,17 +61,9 @@ const PLAN_DESCS = {
 };
 
 const HOW_BS_FITS_STATIC = [
-  'Business Smoothie is not a collection of apps. It is one platform where everything your ' +
-  'business needs to run — AI, website, CRM, phone, social media, reputation, and reporting ' +
-  '— works together from day one.',
-
-  'Business AI leads everything. It answers your calls and texts, follows up with leads, requests ' +
-  'reviews, and keeps your business moving 24 hours a day — connected to the latest AI ' +
-  'advances and improving automatically. You do not manage it. It just runs.',
-
-  'The rest of the platform supports it. Your website works. Your CRM captures every contact. ' +
-  'Your phone is a business tool. Your social stays active. Your reviews keep coming in. And your ' +
-  'reporting dashboard shows you what is actually happening so you can make good decisions.'
+  'One platform — not a collection of apps. AI, website, CRM, phone, social media, reputation, and reporting all work together from day one.',
+  'Business AI leads everything. It answers calls, follows up with leads, requests reviews, and keeps your business moving 24/7 — automatically.',
+  'The rest of the platform supports it. Website, CRM, phone, social, reviews, and reporting all running so you can focus on decisions, not operations.'
 ];
 
 const CLAUDE_SYSTEM =
@@ -82,19 +75,26 @@ const CLAUDE_SYSTEM =
 
   'The plan recommendations have already been determined by the quiz logic and are passed to you as ' +
   'fixed inputs. Do not change or second-guess the recommendations. Your job is to write warm, ' +
-  'specific, honest narrative copy that supports them.\n\n' +
+  'specific, honest copy that supports them.\n\n' +
 
   'Write in second person — "you" and "your business." Direct, warm, confident. Not salesy. ' +
   'No hype. No exclamation marks. Write like a knowledgeable friend who looked at their answers ' +
   'and has something real to say.\n\n' +
 
+  'FORMAT RULES — follow exactly:\n' +
+  '- whatWeHeard, whatYouNeed, howBSFits must be arrays of short bullet strings (not paragraphs).\n' +
+  '- Each bullet: 1-2 sentences max. Tight. Specific. No filler.\n' +
+  '- bigPicture: a single paragraph, 2-3 sentences max.\n' +
+  '- secondaryMention: a single paragraph, 1-2 sentences max, or empty string.\n' +
+  '- The reader should be able to scan the full email in under 60 seconds.\n\n' +
+
   'Return ONLY a JSON object with no markdown, no backticks, no preamble. Exactly this structure:\n' +
   '{\n' +
-  '  "whatWeHeard": "3-4 sentences. Reference their specific situation. Make them feel genuinely seen. No product mentions yet.",\n' +
-  '  "bigPicture": "2-3 sentences. State the core friction or opportunity clearly. Explain why it matters and what it is costing them or making possible. For businesses with strong systems and good AI, frame as opportunity not problem.",\n' +
-  '  "whatYouNeed": "2-3 sentences. Describe what their business operation should actually look like. Outcomes only — no product names yet.",\n' +
-  '  "howBSFits": "2-3 sentences. Connect their specific situation to what Business Smoothie does. Business AI leads. Be specific to their signals.",\n' +
-  '  "secondaryMention": "1-2 sentences only. If a secondary plan is provided, write a brief natural mention of it as an alternative starting point. If no secondary plan, return an empty string."\n' +
+  '  "whatWeHeard": ["bullet 1 — specific observation about their situation", "bullet 2", "bullet 3"],\n' +
+  '  "bigPicture": "2-3 sentences max. State the core friction or opportunity. For businesses with strong systems, frame as opportunity not problem.",\n' +
+  '  "whatYouNeed": ["bullet 1 — specific outcome their business needs", "bullet 2", "bullet 3"],\n' +
+  '  "howBSFits": ["bullet 1 — connect their specific signal to what BS does, Business AI leads", "bullet 2", "bullet 3"],\n' +
+  '  "secondaryMention": "1-2 sentences only, or empty string if no secondary plan."\n' +
   '}';
 
 addEventListener('fetch', function(event) {
@@ -120,13 +120,15 @@ async function handle(request) {
     secondaryPlan
   } = body;
 
+  console.log('[1] Incoming payload — firstName:', firstName, '| email:', email, '| planTag:', planTag, '| planName:', planName, '| secondaryPlan:', secondaryPlan, '| whatWeHeard length:', (whatWeHeard || '').length, '| bigIssue length:', (bigIssue || '').length);
+
   if (!email) return new Response('Email required', { status: 400, headers: CORS });
 
   const recommendedKey  = planTag ? planTag.replace('quiz-match-', '') : null;
   const secondaryKey    = secondaryPlan || null;
   const displayPlanName = planName || (recommendedKey && PLAN_NAMES[recommendedKey]) || '';
 
-  const tags = ['quiz-completed'];
+  const tags = [];
   if (planTag) tags.push(planTag);
 
   const upsertPayload = {
@@ -135,9 +137,6 @@ async function handle(request) {
     locationId: LOCATION_ID,
     tags:       tags
   };
-  if (planName) {
-    upsertPayload.customFields = [{ key: 'quiz_recommended_plan', field_value: planName }];
-  }
 
   // ── STEP 1: GHL contact upsert ────────────────────────────────────────────
   let contactId = null;
@@ -154,8 +153,10 @@ async function handle(request) {
     if (upsertRes.ok) {
       const upsertData = await upsertRes.json();
       contactId = (upsertData.contact && upsertData.contact.id) || upsertData.id || null;
+      console.log('[2] GHL upsert OK — status:', upsertRes.status, '| contactId:', contactId);
     } else {
-      console.error('GHL upsert error ' + upsertRes.status + ':', await upsertRes.text());
+      const upsertErr = await upsertRes.text();
+      console.error('[2] GHL upsert error — status:', upsertRes.status, '| body:', upsertErr);
     }
   } catch (e) {
     console.error('GHL upsert fetch error:', e.message);
@@ -189,7 +190,7 @@ async function handle(request) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model:      'claude-sonnet-4-20250514',
+        model:      'claude-sonnet-4-6',
         max_tokens: 1800,
         system:     CLAUDE_SYSTEM,
         messages:   [{ role: 'user', content: userMsg }]
@@ -197,14 +198,18 @@ async function handle(request) {
     });
     if (claudeRes.ok) {
       const claudeData = await claudeRes.json();
-      const raw = claudeData.content[0].text.trim();
+      const raw = claudeData.content[0].text.trim()
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```\s*$/, '');
+      console.log('[3] Claude API OK — status:', claudeRes.status, '| raw length:', raw.length);
       try {
         claude = JSON.parse(raw);
       } catch (pe) {
-        console.error('Claude JSON parse error:', pe.message, '| raw:', raw.slice(0, 300));
+        console.error('[3] Claude JSON parse error:', pe.message, '| raw:', raw.slice(0, 300));
       }
     } else {
-      console.error('Claude API error ' + claudeRes.status + ':', await claudeRes.text());
+      const claudeErr = await claudeRes.text();
+      console.error('[3] Claude API error — status:', claudeRes.status, '| body:', claudeErr);
     }
   } catch (e) {
     console.error('Claude fetch error:', e.message);
@@ -212,20 +217,20 @@ async function handle(request) {
 
   // Fall back to short versions from quiz if Claude failed
   const content = claude || {
-    whatWeHeard:      whatWeHeard   || '',
-    bigPicture:       bigIssue      || '',
-    whatYouNeed:      recommendation || '',
-    howBSFits:        howBSFits     || '',
+    whatWeHeard:      whatWeHeard    ? [whatWeHeard]    : [],
+    bigPicture:       bigIssue       || '',
+    whatYouNeed:      recommendation ? [recommendation] : [],
+    howBSFits:        howBSFits      ? [howBSFits]      : [],
     secondaryMention: ''
   };
 
   // ── STEP 3: Build HTML email ───────────────────────────────────────────────
   const htmlEmail = buildEmail(firstName, recommendedKey, secondaryKey, displayPlanName, content);
 
-  // ── STEP 4: Send via GHL conversations API ────────────────────────────────
+  // ── STEP 4: Send results email directly via GHL conversations API ─────────
   if (contactId) {
     try {
-      const emailRes = await fetch('https://services.leadconnectorhq.com/conversations/messages/outbound', {
+      const emailRes = await fetch('https://services.leadconnectorhq.com/conversations/messages', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + GHL_API_KEY,
@@ -235,20 +240,23 @@ async function handle(request) {
         body: JSON.stringify({
           type:         'Email',
           contactId:    contactId,
-          emailFrom:    'info@businesssmoothie.com',
-          emailReplyTo: 'ramon@businesssmoothie.com',
-          emailSubject: 'Your Business Smoothie Quiz Results and Recommendation',
-          emailBody:    htmlEmail
+          emailFrom:    EMAIL_FROM,
+          emailSubject: 'Your Business Smoothie Full Quiz Results',
+          html:         htmlEmail
         })
       });
-      if (!emailRes.ok) {
-        console.error('GHL email error ' + emailRes.status + ':', await emailRes.text());
+      if (emailRes.ok) {
+        const emailData = await emailRes.json();
+        console.log('[4] Email sent OK — status:', emailRes.status, '| messageId:', emailData.messageId || emailData.id || '(none)');
+      } else {
+        const emailErr = await emailRes.text();
+        console.error('[4] Email send error — status:', emailRes.status, '| body:', emailErr);
       }
     } catch (e) {
-      console.error('GHL email fetch error:', e.message);
+      console.error('[4] Email send fetch error:', e.message);
     }
   } else {
-    console.log('No contactId — skipping email send');
+    console.log('[4] No contactId — skipping email send');
   }
 
   return new Response(JSON.stringify({ success: true }), {
@@ -286,6 +294,15 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     }).join('');
   }
 
+  function bullets(arr) {
+    if (!arr || !arr.length) return '';
+    var LI = 'font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#999999;line-height:1.6;padding:3px 0 3px 20px;position:relative;';
+    var items = arr.map(function(item) {
+      return '<li style="' + LI + '"><span style="position:absolute;left:0;color:#00C45A;font-weight:bold;">•</span>' + esc(item) + '</li>';
+    }).join('');
+    return '<ul style="list-style:none;padding:0;margin:0 0 14px;">' + items + '</ul>';
+  }
+
   function section(label, body) {
     return '<p style="' + LB + '">' + label + '</p>' + body;
   }
@@ -299,9 +316,7 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     );
   }
 
-  var staticFits = HOW_BS_FITS_STATIC.map(function(p) {
-    return '<p style="' + GY + '">' + esc(p) + '</p>';
-  }).join('');
+  var staticFits = bullets(HOW_BS_FITS_STATIC);
 
   return (
     '<!DOCTYPE html><html lang="en"><head>' +
@@ -330,10 +345,10 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     'Thanks for taking the Business Smoothie Biz Quiz. We went through every answer — here is what we found.' +
     '</p>' +
 
-    section('WHAT WE HEARD',            para(content.whatWeHeard)) +
+    section('WHAT WE HEARD',            bullets(content.whatWeHeard)) +
     section('THE BIG PICTURE',          para(content.bigPicture)) +
-    section('WHAT YOUR BUSINESS NEEDS', para(content.whatYouNeed)) +
-    section('HOW BUSINESS SMOOTHIE FITS', staticFits + para(content.howBSFits)) +
+    section('WHAT YOUR BUSINESS NEEDS', bullets(content.whatYouNeed)) +
+    section('HOW BUSINESS SMOOTHIE FITS', staticFits + bullets(content.howBSFits)) +
 
     section('YOUR PLAN MATCH',
       '<p style="' + GY + '">Based on your results, here is what we recommend:</p>' +
