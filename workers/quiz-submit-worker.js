@@ -241,7 +241,7 @@ async function handle(request) {
           type:         'Email',
           contactId:    contactId,
           emailFrom:    EMAIL_FROM,
-          emailSubject: 'Your Business Smoothie Full Quiz Results',
+          subject: 'Your Business Smoothie Full Quiz Results',
           html:         htmlEmail
         })
       });
