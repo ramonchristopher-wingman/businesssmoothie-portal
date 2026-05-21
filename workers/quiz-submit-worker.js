@@ -362,23 +362,35 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     ) : '') +
 
     section('WHAT HAPPENS NEXT',
-      '<p style="' + GY + '">You have a few options depending on where you are.</p>' +
-      '<p style="' + GY + '">' +
-      'If you are ready to talk through your results and take the next step — book a 25-minute call ' +
-      'with one of our specialists. We will look at your results together and map out exactly what makes ' +
-      'sense for your business. No pitch, no pressure — just a real conversation about what would actually help.' +
-      '</p>' +
-      '<p style="' + GY + '">' +
-      'If you want to hear what Business Smoothie sounds like for a business like yours — give us a call. ' +
-      'Our AI assistant is available now and can walk you through what the platform does and how it works.' +
-      '</p>'
-    ) +
+      // Option 1 — Specialist Call
+      '<p style="' + LB + '">BOOK A SPECIALIST CALL</p>' +
+      '<p style="' + GY + '">A real 25-minute conversation with someone who has already read your results. No pitch, no pressure — just a straight conversation about what would actually help your business.</p>' +
+      '<div style="text-align:center;padding:4px 0 20px;">' +
+      btn('Book a Specialist Call', 'https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU') +
+      '</div>' +
 
-    '<div style="text-align:center;padding:8px 0 28px;">' +
-    btn('Book a Specialist Call', 'https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU') +
-    btn('Call Us — 515.400.0448', 'tel:5154000448') +
-    btn('Experience the AI Demo — 515.400.0332', 'tel:5154000332') +
-    '</div>' +
+      // Option 2 — Aimy
+      '<p style="' + LB + '">TALK TO AIMY — 515.400.0448</p>' +
+      '<div style="text-align:center;margin:0 0 12px;">' +
+      '<img src="https://businesssmoothie-portal.pages.dev/images/aimy.png" alt="Aimy" width="120"' +
+      ' style="display:inline-block;width:120px;border-radius:8px;" />' +
+      '</div>' +
+      '<p style="' + GY + '">Aimy is our AI assistant. She can answer questions about the platform, walk you through how it works, and book you with a specialist if you are ready. Good option if you want to learn more first.</p>' +
+      '<div style="text-align:center;padding:4px 0 20px;">' +
+      btn('Talk to Aimy — 515.400.0448', 'tel:5154000448') +
+      '</div>' +
+
+      // Option 3 — Kaiya demo
+      '<p style="' + LB + '">EXPERIENCE THE AI DEMO — 515.400.0332</p>' +
+      '<div style="text-align:center;margin:0 0 12px;">' +
+      '<img src="https://businesssmoothie-portal.pages.dev/images/kaiya.png" alt="Kaiya" width="120"' +
+      ' style="display:inline-block;width:120px;border-radius:8px;" />' +
+      '</div>' +
+      '<p style="' + GY + '">This is Kaiya, our AI Mixologist. Call this number to hear what Business AI sounds like running live for a real business. No human, just the demo.</p>' +
+      '<div style="text-align:center;padding:4px 0 20px;">' +
+      btn('Experience the AI Demo — 515.400.0332', 'tel:5154000332') +
+      '</div>'
+    ) +
 
     '<p style="' + F + 'font-size:15px;color:#999999;line-height:1.8;margin:0;">' +
     'Talk soon,<br>' +
