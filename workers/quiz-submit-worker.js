@@ -33,68 +33,68 @@ const PLAN_NAMES = {
   enterprise: 'Business Smoothie — Enterprise'
 };
 
-const PLAN_DESCS = {
-  splash:
-    'The focused entry. You pick one thing — Business AI, Smart Website, Integrated CRM, ' +
-    'Digital Freedom Phone, Integrated Social Media, or Reputation and Review Management — ' +
-    'and it runs for your business from day one. Complete on its own, and you can add more when ' +
-    'you are ready. Built for any business that wants to start focused, move fast on one specific ' +
-    'thing, or add one more piece to what is already working.',
-  lite:
-    'The full foundation. Business AI, Smart Website, and Integrated CRM — everything you ' +
-    'need to show up online, stay connected with your customers, and never miss a lead. One user, ' +
-    'one platform, running from day one.',
-  solo:
-    'The complete Business Smoothie system. Business AI, Smart Website, Integrated CRM, ' +
-    'Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and ' +
-    'Review Management, and Reporting Dashboard — all running for your business. Built for ' +
-    'solo operators and 2-person teams who are ready for the full platform.',
-  team:
-    'The complete Business Smoothie system built for a growing team. Every tool in the platform ' +
-    '— for up to 8 users. Everyone on the same system, with AI running across all of it. ' +
-    'Built for teams of 3 to 8 who need to stop working in silos and start running as one operation.',
-  enterprise:
-    'The complete Business Smoothie system at full scale. Every tool in the platform — for ' +
-    'organizations with real volume, complexity, and up to 50 users. Built for larger teams, ' +
-    'multi-location operations, and businesses that need infrastructure that matches what they ' +
-    'are actually running.'
+const PLAN_BULLETS = {
+  splash: [
+    'One focused tool — you choose the piece that matters most right now',
+    'Runs from day one with no setup overhead',
+    'Fully integrated with the rest of the platform when you are ready to grow',
+    'Complete on its own — not a trial, not a starter version'
+  ],
+  lite: [
+    'Business AI — answers calls, texts, and messages so you never miss a lead',
+    'Smart Website — professional, fast, and connected to your CRM from day one',
+    'Integrated CRM — every contact captured, every conversation tracked',
+    'One platform, one login, running your foundation from day one'
+  ],
+  solo: [
+    'Business AI, Smart Website, and Integrated CRM — your full foundation',
+    'Automations and Funnels — your follow-up and lead flow, running without you',
+    'Digital Freedom Phone, Integrated Social Media, and Reputation Management',
+    'Reporting Dashboard — see exactly what is happening in your business'
+  ],
+  team: [
+    'The complete Business Smoothie platform — every tool, for up to 8 users',
+    'Business AI running across the entire team — calls, messages, follow-up, reviews',
+    'Everyone on the same system — no silos, no dropped leads, no missed handoffs',
+    'Built for teams of 3 to 8 who need to operate as one'
+  ],
+  enterprise: [
+    'The complete Business Smoothie platform at full scale — up to 50 users',
+    'Business AI running across every team and every location',
+    'Built for larger teams, multi-location operations, and real volume',
+    'Infrastructure that matches what you are actually running'
+  ]
 };
-
-const HOW_BS_FITS_STATIC = [
-  'One platform — not a collection of apps. AI, website, CRM, phone, social media, reputation, and reporting all work together from day one.',
-  'Business AI leads everything. It answers calls, follows up with leads, requests reviews, and keeps your business moving 24/7 — automatically.',
-  'The rest of the platform supports it. Website, CRM, phone, social, reviews, and reporting all running so you can focus on decisions, not operations.'
-];
 
 const CLAUDE_SYSTEM =
   'You write personalized results emails for people who just completed the Business Smoothie Biz Quiz. ' +
-  'Business Smoothie is a business operations platform — not a marketing platform. It helps ' +
-  'businesses run smarter, respond faster, and grow without adding overhead. Business AI always leads ' +
-  '— it answers calls, responds to messages, follows up with leads, requests reviews, and keeps ' +
-  'the business moving 24/7.\n\n' +
+  'Business Smoothie is a complete business operations system. Most businesses need a system they can ' +
+  'trust that runs without them babysitting it. That is the message — not a feature breakdown, not an AI pitch.\n\n' +
 
   'The plan recommendations have already been determined by the quiz logic and are passed to you as ' +
-  'fixed inputs. Do not change or second-guess the recommendations. Your job is to write warm, ' +
-  'specific, honest copy that supports them.\n\n' +
+  'fixed inputs. Do not change or second-guess them. Write like a knowledgeable advisor who reviewed ' +
+  'their answers and has a clear point of view — not a sales page.\n\n' +
 
-  'Write in second person — "you" and "your business." Direct, warm, confident. Not salesy. ' +
-  'No hype. No exclamation marks. Write like a knowledgeable friend who looked at their answers ' +
-  'and has something real to say.\n\n' +
+  'Write in second person — "you" and "your business." Direct, warm, confident. No hype. ' +
+  'No exclamation marks. Do not explain what AI does at length. ' +
+  'Business Smoothie is the system. AI is part of it. Neither needs to be explained — just trusted.\n\n' +
+
+  'The plan match should feel like a colleague saying "based on what you told us, this is the right fit." ' +
+  'Confident. Warm. Done.\n\n' +
 
   'FORMAT RULES — follow exactly:\n' +
-  '- whatWeHeard, whatYouNeed, howBSFits must be arrays of short bullet strings (not paragraphs).\n' +
-  '- Each bullet: 1-2 sentences max. Tight. Specific. No filler.\n' +
-  '- bigPicture: a single paragraph, 2-3 sentences max.\n' +
-  '- secondaryMention: a single paragraph, 1-2 sentences max, or empty string.\n' +
+  '- whatWeHeard: array of exactly 3 bullet strings. Personal, specific to their answers. No product mentions.\n' +
+  '- whatYouNeed: array of exactly 3 bullet strings. Outcomes only — what their business operation should look like. Tight. 1 sentence each.\n' +
+  '- whatWeCanDo: a single paragraph, 2-3 sentences max. Do NOT mention the plan name — the email already names it. ' +
+  'Focus entirely on what changes for their business: their specific situation, the friction that goes away, the outcome they get. ' +
+  'Benefits-focused, advisor tone. Do not list features. Be direct.\n' +
   '- The reader should be able to scan the full email in under 60 seconds.\n\n' +
 
   'Return ONLY a JSON object with no markdown, no backticks, no preamble. Exactly this structure:\n' +
   '{\n' +
-  '  "whatWeHeard": ["bullet 1 — specific observation about their situation", "bullet 2", "bullet 3"],\n' +
-  '  "bigPicture": "2-3 sentences max. State the core friction or opportunity. For businesses with strong systems, frame as opportunity not problem.",\n' +
-  '  "whatYouNeed": ["bullet 1 — specific outcome their business needs", "bullet 2", "bullet 3"],\n' +
-  '  "howBSFits": ["bullet 1 — connect their specific signal to what BS does, Business AI leads", "bullet 2", "bullet 3"],\n' +
-  '  "secondaryMention": "1-2 sentences only, or empty string if no secondary plan."\n' +
+  '  "whatWeHeard": ["bullet 1", "bullet 2", "bullet 3"],\n' +
+  '  "whatYouNeed": ["bullet 1", "bullet 2", "bullet 3"],\n' +
+  '  "whatWeCanDo": "2-3 sentence paragraph specific to their situation."\n' +
   '}';
 
 addEventListener('fetch', function(event) {
@@ -120,12 +120,11 @@ async function handle(request) {
     secondaryPlan
   } = body;
 
-  console.log('[1] Incoming payload — firstName:', firstName, '| email:', email, '| planTag:', planTag, '| planName:', planName, '| secondaryPlan:', secondaryPlan, '| whatWeHeard length:', (whatWeHeard || '').length, '| bigIssue length:', (bigIssue || '').length);
+  console.log('[1] Incoming payload — firstName:', firstName, '| email:', email, '| planTag:', planTag, '| planName:', planName, '| whatWeHeard length:', (whatWeHeard || '').length, '| bigIssue length:', (bigIssue || '').length);
 
   if (!email) return new Response('Email required', { status: 400, headers: CORS });
 
   const recommendedKey  = planTag ? planTag.replace('quiz-match-', '') : null;
-  const secondaryKey    = secondaryPlan || null;
   const displayPlanName = planName || (recommendedKey && PLAN_NAMES[recommendedKey]) || '';
 
   const tags = [];
@@ -163,21 +162,16 @@ async function handle(request) {
   }
 
   // ── STEP 2: Claude API — generate email sections ──────────────────────────
-  const secName = secondaryKey ? (PLAN_NAMES[secondaryKey] || secondaryKey) : 'none';
-
   const userMsg = [
     'First name: ' + (firstName || 'there'),
-    'Primary recommended plan: ' + displayPlanName,
-    'Secondary plan (if any): ' + secName,
+    'Recommended plan: ' + displayPlanName,
     'What we heard (short): ' + (whatWeHeard || ''),
     'Big issue or opportunity (short): ' + (bigIssue || ''),
     'Recommendation (short): ' + (recommendation || ''),
     'How BS fits (short): ' + (howBSFits || ''),
     '',
-    'Write the expanded personalized email sections for this person. The plan recommendations ' +
-    'are locked — write narrative that supports ' + displayPlanName +
-    ' as the primary recommendation' +
-    (secondaryKey ? ', with ' + secName + ' as a brief alternative mention.' : '.')
+    'Write the personalized email sections. The plan recommendation is locked — write copy that ' +
+    'supports ' + displayPlanName + ' with confidence and specificity.'
   ].join('\n');
 
   let claude = null;
@@ -191,7 +185,7 @@ async function handle(request) {
       },
       body: JSON.stringify({
         model:      'claude-sonnet-4-6',
-        max_tokens: 1800,
+        max_tokens: 1200,
         system:     CLAUDE_SYSTEM,
         messages:   [{ role: 'user', content: userMsg }]
       })
@@ -215,17 +209,15 @@ async function handle(request) {
     console.error('Claude fetch error:', e.message);
   }
 
-  // Fall back to short versions from quiz if Claude failed
+  // Fall back to short quiz versions if Claude failed
   const content = claude || {
-    whatWeHeard:      whatWeHeard    ? [whatWeHeard]    : [],
-    bigPicture:       bigIssue       || '',
-    whatYouNeed:      recommendation ? [recommendation] : [],
-    howBSFits:        howBSFits      ? [howBSFits]      : [],
-    secondaryMention: ''
+    whatWeHeard:  whatWeHeard    ? [whatWeHeard]    : [],
+    whatYouNeed:  recommendation ? [recommendation] : [],
+    whatWeCanDo:  howBSFits      || ''
   };
 
   // ── STEP 3: Build HTML email ───────────────────────────────────────────────
-  const htmlEmail = buildEmail(firstName, recommendedKey, secondaryKey, displayPlanName, content);
+  const htmlEmail = buildEmail(firstName, recommendedKey, displayPlanName, content);
 
   // ── STEP 4: Send results email directly via GHL conversations API ─────────
   if (contactId) {
@@ -238,11 +230,11 @@ async function handle(request) {
           'Version':       '2021-04-15'
         },
         body: JSON.stringify({
-          type:         'Email',
-          contactId:    contactId,
-          emailFrom:    EMAIL_FROM,
-          subject: 'Your Business Smoothie Full Quiz Results',
-          html:         htmlEmail
+          type:      'Email',
+          contactId: contactId,
+          emailFrom: EMAIL_FROM,
+          subject:   'Your Business Smoothie Full Quiz Results',
+          html:      htmlEmail
         })
       });
       if (emailRes.ok) {
@@ -275,28 +267,31 @@ function esc(s) {
     .replace(/"/g, '&quot;');
 }
 
-function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) {
-  var name    = esc(firstName || 'there');
-  var pName   = esc(planName || (recommendedKey && PLAN_NAMES[recommendedKey]) || '');
-  var pDesc   = esc(PLAN_DESCS[recommendedKey] || '');
-  var showSec = !!(secondaryKey && content.secondaryMention && content.secondaryMention.trim());
-  var sName   = showSec ? esc(PLAN_NAMES[secondaryKey] || secondaryKey) : '';
+function buildEmail(firstName, recommendedKey, planName, content) {
+  var name   = esc(firstName || 'there');
+  var pName  = esc(planName || (recommendedKey && PLAN_NAMES[recommendedKey]) || '');
+  var pShort = recommendedKey
+    ? (recommendedKey.charAt(0).toUpperCase() + recommendedKey.slice(1))
+    : pName;
 
   var F  = 'font-family:Arial,Helvetica,sans-serif;';
-  var WH = F + 'font-size:15px;color:#ffffff;line-height:1.7;margin:0 0 8px;';
-  var GY = F + 'font-size:15px;color:#999999;line-height:1.7;margin:0 0 14px;';
-  var LB = F + 'font-size:11px;font-weight:700;color:#00C45A;text-transform:uppercase;letter-spacing:1.2px;margin:28px 0 10px 0;';
+  var TX = F + 'font-size:15px;color:#ffffff;line-height:1.75;margin:0 0 14px;';
+  // Section headers — green spaced caps, same weight/size as what was working
+  var LB = F + 'font-size:11px;font-weight:700;color:#00C45A;text-transform:uppercase;letter-spacing:1.2px;margin:0 0 10px;';
+  // Sub-labels inside WHAT HAPPENS NEXT
+  var SL = F + 'font-size:11px;font-weight:700;color:#00C45A;text-transform:uppercase;letter-spacing:1.2px;margin:24px 0 8px;';
+  var HR = '<hr style="border:none;border-top:1px solid #2a2a2a;margin:32px 0;" />';
 
   function para(text) {
     if (!text) return '';
     return text.split(/\n\n+/).map(function(p) {
-      return '<p style="' + GY + '">' + esc(p.trim()) + '</p>';
+      return '<p style="' + TX + '">' + esc(p.trim()) + '</p>';
     }).join('');
   }
 
   function bullets(arr) {
     if (!arr || !arr.length) return '';
-    var LI = 'font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#999999;line-height:1.6;padding:3px 0 3px 20px;position:relative;';
+    var LI = F + 'font-size:15px;color:#ffffff;line-height:1.75;padding:4px 0 4px 20px;position:relative;';
     var items = arr.map(function(item) {
       return '<li style="' + LI + '"><span style="position:absolute;left:0;color:#00C45A;font-weight:bold;">•</span>' + esc(item) + '</li>';
     }).join('');
@@ -304,7 +299,7 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
   }
 
   function section(label, body) {
-    return '<p style="' + LB + '">' + label + '</p>' + body;
+    return HR + '<p style="' + LB + '">' + label + '</p>' + body;
   }
 
   function btn(label, href) {
@@ -316,7 +311,7 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     );
   }
 
-  var staticFits = bullets(HOW_BS_FITS_STATIC);
+  var planFeatures = bullets(PLAN_BULLETS[recommendedKey] || []);
 
   return (
     '<!DOCTYPE html><html lang="en"><head>' +
@@ -333,68 +328,83 @@ function buildEmail(firstName, recommendedKey, secondaryKey, planName, content) 
     '<tr><td style="padding:40px;">' +
 
     // Logo
-    '<div style="text-align:center;margin-bottom:32px;">' +
+    '<div style="text-align:center;margin-bottom:36px;">' +
     '<img src="https://businesssmoothie-portal.pages.dev/assets/Copy_of_Business__10_.png"' +
     ' alt="Business Smoothie" width="200"' +
     ' style="display:inline-block;max-width:200px;width:100%;" />' +
     '</div>' +
 
     // Opening
-    '<p style="' + WH + '">Hi ' + name + ',</p>' +
-    '<p style="' + F + 'font-size:15px;color:#999999;line-height:1.7;margin:0 0 28px;">' +
-    'Thanks for taking the Business Smoothie Biz Quiz. We went through every answer — here is what we found.' +
+    '<p style="' + F + 'font-size:15px;color:#ffffff;line-height:1.75;margin:0 0 6px;">Hi ' + name + ',</p>' +
+    '<p style="' + TX + 'margin:0;">' +
+    'Thanks for taking the Business Smoothie Biz Quiz. Here is what we found.' +
     '</p>' +
 
-    section('WHAT WE HEARD',            bullets(content.whatWeHeard)) +
-    section('THE BIG PICTURE',          para(content.bigPicture)) +
-    section('WHAT YOUR BUSINESS NEEDS', bullets(content.whatYouNeed)) +
-    section('HOW BUSINESS SMOOTHIE FITS', staticFits + bullets(content.howBSFits)) +
+    // WHAT WE HEARD
+    section('What We Heard', bullets(content.whatWeHeard)) +
 
-    section('YOUR PLAN MATCH',
-      '<p style="' + GY + '">Based on your results, here is what we recommend:</p>' +
-      '<p style="' + F + 'font-size:22px;font-weight:bold;color:#00C45A;line-height:1.2;margin:0 0 14px;">' + pName + '</p>' +
-      '<p style="' + GY + '">' + pDesc + '</p>'
+    // WHAT YOUR BUSINESS NEEDS
+    section('What Your Business Needs', bullets(content.whatYouNeed)) +
+
+    // WHAT WE CAN DO TOGETHER
+    section('What We Can Do Together',
+      '<p style="' + TX + '">' +
+      'Based on what you shared, the Business Smoothie ' + esc(pShort) + ' plan seems like the right fit for where you are.' +
+      '</p>' +
+      para(content.whatWeCanDo)
     ) +
 
-    (showSec ? section('ALSO WORTH A LOOK',
-      '<p style="' + F + 'font-size:18px;font-weight:bold;color:#ffffff;line-height:1.2;margin:0 0 12px;">' + sName + '</p>' +
-      para(content.secondaryMention)
-    ) : '') +
+    // YOUR PLAN MATCH
+    section('Your Plan Match',
+      '<p style="' + F + 'font-size:22px;font-weight:bold;color:#00C45A;line-height:1.2;margin:8px 0 16px;">' + pName + '</p>' +
+      planFeatures +
+      '<p style="' + TX + 'margin:16px 0 0;">' +
+      'Want to see exactly what this looks like for your business? ' +
+      '<a href="https://businesssmoothie.com" style="color:#00C45A;font-weight:bold;text-decoration:underline;">' +
+      'Learn more about the ' + esc(pShort) + ' plan' +
+      '</a>' +
+      '</p>'
+    ) +
 
-    section('WHAT HAPPENS NEXT',
+    // WHAT HAPPENS NEXT
+    section('What Happens Next',
+
       // Option 1 — Specialist Call
-      '<p style="' + LB + '">BOOK A SPECIALIST CALL</p>' +
-      '<p style="' + GY + '">A real 25-minute conversation with someone who has already read your results. No pitch, no pressure — just a straight conversation about what would actually help your business.</p>' +
+      '<p style="' + SL + '">Book a Specialist Call</p>' +
+      '<p style="' + TX + '">A 25-minute call with a specialist to talk through your results and next steps.</p>' +
       '<div style="text-align:center;padding:4px 0 20px;">' +
-      btn('Book a Specialist Call', 'https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU') +
+      btn('Book a Specialist Call', 'https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234') +
       '</div>' +
 
       // Option 2 — Aimy
-      '<p style="' + LB + '">TALK TO AIMY — 515.400.0448</p>' +
+      '<p style="' + SL + '">Talk to Aimy — 515.400.0448</p>' +
       '<div style="text-align:center;margin:0 0 12px;">' +
       '<img src="https://businesssmoothie-portal.pages.dev/images/aimy.png" alt="Aimy" width="120"' +
       ' style="display:inline-block;width:120px;border-radius:8px;" />' +
       '</div>' +
-      '<p style="' + GY + '">Aimy is our AI assistant. She can answer questions about the platform, walk you through how it works, and book you with a specialist if you are ready. Good option if you want to learn more first.</p>' +
+      '<p style="' + TX + '">Aimy is our AI assistant. She can answer questions about the platform, walk you through how it works, and book you with a specialist if you are ready. Good option if you want to learn more first.</p>' +
       '<div style="text-align:center;padding:4px 0 20px;">' +
       btn('Talk to Aimy — 515.400.0448', 'tel:5154000448') +
       '</div>' +
 
       // Option 3 — Kaiya demo
-      '<p style="' + LB + '">EXPERIENCE THE AI DEMO — 515.400.0332</p>' +
+      '<p style="' + SL + '">Experience the AI Demo — 515.400.0332</p>' +
       '<div style="text-align:center;margin:0 0 12px;">' +
       '<img src="https://businesssmoothie-portal.pages.dev/images/kaiya.png" alt="Kaiya" width="120"' +
       ' style="display:inline-block;width:120px;border-radius:8px;" />' +
       '</div>' +
-      '<p style="' + GY + '">This is Kaiya, our AI Mixologist. Call this number to hear what Business AI sounds like running live for a real business. No human, just the demo.</p>' +
-      '<div style="text-align:center;padding:4px 0 20px;">' +
+      '<p style="' + TX + '">This is Kaiya, our AI Mixologist. Call this number to hear what Business AI sounds like for <em>your business</em>. Just tell her your business name and industry, and she will do the rest.</p>' +
+      '<div style="text-align:center;padding:4px 0 8px;">' +
       btn('Experience the AI Demo — 515.400.0332', 'tel:5154000332') +
       '</div>'
     ) +
 
-    '<p style="' + F + 'font-size:15px;color:#999999;line-height:1.8;margin:0;">' +
+    HR +
+
+    // Sign-off
+    '<p style="' + F + 'font-size:15px;color:#ffffff;line-height:1.8;margin:0;">' +
     'Talk soon,<br>' +
-    '<strong style="color:#ffffff;">The Smoothie Squad</strong><br>' +
+    '<strong>The Smoothie Squad</strong><br>' +
     'Business Smoothie<br>' +
     '515.400.0448<br>' +
     'businesssmoothie.com' +
