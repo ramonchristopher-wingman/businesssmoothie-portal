@@ -435,6 +435,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
     </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 </div>
 
 <script>
@@ -1136,6 +1138,7 @@ function switchTab(tab){
 }
 function showToast(msg){
   const t=document.getElementById('toast');
+  if(!t)return;
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
@@ -1170,4 +1173,3 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 </body>
 </html>
-
