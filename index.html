@@ -160,7 +160,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .cal-task-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-task-org{font-size:12px;color:var(--text2);margin-top:2px}
 .cal-empty{text-align:center;padding:24px 16px;color:var(--text3);font-size:13px}
- 
+
 /* IDEAS */
 .idea-list{padding:12px 16px}
 .idea-card{background:var(--surface);border-radius:14px;border:0.5px solid var(--border);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:opacity .15s}
@@ -237,7 +237,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     </div>
     <span class="topbar-right" id="topbar-right"></span>
   </div>
- 
+
   <div class="screens">
     <!-- HOME -->
     <div class="screen active" id="screen-home">
@@ -256,7 +256,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div class="activity-wrap" id="activity-wrap"></div>
       <div class="section-hdr" style="padding-top:4px"><span class="section-lbl">Synced</span><span class="sync-ok" id="last-sync-time">—</span></div>
     </div>
- 
+
     <!-- ACCOUNTS -->
     <div class="screen" id="screen-accounts">
       <div class="toolbar">
@@ -271,7 +271,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
       <div class="acc-list" id="acc-list"></div>
     </div>
- 
+
     <!-- DETAIL -->
     <div class="screen" id="screen-detail">
       <div class="back-bar">
@@ -281,7 +281,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
       <div class="detail-body" id="detail-body"></div>
     </div>
- 
+
     <!-- PROJECTS -->
     <div class="screen" id="screen-projects">
       <div class="toolbar">
@@ -294,7 +294,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
       <div class="proj-list" id="proj-list"></div>
     </div>
- 
+
     <!-- CALENDAR -->
     <div class="screen" id="screen-calendar">
       <div class="cal-nav">
@@ -305,7 +305,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div id="cal-grid-wrap"></div>
       <div id="cal-day-panel" class="cal-day-panel"></div>
     </div>
- 
+
     <!-- IDEAS -->
     <div class="screen" id="screen-ideas">
       <div class="toolbar">
@@ -320,13 +320,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
       <div class="idea-list" id="idea-list"></div>
     </div>
- 
+
     <!-- MESSAGES -->
     <div class="screen" id="screen-messages">
-      <div class="toolbar"><div class="filter-row"><span style="font-size:13px;color:var(--text2)">Conversations by account</span></div></div>
+      <div style="padding:12px 16px 8px;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em">Conversations by account</div>
       <div class="msg-list" id="msg-list"></div>
     </div>
- 
+
     <!-- SETTINGS -->
     <div class="screen" id="screen-settings">
       <div class="settings-body">
@@ -354,7 +354,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
     </div>
   </div>
- 
+
   <nav class="bnav">
     <div class="ni on" id="ni-home" onclick="switchTab('home')"><div class="ni-icon">⌂</div><div class="ni-lbl">Home</div></div>
     <div class="ni" id="ni-accounts" onclick="switchTab('accounts')"><div class="ni-icon">◎</div><div class="ni-lbl">Accounts</div></div>
@@ -363,7 +363,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     <div class="ni" id="ni-ideas" onclick="switchTab('ideas')"><div class="ni-icon">✦</div><div class="ni-lbl">Ideas</div></div>
     <div class="ni" id="ni-messages" onclick="switchTab('messages')"><div class="ni-icon">◻</div><div class="ni-lbl" id="msg-nav-lbl">Messages</div><div class="nbadge" id="msg-badge" style="display:none"></div></div>
   </nav>
- 
+
   <!-- ACCOUNT MODAL -->
   <div class="overlay" id="add-modal">
     <div class="sheet">
@@ -402,7 +402,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
     </div>
   </div>
- 
+
   <!-- TASK MODAL -->
   <div class="overlay" id="task-modal">
     <div class="sheet">
@@ -443,7 +443,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
     </div>
   </div>
- 
+
   <!-- IDEA MODAL -->
   <div class="overlay" id="idea-modal">
     <div class="sheet">
@@ -471,10 +471,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       </div>
     </div>
   </div>
- 
+
   <div class="toast" id="toast"></div>
 </div>
- 
+
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyFDaODL6pM2hLXMbUZUWhJt1HYgGkytLTrSadDy_lr8AL3uSrU8ipX6avhfiENQjYhTw/exec';
 const ADMIN_KEY='Custom1234!';
@@ -488,9 +488,9 @@ const TYPE={
 const PRIORITY_ORDER={high:0,medium:1,low:2};
 let orgs=[],projects=[],tasks=[],ideas=[],messages=[],currentFilter='all',currentProjFilter='all',currentIdeaFilter='all';
 let currentDetailId=null,editingId=null,calYear=0,calMonth=0,calSelectedDate=null;
- 
+
 function initials(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase()}
- 
+
 // THEME
 function applyTheme(dark){
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
@@ -502,7 +502,7 @@ function applyTheme(dark){
 }
 function toggleTheme(checked){applyTheme(checked);}
 function clearCache(){localStorage.removeItem('mp_cache');showToast('Cache cleared');loadFromSheet();}
- 
+
 // SHEET
 function loadFromSheet(){
   showToast('Syncing…');
@@ -529,7 +529,7 @@ function loadFromSheet(){
   s.onerror=()=>{showToast('Using cached data');loadCache();delete window[cb]};
   document.head.appendChild(s);
 }
- 
+
 function parseSheetDate(val){
   if(!val||val==='TBD'||val==='undefined')return '';
   // Already YYYY-MM-DD
@@ -605,7 +605,7 @@ function writeToSheet(tab,row){
 function deleteFromSheet(tab,id){
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'delete',tab,id})}).catch(()=>{});
 }
- 
+
 function seedFallback(){
   orgs=[
     {id:'org_001',name:'J. Anderson Auto',contact:'James Anderson',email:'james@jandersonauto.com',type:'client',billing:'paid',plan:'Solo',freq:'weekly',notes:'First client onboarded'},
@@ -658,7 +658,7 @@ function seedFallback(){
     {id:'msg_004',orgId:'org_004',orgName:'Regal Roofing Co.',sender:'Derek Hall',body:'Attached the intake form you requested.',timestamp:'11:30 AM',read:true}
   ];
 }
- 
+
 // ── DATE HELPERS ──────────────────────────────────────────
 function today(){const n=new Date();return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());}
 function pad(n){return String(n).padStart(2,'0');}
@@ -670,20 +670,28 @@ function dueSoon(due){
   const diff=(d-n)/(1000*60*60*24);
   return diff>=0&&diff<=7;
 }
-function fmtDue(due){
+function fmtTimestamp(ts){
+  if(!ts||ts==='undefined')return '';
+  // Already a short time like "10:22 AM"
+  if(/^\d{1,2}:\d{2}/.test(ts))return ts;
+  // Full datetime string from sheet
+  const d=new Date(ts);
+  if(isNaN(d.getTime()))return ts;
+  return d.toLocaleDateString([],{month:'short',day:'numeric'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
   if(!due||due==='TBD'||due==='undefined'||due==='')return '';
   const d=new Date(due+'T00:00:00');
   if(isNaN(d.getTime()))return '';
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return months[d.getMonth()]+' '+d.getDate();
 }
- 
+
 // ── RENDER ALL ─────────────────────────────────────────────
 function renderAll(){
   renderHome();renderAccounts();renderProjects();
   renderCalendar();renderIdeas();renderMessages();
 }
- 
+
 function renderHome(){
   const clients=orgs.filter(o=>o.type==='client').length;
   const yours=orgs.filter(o=>['personal','internal'].includes(o.type)).length;
@@ -726,7 +734,7 @@ function renderHome(){
     (a.time?'<div class="act-time">'+a.time+'</div>':'')+
     '</div></div>').join('');
 }
- 
+
 function renderAccounts(){
   const list=document.getElementById('acc-list');
   const filtered=currentFilter==='all'?orgs:orgs.filter(o=>o.type===currentFilter);
@@ -757,7 +765,7 @@ function filterProjs(status,el){
   document.querySelectorAll('#screen-projects .fpill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');renderProjects();
 }
- 
+
 // ── TASK RENDERING ─────────────────────────────────────────
 function renderTasksForProject(projId,container){
   const pt=tasks.filter(t=>t.projId===projId);
@@ -783,7 +791,7 @@ function renderTasksForProject(projId,container){
       '</div></div>';
   }).join('');
 }
- 
+
 // ── DETAIL ─────────────────────────────────────────────────
 function openDetail(orgId){
   const o=orgs.find(x=>x.id===orgId);if(!o)return;
@@ -800,7 +808,7 @@ function openDetail(orgId){
     '<div class="info-row"><span class="ilab">Meeting</span><span class="ival">'+(o.freq||'none')+'</span></div>'+
     (o.notes?'<div class="info-row"><span class="ilab">Notes</span><span class="ival" style="font-weight:400;font-size:13px">'+o.notes+'</span></div>':'')+
     '</div>';
- 
+
   // Projects + tasks per project
   h+='<div class="section-hdr" style="padding:4px 0 6px"><span class="section-lbl">Projects</span></div>';
   if(op.length){
@@ -824,7 +832,7 @@ function openDetail(orgId){
     });
   }
   h+='<div class="add-proj-row">+ Add project</div>';
- 
+
   // Ideas for this org
   const oi=ideas.filter(i=>i.orgId===orgId);
   h+='<div class="section-hdr" style="padding:12px 0 6px">'+
@@ -832,7 +840,7 @@ function openDetail(orgId){
     '<button class="add-task-btn" onclick="openAddIdeaForOrg(\''+orgId+'\')">+ Add idea</button>'+
   '</div>'+
   '<div class="info-block" id="ideas-for-org-'+orgId+'"></div>';
- 
+
   document.getElementById('detail-body').innerHTML=h;
   // Render tasks for each project
   op.forEach(p=>{
@@ -842,13 +850,13 @@ function openDetail(orgId){
   // Render ideas for this org
   const ideaContainer=document.getElementById('ideas-for-org-'+orgId);
   if(ideaContainer)renderIdeasForOrg(orgId,ideaContainer);
- 
+
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-detail').classList.add('active');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
   document.getElementById('ni-accounts').classList.add('on');
 }
- 
+
 function goBack(){
   switchTab('accounts');
 }
@@ -869,7 +877,7 @@ function editCurrentOrg(){
   handleTypeChange();
   document.getElementById('add-modal').classList.add('open');
 }
- 
+
 function renderProjects(){
   const list=document.getElementById('proj-list');
   const filtered=currentProjFilter==='all'?projects:projects.filter(p=>p.status===currentProjFilter);
@@ -884,7 +892,7 @@ function renderProjects(){
       '<span class="prog-pct">'+p.progress+'%</span></div></div>';
   }).join('');
 }
- 
+
 function renderMessages(){
   const list=document.getElementById('msg-list');
   const grouped={};
@@ -901,13 +909,13 @@ function renderMessages(){
     return '<div class="msg-card '+(g.unread>0?'msg-unread':'')+'" onclick="openDetail(\''+g.orgId+'\')">'+
       '<div class="avatar" style="background:'+tc.bg+';color:'+tc.color+';width:40px;height:40px;font-size:13px;flex-shrink:0">'+initials(g.orgName)+'</div>'+
       '<div class="msg-body"><div class="msg-hdr"><span class="msg-name">'+g.orgName+'</span>'+
-      '<span class="msg-time">'+(g.last.timestamp||'')+'</span></div>'+
+      '<span class="msg-time">'+fmtTimestamp(g.last.timestamp||'')+'</span></div>'+
       '<div class="msg-preview">'+g.last.sender+': '+g.last.body+'</div></div>'+
       (g.unread>0?'<div class="unread-pill">'+g.unread+'</div>':'')+
       '</div>';
   }).join('');
 }
- 
+
 // ── CALENDAR ───────────────────────────────────────────────
 function renderCalendar(){
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -973,7 +981,7 @@ function renderCalDayPanel(){
 }
 function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}calSelectedDate=null;renderCalendar();}
 function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}calSelectedDate=null;renderCalendar();}
- 
+
 // ── IDEAS ──────────────────────────────────────────────────
 function renderIdeas(){
   const list=document.getElementById('idea-list');
@@ -1080,7 +1088,7 @@ function deleteIdea(ideaId){
   closeIdeaModal();renderIdeas();renderHome();
   showToast('Idea deleted');
 }
- 
+
 // Also show ideas for an org inside detail view
 function renderIdeasForOrg(orgId,container){
   const oi=ideas.filter(i=>i.orgId===orgId);
@@ -1095,7 +1103,7 @@ function renderIdeasForOrg(orgId,container){
     '</div>'
   ).join('');
 }
- 
+
 // ── TASK MODAL ─────────────────────────────────────────────
 let editingTaskId=null;
 function openAddTask(projId,orgId){
@@ -1114,7 +1122,7 @@ function openAddTask(projId,orgId){
     '<button class="btn-save" onclick="saveTask()">Save task</button>';
   document.getElementById('task-modal').classList.add('open');
 }
- 
+
 function editTask(taskId){
   const t=tasks.find(x=>x.id===taskId);if(!t)return;
   editingTaskId=taskId;
@@ -1133,9 +1141,9 @@ function editTask(taskId){
     '<button class="btn-save" onclick="saveTask()">Save</button>';
   document.getElementById('task-modal').classList.add('open');
 }
- 
+
 function closeTaskModal(){document.getElementById('task-modal').classList.remove('open');}
- 
+
 function saveTask(){
   const name=document.getElementById('t-name').value.trim();
   if(!name){document.getElementById('t-name').focus();return;}
@@ -1164,7 +1172,7 @@ function saveTask(){
   renderHome();
   editingTaskId=null;
 }
- 
+
 function deleteTask(taskId){
   const idx=tasks.findIndex(t=>t.id===taskId);
   if(idx===-1)return;
@@ -1177,7 +1185,7 @@ function deleteTask(taskId){
   renderHome();
   showToast('Task deleted');
 }
- 
+
 function toggleTask(taskId){
   const t=tasks.find(x=>x.id===taskId);if(!t)return;
   t.done=!t.done;
@@ -1187,7 +1195,7 @@ function toggleTask(taskId){
   renderHome();
   showToast(t.done?'Task done ✓':'Task reopened');
 }
- 
+
 // ── ACCOUNT MODAL ──────────────────────────────────────────
 function openAddModal(){
   editingId=null;
@@ -1241,7 +1249,7 @@ function saveAccount(){
   if(editingId)openDetail(editingId);
   editingId=null;
 }
- 
+
 // ── NAV ────────────────────────────────────────────────────
 function switchTab(tab){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1255,7 +1263,7 @@ function showToast(msg){
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
- 
+
 // ── INIT ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('mp_theme')||'dark';
@@ -1279,4 +1287,3 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 </body>
 </html>
- 
