@@ -480,7 +480,7 @@ const QS = [
     opts: [
       "No website yet",
       "I have one but it is not doing much for me",
-      "I have one and it feels scattered — hard to point people to",
+      "I have one — but I would consider something better",
       "I have one and it is working well for me"
     ]
   },
@@ -489,7 +489,7 @@ const QS = [
     opts: [
       "Haven't gone there yet — not sure where to start",
       "Just dipping a toe in — tried a thing or two",
-      "We have AI in our tools — but it just doesn't feel connected",
+      "We use AI in some places — but I think we could be doing more with it",
       "AI is running well for us — and we're always looking for what's next"
     ]
   },
@@ -525,7 +525,7 @@ const QS = [
     opts: [
       "Pretty quiet — I rarely post",
       "I show up sometimes but not consistently",
-      "I post regularly but it feels like shouting into the void",
+      "I post regularly — but I would consider a more strategic approach",
       "I am posting regularly and it is working"
     ]
   },
@@ -534,7 +534,7 @@ const QS = [
     opts: [
       "No email list yet",
       "I have one but barely use it",
-      "I send to my list sometimes — no real system",
+      "I have a list — but I am not confident it is actually doing anything",
       "Email is part of how I stay in touch and it is working"
     ]
   },
@@ -965,7 +965,7 @@ function getWhatWeHeard(sig, answers, maxLines) {
 
   if (answers[2] === 0)      lines.push("You have not made a move with AI yet — and figuring out where to start is the real question.");
   else if (answers[2] === 1) lines.push("You have experimented a little with AI, but have not found the right way to put it to work for your business.");
-  else if (answers[2] === 2) lines.push("You have AI in your toolkit — it just does not feel like everything is running together the way it should.");
+  else if (answers[2] === 2) lines.push("You are using AI in places — and you sense there is more it could be doing for your business.");
   else                       lines.push("AI is already working for your business — and you are looking for what makes it work even better.");
 
   if (answers[4] === 0)      lines.push("Your customer follow-ups are running from memory right now, which means some things are probably slipping through.");
