@@ -286,6 +286,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .login-status{margin-top:14px;font-size:13px;color:var(--text2);text-align:center;min-height:20px}
 .login-status.error{color:#F87171}
 .login-status.ok{color:var(--green)}
+.team-divider{border:none;border-top:0.5px solid var(--border2);margin:18px 0 14px}
+.team-toggle-text{font-size:12px;color:var(--text3);text-align:center;cursor:pointer;user-select:none}
+.team-toggle-text span{color:var(--green);font-weight:600}
+#admin-signin-section{display:none;margin-top:14px}
+.admin-signin-lbl{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;display:block;letter-spacing:.02em}
+.admin-status{margin-top:10px;font-size:13px;color:var(--text2);text-align:center;min-height:18px}
+.admin-status.error{color:#F87171}
+.admin-status.ok{color:var(--green)}
+.topbar-admin-info{display:flex;align-items:center;gap:10px}
+.topbar-admin-name{font-size:12px;color:var(--text2)}
+.topbar-logout-btn{font-size:12px;color:var(--green);font-weight:600;background:none;border:none;cursor:pointer;font-family:var(--font);padding:0}
 /* CLIENT PORTAL */
 #client-view{display:none;width:100%;max-width:430px;min-height:100vh;background:var(--bg);flex-direction:column;margin:0 auto}
 #client-view.active{display:flex}
@@ -428,7 +439,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
         <div class="sec-lbl">Info</div>
         <div class="settings-block">
-          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.0 — Jun 2026</span></div>
+          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.1 — Jun 2026</span></div>
           <div class="s-row" onclick="loadFromSheet()"><span class="s-row-lbl">Sync now</span><span class="s-row-val" style="color:var(--green)">↻ Refresh</span></div>
           <div class="s-row"><span class="s-row-lbl">Last synced</span><span class="s-row-val" id="last-sync-time-settings">—</span></div>
         </div>
@@ -571,6 +582,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     <input class="login-email-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email">
     <button class="login-submit-btn" onclick="requestMagicLink()">Send link</button>
     <div class="login-status" id="login-status"></div>
+    <hr class="team-divider">
+    <div class="team-toggle-text" onclick="toggleAdminSignin()">Are you a team member? <span>Sign in here</span></div>
+    <div id="admin-signin-section">
+      <label class="admin-signin-lbl" style="margin-top:12px">Team member email</label>
+      <input class="login-email-input" id="admin-email" type="email" placeholder="you@businesssmoothie.com" autocomplete="email" style="margin-bottom:10px">
+      <button class="login-submit-btn" onclick="sendAdminMagicLink()">Send my link</button>
+      <div class="admin-status" id="admin-status"></div>
+    </div>
   </div>
 </div>
 
@@ -1587,6 +1606,8 @@ function saveAccount(){
   editingId=null;
 }
 
+let adminSession=null;
+
 // ── ROUTING ────────────────────────────────────────────────
 function showView(view){
   document.getElementById('app').style.display=view==='admin'?'':'none';
@@ -1598,8 +1619,14 @@ function showView(view){
 
 function detectAndRoute(){
   const params=new URLSearchParams(window.location.search);
+  const admintoken=params.get('admintoken');
   const token=params.get('token');
   const view=params.get('view');
+  if(admintoken){
+    showView('login');
+    handleAdminTokenValidation(admintoken);
+    return;
+  }
   if(token){
     showView('login');
     handleTokenValidation(token);
@@ -1610,6 +1637,9 @@ function detectAndRoute(){
     if(saved){clientSession=JSON.parse(saved);showView('client');loadClientData();return;}
     showView('login');return;
   }
+  // Check for existing admin magic-link session
+  const savedAdmin=sessionStorage.getItem('mp_admin');
+  if(savedAdmin){adminSession=JSON.parse(savedAdmin);initAdmin();return;}
   // Admin — check key param or skip straight in
   const key=params.get('key');
   if(key===ADMIN_KEY||!key){initAdmin();return;}
@@ -1618,6 +1648,14 @@ function detectAndRoute(){
 
 function initAdmin(){
   showView('admin');
+  // Update topbar-right: show admin name + logout if magic-link session, else show date
+  const tr=document.getElementById('topbar-right');
+  if(adminSession&&adminSession.name){
+    tr.innerHTML='<div class="topbar-admin-info">'+
+      '<span class="topbar-admin-name">'+esc(adminSession.name)+'</span>'+
+      '<button class="topbar-logout-btn" onclick="adminLogout()">Log out</button>'+
+    '</div>';
+  }
   loadFromSheet();
   setTimeout(()=>{if(!orgs.length){loadCache();}},6000);
 }
@@ -1654,6 +1692,57 @@ function handleTokenValidation(token){
   s.src=SCRIPT_URL+'?action=validateToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
   s.onerror=()=>{delete window[cb];if(status){status.textContent='Network error.';status.className='login-status error';}};
   document.head.appendChild(s);
+}
+
+function toggleAdminSignin(){
+  const sec=document.getElementById('admin-signin-section');
+  if(sec)sec.style.display=sec.style.display==='none'?'block':'none';
+}
+
+function sendAdminMagicLink(){
+  const email=(document.getElementById('admin-email').value||'').trim();
+  const status=document.getElementById('admin-status');
+  if(!email){status.textContent='Please enter your email.';status.className='admin-status error';return;}
+  status.textContent='Sending…';status.className='admin-status';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'requestAdminMagicLink',email})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){status.textContent='Check your email — your login link is on its way.';status.className='admin-status ok';}
+      else{status.textContent="We couldn't find a team member account with that email.";status.className='admin-status error';}
+    }).catch(()=>{status.textContent='Network error. Try again.';status.className='admin-status error';});
+}
+
+function handleAdminTokenValidation(token){
+  const status=document.getElementById('login-status');
+  if(status){status.textContent='Validating…';status.className='login-status';}
+  const cb='cb_adm_'+Date.now();
+  window[cb]=function(d){
+    delete window[cb];
+    if(d.valid){
+      adminSession={name:d.name,email:d.email};
+      sessionStorage.setItem('mp_admin',JSON.stringify(adminSession));
+      window.history.replaceState({},'',window.location.pathname);
+      initAdmin();
+    }else{
+      showView('login');
+      if(status){
+        status.textContent='This link has expired. Request a new one.';
+        status.className='login-status error';
+        // show the admin section so they can request a new link
+        const sec=document.getElementById('admin-signin-section');
+        if(sec)sec.style.display='block';
+      }
+    }
+  };
+  const s=document.createElement('script');
+  s.src=SCRIPT_URL+'?action=validateAdminToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
+  s.onerror=()=>{delete window[cb];if(status){status.textContent='Network error.';status.className='login-status error';}};
+  document.head.appendChild(s);
+}
+
+function adminLogout(){
+  adminSession=null;
+  sessionStorage.removeItem('mp_admin');
+  window.location.reload();
 }
 
 // ── CLIENT PORTAL ──────────────────────────────────────────

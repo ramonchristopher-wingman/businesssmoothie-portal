@@ -5,6 +5,7 @@
 //        requestMagicLink, validateToken, readClient,
 //        stampOnboarding, toggleOnboardingStep, addOnboardingStep, deleteOnboardingStep,
 //        addComment
+// v7.1: requestAdminMagicLink, validateAdminToken, addComment (+ email notifications)
 
 var SHEET_ID   = '1UgVcQPbMI4cp6I1AvV7r1W_xBFb9rcAhhCPQa6f3Cmg';
 var PORTAL_URL = 'https://myportal.businesssmoothie.com';
@@ -18,9 +19,10 @@ function doGet(e) {
 
   try {
     if      (action === 'read')          { result = readAll(); }
-    else if (action === 'readClient')    { result = readClient(e.parameter.orgId || ''); }
-    else if (action === 'validateToken') { result = validateToken(e.parameter.token || ''); }
-    else                                 { result = { error: 'Unknown GET action: ' + action }; }
+    else if (action === 'readClient')         { result = readClient(e.parameter.orgId || ''); }
+    else if (action === 'validateToken')      { result = validateToken(e.parameter.token || ''); }
+    else if (action === 'validateAdminToken') { result = validateAdminToken(e.parameter.token || ''); }
+    else                                      { result = { error: 'Unknown GET action: ' + action }; }
   } catch (err) {
     result = { error: err.toString() };
   }
@@ -86,6 +88,9 @@ function doPost(e) {
         break;
       case 'addComment':
         result = addComment(p.taskId || '', p.orgId || '', p.author || '', p.authorRole || 'admin', p.body || '');
+        break;
+      case 'requestAdminMagicLink':
+        result = requestAdminMagicLink(p.email || '');
         break;
 
       default:
@@ -421,5 +426,121 @@ function addComment(taskId, orgId, author, authorRole, body) {
     timestamp
   ]);
 
+  // ── v7.1: email notification ──────────────────────────────
+  try {
+    var taskRows    = sheetToObjects(getTab('Tasks'));
+    var taskRow     = taskRows.filter(function(r) { return String(r.TaskID) === String(taskId); })[0];
+    var taskName    = taskRow ? (taskRow.TaskName || '') : '';
+
+    var orgRows     = sheetToObjects(getTab('Orgs'));
+    var orgRow      = orgRows.filter(function(r) { return String(r.OrgID) === String(orgId); })[0];
+    var contactEmail = orgRow ? (orgRow.ContactEmail || '') : '';
+    var contactName  = orgRow ? (orgRow.ContactName  || 'Client') : 'Client';
+
+    if (contactEmail) {
+      if ((authorRole || '').toLowerCase() === 'client') {
+        MailApp.sendEmail({
+          to:      'ramon@businesssmoothie.com',
+          name:    'Business Smoothie',
+          subject: 'New comment from ' + contactName + ' — ' + taskName,
+          body:    contactName + ' left a comment on ' + taskName + ':\n\n' +
+                   body + '\n\n' +
+                   'View in MyPortal: ' + PORTAL_URL
+        });
+      } else {
+        MailApp.sendEmail({
+          to:      contactEmail,
+          name:    'Business Smoothie',
+          subject: 'New update on your task — ' + taskName,
+          body:    'Your Business Smoothie team left a note on ' + taskName + ':\n\n' +
+                   body + '\n\n' +
+                   'Log in to view: ' + PORTAL_URL
+        });
+      }
+    }
+  } catch (e) {
+    // notification failure must not break the comment save
+  }
+
   return { success: true, commentId: commentId, timestamp: timestamp };
+}
+
+// ── v7.1: admin magic link ─────────────────────────────────────────
+
+function requestAdminMagicLink(email) {
+  if (!email) return { success: false, error: 'Email required' };
+
+  var admins = sheetToObjects(getTab('Admins'));
+  var admin  = admins.filter(function(r) {
+    return String(r.Email || '').toLowerCase().trim() === email.toLowerCase().trim();
+  })[0];
+
+  if (!admin) return { success: false, error: 'Email not found' };
+  if (String(admin.Active).toUpperCase() !== 'TRUE') {
+    return { success: false, error: 'Account is not active' };
+  }
+
+  var token   = generateToken32();
+  var expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+  // Tokens tab: TokenID | OrgID | OrgName | Token | Expires | Used | TokenType
+  getTab('Tokens').appendRow([
+    generateId('tok'),
+    admin.AdminID || '',
+    admin.Name    || '',
+    token,
+    expires,
+    false,
+    'admin'
+  ]);
+
+  var link    = PORTAL_URL + '?admintoken=' + token;
+  var subject = 'Your login link — MyPortal';
+  var body    =
+    'Hi ' + (admin.Name || 'there') + ',\n\n' +
+    'Click the link below to access MyPortal.\n' +
+    'This link expires in 24 hours and can only be used once.\n\n' +
+    link + '\n\n' +
+    '— Business Smoothie';
+
+  MailApp.sendEmail(email, subject, body);
+  return { success: true };
+}
+
+function validateAdminToken(token) {
+  if (!token) return { valid: false, error: 'No token provided' };
+
+  var sheet = getTab('Tokens');
+  var rows  = sheetToObjects(sheet);
+
+  var match = rows.filter(function(r) {
+    return String(r.Token) === String(token) && String(r.TokenType) === 'admin';
+  })[0];
+  if (!match) return { valid: false, error: 'Token not found' };
+
+  if (match.Used === true || String(match.Used).toUpperCase() === 'TRUE') {
+    return { valid: false, error: 'Token already used' };
+  }
+  if (new Date() > new Date(match.Expires)) {
+    return { valid: false, error: 'Token expired' };
+  }
+
+  // Mark used
+  var rowNum  = findRowById(sheet, 'Token', token);
+  var usedCol = findColIndex(sheet, 'Used');
+  if (rowNum > 0 && usedCol >= 0) {
+    sheet.getRange(rowNum, usedCol + 1).setValue(true);
+  }
+
+  // Look up admin record
+  var admins = sheetToObjects(getTab('Admins'));
+  var admin  = admins.filter(function(r) {
+    return String(r.AdminID) === String(match.OrgID);
+  })[0] || {};
+
+  return {
+    valid: true,
+    name:  admin.Name  || match.OrgName || '',
+    email: admin.Email || ''
+  };
 }
