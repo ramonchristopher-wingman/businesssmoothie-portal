@@ -324,7 +324,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 <body>
 <div id="login-screen" style="display:none;width:100%;max-width:430px;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)">
   <div style="width:100%">
-    <div style="text-align:center;margin-bottom:32px">
+    <div style="text-align:center;margin-bottom:28px">
       <div style="width:52px;height:52px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
         <svg viewBox="0 0 14 14" style="width:22px;height:22px;fill:#fff"><circle cx="7" cy="7" r="5.5"/></svg>
       </div>
@@ -332,12 +332,34 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div style="font-size:13px;color:var(--text2);margin-top:5px">Sign in to continue</div>
     </div>
     <div style="background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:24px">
+
+      <!-- Client magic link -->
+      <div class="fgroup" style="margin-bottom:6px">
+        <label class="flabel">Your email</label>
+        <input class="finput" id="ls-client-email" type="email" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')requestClientMagicLink()">
+      </div>
+      <button class="btn-save" style="width:100%" onclick="requestClientMagicLink()">Send my link →</button>
+      <div id="ls-client-status" style="display:none;font-size:12px;font-weight:600;margin-top:10px;text-align:center"></div>
+
+      <!-- Divider + team member toggle -->
+      <hr style="border:none;border-top:0.5px solid var(--border2);margin:18px 0 14px">
+      <div class="team-toggle-text" onclick="toggleAdminSection()">Are you a team member? <span>Sign in here</span></div>
+      <div id="ls-admin-section" style="display:none;margin-top:14px">
+        <label class="admin-signin-lbl">Team member email</label>
+        <input class="finput" id="ls-admin-email" type="email" placeholder="you@businesssmoothie.com" autocomplete="email" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')sendAdminMagicLinkFromScreen()">
+        <button class="btn-save" style="width:100%" onclick="sendAdminMagicLinkFromScreen()">Send my link</button>
+        <div id="ls-admin-status" style="font-size:12px;font-weight:600;margin-top:10px;text-align:center;min-height:18px"></div>
+      </div>
+
+      <!-- Divider + access key -->
+      <hr style="border:none;border-top:0.5px solid var(--border2);margin:18px 0 14px">
       <div class="fgroup" style="margin-bottom:4px">
         <label class="flabel">Access key</label>
         <input class="finput" id="login-key" type="password" placeholder="Enter your access key" autocomplete="current-password" onkeydown="if(event.key==='Enter')attemptLogin()">
       </div>
       <div id="login-error" style="display:none;color:#F59E0B;font-size:12px;font-weight:600;margin:10px 0;text-align:center"></div>
-      <button class="btn-save" style="width:100%;margin-top:14px" onclick="attemptLogin()">Sign in →</button>
+      <button class="btn-save" style="width:100%;margin-top:6px" onclick="attemptLogin()">Sign in →</button>
+
     </div>
   </div>
 </div>
@@ -1659,6 +1681,35 @@ function attemptLogin(){
     if(e){e.textContent='Invalid access key. Please try again.';e.style.display='block';}
     const inp=document.getElementById('login-key');if(inp){inp.value='';inp.focus();}
   }
+}
+
+function requestClientMagicLink(){
+  const email=(document.getElementById('ls-client-email').value||'').trim();
+  const status=document.getElementById('ls-client-status');
+  if(!email){status.textContent='Please enter your email.';status.style.color='#F87171';status.style.display='block';return;}
+  status.textContent='Sending…';status.style.color='var(--text2)';status.style.display='block';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'requestMagicLink',email})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){status.textContent='Check your email for a login link.';status.style.color='var(--green)';}
+      else{status.textContent=d.error||'Email not found.';status.style.color='#F87171';}
+    }).catch(()=>{status.textContent='Network error. Try again.';status.style.color='#F87171';});
+}
+
+function toggleAdminSection(){
+  const sec=document.getElementById('ls-admin-section');
+  if(sec)sec.style.display=sec.style.display==='none'?'block':'none';
+}
+
+function sendAdminMagicLinkFromScreen(){
+  const email=(document.getElementById('ls-admin-email').value||'').trim();
+  const status=document.getElementById('ls-admin-status');
+  if(!email){status.textContent='Please enter your email.';status.style.color='#F87171';return;}
+  status.textContent='Sending…';status.style.color='var(--text2)';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'requestAdminMagicLink',email})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){status.textContent='Check your email — your login link is on its way.';status.style.color='var(--green)';}
+      else{status.textContent="We couldn't find a team member account with that email.";status.style.color='#F87171';}
+    }).catch(()=>{status.textContent='Network error. Try again.';status.style.color='#F87171';});
 }
 
 function detectAndRoute(){
