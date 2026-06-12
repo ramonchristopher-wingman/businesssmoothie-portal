@@ -226,6 +226,88 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .loading{display:flex;align-items:center;justify-content:center;padding:40px 16px;gap:10px;color:var(--text2);font-size:14px}
 .spinner{width:18px;height:18px;border:2px solid var(--surface2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ARCHIVE */
+.acc-card.archived{opacity:.45}
+.trash-btn{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px 6px;flex-shrink:0;line-height:1}
+.trash-btn:active{color:#F87171}
+.restore-btn{font-size:12px;color:var(--green);font-weight:700;cursor:pointer;background:none;border:1px solid var(--green);padding:5px 12px;border-radius:8px;font-family:var(--font)}
+.archived-bar{padding:8px 16px;display:flex;align-items:center;justify-content:flex-end}
+.archived-pill{font-size:12px;color:var(--text2);font-weight:600;cursor:pointer;padding:5px 13px;background:var(--surface2);border-radius:20px;border:0.5px solid var(--border)}
+/* COLLAPSIBLE PANEL */
+.panel-block{background:var(--surface);border-radius:14px;border:0.5px solid var(--border);margin-bottom:12px;overflow:hidden}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer}
+.panel-hdr-lbl{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.panel-chev{font-size:16px;color:var(--text3);transition:transform .2s}
+.panel-chev.open{transform:rotate(90deg)}
+.panel-body{display:none;border-top:0.5px solid var(--border2)}
+.panel-body.open{display:block}
+.notes-ta{width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;padding:12px 16px;resize:none;outline:none;min-height:80px;line-height:1.5}
+/* ONBOARDING PANEL */
+.ob-pbar-wrap{padding:10px 16px 4px}
+.ob-step-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:0.5px solid var(--border2)}
+.ob-step-row:last-child{border-bottom:none}
+.ob-chk{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--input-border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s}
+.ob-chk.done{background:var(--green);border-color:var(--green)}
+.ob-chk.done::after{content:'✓';font-size:12px;color:#fff;font-weight:700}
+.ob-step-name{flex:1;font-size:14px;color:var(--text);line-height:1.3}
+.ob-step-name.done{color:var(--text3);text-decoration:line-through}
+.ob-badge-agency{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;background:rgba(0,196,90,.12);color:#00C45A;flex-shrink:0}
+.ob-badge-client{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;background:rgba(96,165,250,.12);color:#60A5FA;flex-shrink:0}
+.ob-badge-both{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;background:rgba(120,120,130,.12);color:var(--text2);flex-shrink:0}
+.ob-del-btn{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:2px 4px;flex-shrink:0}
+.ob-del-btn:active{color:#F87171}
+.ob-start-btn{display:block;width:calc(100% - 32px);margin:12px 16px;background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.ob-add-step-row{padding:10px 16px;display:flex;gap:8px;border-top:0.5px solid var(--border2)}
+.ob-add-input{flex:1;border:1px solid var(--input-border);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--text);background:var(--input-bg);outline:none;font-family:'Inter',sans-serif}
+.ob-add-input:focus{border-color:var(--green)}
+.ob-add-go{background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+/* TASK COMMENTS */
+.comments-section{margin-top:18px;border-top:0.5px solid var(--border2);padding-top:14px}
+.comments-hdr{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.comment-item{margin-bottom:12px}
+.comment-meta{font-size:11px;color:var(--text3);margin-bottom:3px}
+.comment-body{font-size:14px;color:var(--text);line-height:1.45;background:var(--surface2);border-radius:10px;padding:10px 12px}
+.comment-ta{width:100%;border:1px solid var(--input-border);border-radius:10px;padding:10px 13px;font-size:14px;color:var(--text);background:var(--input-bg);font-family:'Inter',sans-serif;outline:none;resize:none;min-height:68px;margin-top:8px;transition:border-color .15s}
+.comment-ta:focus{border-color:var(--green)}
+.comment-post-btn{margin-top:8px;background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+/* CLIENT LOGIN VIEW */
+#login-view{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;align-items:center;justify-content:center;flex-direction:column;padding:24px}
+#login-view.active{display:flex}
+.login-card{background:var(--surface);border-radius:20px;border:0.5px solid var(--border);padding:28px 24px;width:100%;max-width:390px}
+.login-logo{text-align:center;margin-bottom:20px}
+.login-logo-mark{width:48px;height:48px;background:var(--green);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px}
+.login-logo-mark svg{width:22px;height:22px;fill:#fff}
+.login-title{font-size:22px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-.4px;margin-bottom:6px}
+.login-sub{font-size:14px;color:var(--text2);text-align:center;margin-bottom:22px}
+.login-email-input{width:100%;border:1px solid var(--input-border);border-radius:10px;padding:13px 14px;font-size:15px;color:var(--text);background:var(--input-bg);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;margin-bottom:12px}
+.login-email-input:focus{border-color:var(--green)}
+.login-submit-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.login-submit-btn:active{opacity:.85}
+.login-status{margin-top:14px;font-size:13px;color:var(--text2);text-align:center;min-height:20px}
+.login-status.error{color:#F87171}
+.login-status.ok{color:var(--green)}
+/* CLIENT PORTAL */
+#client-view{display:none;width:100%;max-width:430px;min-height:100vh;background:var(--bg);flex-direction:column;margin:0 auto}
+#client-view.active{display:flex}
+.cp-topbar{height:56px;background:var(--surface);border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;position:sticky;top:0;z-index:5}
+.cp-org-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.3px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp-logout-btn{font-size:13px;color:var(--text2);font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font)}
+.cp-screens{flex:1;overflow-y:auto;padding-bottom:64px;-webkit-overflow-scrolling:touch}
+.cp-screen{display:none}.cp-screen.active{display:block}
+.cp-bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:60px;background:var(--surface);border-top:0.5px solid var(--border);display:flex;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+.cp-ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding-bottom:4px}
+.cp-ni-icon{font-size:19px;color:var(--text3);transition:color .15s}
+.cp-ni-lbl{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.03em;text-transform:uppercase}
+.cp-ni.on .cp-ni-icon,.cp-ni.on .cp-ni-lbl{color:var(--green)}
+.cp-section-hdr{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;padding:14px 16px 6px}
+.cp-proj-card{background:var(--surface);border-radius:14px;border:0.5px solid var(--border);padding:14px 16px;margin:0 16px 10px}
+.cp-proj-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cp-proj-meta{font-size:12px;color:var(--text2);margin-bottom:8px}
+.cp-task-block{background:var(--surface);border-radius:14px;border:0.5px solid var(--border);margin:0 16px 10px;overflow:hidden}
+.cp-task-block-hdr{padding:12px 16px;font-size:13px;font-weight:700;color:var(--text);border-bottom:0.5px solid var(--border2)}
+.cp-ob-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:0.5px solid var(--border2)}
+.cp-ob-row:last-child{border-bottom:none}
+.cp-workspace-ta{width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;padding:14px 16px;resize:none;outline:none;min-height:120px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -270,6 +352,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
       </div>
       <div class="acc-list" id="acc-list"></div>
+      <div class="archived-bar" id="archived-bar" style="display:none">
+        <span class="archived-pill" onclick="toggleShowArchived()">Show archived</span>
+      </div>
     </div>
 
     <!-- DETAIL -->
@@ -343,7 +428,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
         <div class="sec-lbl">Info</div>
         <div class="settings-block">
-          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v6.1</span></div>
+          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.0 — Jun 2026</span></div>
           <div class="s-row" onclick="loadFromSheet()"><span class="s-row-lbl">Sync now</span><span class="s-row-val" style="color:var(--green)">↻ Refresh</span></div>
           <div class="s-row"><span class="s-row-lbl">Last synced</span><span class="s-row-val" id="last-sync-time-settings">—</span></div>
         </div>
@@ -437,6 +522,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
           <option value="Ramon">Ramon</option>
         </select>
       </div>
+      <div id="task-comments-section" style="display:none"></div>
       <div class="modal-btns" id="task-modal-btns">
         <button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>
         <button class="btn-save" onclick="saveTask()">Save task</button>
@@ -472,8 +558,43 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  </div><!-- /#app -->
+
+<!-- CLIENT LOGIN VIEW -->
+<div id="login-view">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark"><svg viewBox="0 0 22 22"><circle cx="11" cy="11" r="8.5"/></svg></div>
+      <div class="login-title">Client Portal</div>
+      <div class="login-sub">Enter your email to receive a magic link</div>
+    </div>
+    <input class="login-email-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email">
+    <button class="login-submit-btn" onclick="requestMagicLink()">Send link</button>
+    <div class="login-status" id="login-status"></div>
+  </div>
 </div>
+
+<!-- CLIENT PORTAL VIEW -->
+<div id="client-view">
+  <div class="cp-topbar">
+    <span class="cp-org-name" id="cp-org-name">My Portal</span>
+    <button class="cp-logout-btn" onclick="clientLogout()">Logout</button>
+  </div>
+  <div class="cp-screens">
+    <div class="cp-screen active" id="cp-projects"></div>
+    <div class="cp-screen" id="cp-tasks"></div>
+    <div class="cp-screen" id="cp-onboarding"></div>
+    <div class="cp-screen" id="cp-workspace"></div>
+  </div>
+  <nav class="cp-bnav">
+    <div class="cp-ni on" id="cp-ni-projects" onclick="switchCpTab('projects')"><div class="cp-ni-icon">◈</div><div class="cp-ni-lbl">Projects</div></div>
+    <div class="cp-ni" id="cp-ni-tasks" onclick="switchCpTab('tasks')"><div class="cp-ni-icon">✓</div><div class="cp-ni-lbl">Tasks</div></div>
+    <div class="cp-ni" id="cp-ni-onboarding" onclick="switchCpTab('onboarding')"><div class="cp-ni-icon">▶</div><div class="cp-ni-lbl">Onboarding</div></div>
+    <div class="cp-ni" id="cp-ni-workspace" onclick="switchCpTab('workspace')"><div class="cp-ni-icon">◻</div><div class="cp-ni-lbl">Notes</div></div>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyFDaODL6pM2hLXMbUZUWhJt1HYgGkytLTrSadDy_lr8AL3uSrU8ipX6avhfiENQjYhTw/exec';
@@ -486,9 +607,12 @@ const TYPE={
   partner: {label:'Partner', color:'#9CA3AF',bg:'rgba(156,163,175,.18)',text:'#9CA3AF'}
 };
 const PRIORITY_ORDER={high:0,medium:1,low:2};
-let orgs=[],projects=[],tasks=[],ideas=[],messages=[],currentFilter='all',currentProjFilter='all',currentIdeaFilter='all';
+let orgs=[],projects=[],tasks=[],ideas=[],messages=[],onboarding=[],comments=[];
+let currentFilter='all',currentProjFilter='all',currentIdeaFilter='all';
 let currentDetailId=null,editingId=null,calYear=0,calMonth=0,calSelectedDate=null;
+let showArchived=false,clientSession=null;
 
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function initials(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase()}
 
 // THEME
@@ -514,7 +638,9 @@ function loadFromSheet(){
       tasks=normaliseTasks(data.tasks||[]);
       ideas=normaliseIdeas(data.ideas||[]);
       messages=normaliseMessages(data.messages||[]);
-      localStorage.setItem('mp_cache',JSON.stringify({orgs,projects,tasks,ideas,messages,ts:Date.now()}));
+      onboarding=normaliseOnboarding(data.onboarding||[]);
+      comments=normaliseComments(data.comments||[]);
+      localStorage.setItem('mp_cache',JSON.stringify({orgs,projects,tasks,ideas,messages,onboarding,comments,ts:Date.now()}));
       const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       document.getElementById('last-sync-time').textContent=t;
       const el2=document.getElementById('last-sync-time-settings');
@@ -546,7 +672,29 @@ function normaliseOrgs(rows){
     type:(r.type||r.AccountType||'client').toLowerCase(),
     billing:(r.billing||r.Billing||'unpaid').toLowerCase(),
     plan:r.plan||r.PlanType||'',freq:r.freq||r.MeetingFrequency||'none',
-    notes:r.notes||r.Notes||''
+    notes:r.notes||r.Notes||'',
+    status:(r.status||r.Status||'active').toLowerCase(),
+    clientWorkspace:r.clientWorkspace||r.ClientWorkspace||'',
+    agencyNotes:r.agencyNotes||r.AgencyNotes||''
+  }));
+}
+function normaliseOnboarding(rows){
+  return rows.map(r=>({
+    id:r.id||r.StepID||'',orgId:r.orgId||r.OrgID||'',
+    stepName:r.stepName||r.StepName||'',
+    assignedTo:(r.assignedTo||r.AssignedTo||'both').toLowerCase(),
+    done:r.done==='true'||r.done===true||r.Done==='true'||r.Done===true,
+    completedBy:r.completedBy||r.CompletedBy||'',
+    doneDate:r.doneDate||r.DoneDate||'',
+    order:parseInt(r.order||r.Order||0)||0
+  }));
+}
+function normaliseComments(rows){
+  return rows.map(r=>({
+    id:r.id||r.CommentID||'',taskId:r.taskId||r.TaskID||'',
+    orgId:r.orgId||r.OrgID||'',author:r.author||r.Author||'',
+    authorRole:(r.authorRole||r.AuthorRole||'admin').toLowerCase(),
+    body:r.body||r.Body||'',timestamp:r.timestamp||r.Timestamp||''
   }));
 }
 function normaliseProjects(rows){
@@ -596,6 +744,7 @@ function loadCache(){
     const d=JSON.parse(c);
     orgs=d.orgs||[];projects=d.projects||[];
     tasks=d.tasks||[];ideas=d.ideas||[];messages=d.messages||[];
+    onboarding=d.onboarding||[];comments=d.comments||[];
     renderAll();
   }else{seedFallback();renderAll();}
 }
@@ -608,16 +757,16 @@ function deleteFromSheet(tab,id){
 
 function seedFallback(){
   orgs=[
-    {id:'org_001',name:'J. Anderson Auto',contact:'James Anderson',email:'james@jandersonauto.com',type:'client',billing:'paid',plan:'Solo',freq:'weekly',notes:'First client onboarded'},
-    {id:'org_002',name:'IA Black Business Dir.',contact:'Marcus Webb',email:'marcus@iabbd.org',type:'client',billing:'paid',plan:'Team',freq:'monthly',notes:''},
-    {id:'org_003',name:'Metro Dental Group',contact:'Dr. Patel',email:'drpatel@metrodental.com',type:'client',billing:'paid',plan:'Lite',freq:'bi-weekly',notes:''},
-    {id:'org_004',name:'Regal Roofing Co.',contact:'Derek Hall',email:'derek@regalroofing.com',type:'client',billing:'unpaid',plan:'Solo',freq:'as-needed',notes:'Kickoff pending'},
-    {id:'org_005',name:'Williams Tax Group',contact:'Sandra Williams',email:'sandra@williamstax.com',type:'prospect',billing:'unpaid',plan:'',freq:'as-needed',notes:'Intro call scheduled'},
-    {id:'org_006',name:'Business Smoothie',contact:'Ramon Christopher',email:'ramon.christopher@gmail.com',type:'internal',billing:'na',plan:'',freq:'weekly',notes:'Agency ops'},
-    {id:'org_007',name:'Wingman',contact:'Ramon Christopher',email:'ramon.christopher@gmail.com',type:'internal',billing:'na',plan:'',freq:'as-needed',notes:'Side project'},
-    {id:'org_008',name:'Home',contact:'Ramon',email:'',type:'personal',billing:'na',plan:'',freq:'none',notes:'House projects'},
-    {id:'org_009',name:'Mom',contact:'',email:'',type:'personal',billing:'na',plan:'',freq:'none',notes:'Errands, help items'},
-    {id:'org_010',name:'Print Shop Co.',contact:'Lisa Tran',email:'lisa@printshop.com',type:'partner',billing:'na',plan:'',freq:'quarterly',notes:'Print fulfillment'}
+    {id:'org_001',name:'J. Anderson Auto',contact:'James Anderson',email:'james@jandersonauto.com',type:'client',billing:'paid',plan:'Solo',freq:'weekly',notes:'First client onboarded',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_002',name:'IA Black Business Dir.',contact:'Marcus Webb',email:'marcus@iabbd.org',type:'client',billing:'paid',plan:'Team',freq:'monthly',notes:'',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_003',name:'Metro Dental Group',contact:'Dr. Patel',email:'drpatel@metrodental.com',type:'client',billing:'paid',plan:'Lite',freq:'bi-weekly',notes:'',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_004',name:'Regal Roofing Co.',contact:'Derek Hall',email:'derek@regalroofing.com',type:'client',billing:'unpaid',plan:'Solo',freq:'as-needed',notes:'Kickoff pending',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_005',name:'Williams Tax Group',contact:'Sandra Williams',email:'sandra@williamstax.com',type:'prospect',billing:'unpaid',plan:'',freq:'as-needed',notes:'Intro call scheduled',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_006',name:'Business Smoothie',contact:'Ramon Christopher',email:'ramon.christopher@gmail.com',type:'internal',billing:'na',plan:'',freq:'weekly',notes:'Agency ops',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_007',name:'Wingman',contact:'Ramon Christopher',email:'ramon.christopher@gmail.com',type:'internal',billing:'na',plan:'',freq:'as-needed',notes:'Side project',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_008',name:'Home',contact:'Ramon',email:'',type:'personal',billing:'na',plan:'',freq:'none',notes:'House projects',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_009',name:'Mom',contact:'',email:'',type:'personal',billing:'na',plan:'',freq:'none',notes:'Errands, help items',status:'active',clientWorkspace:'',agencyNotes:''},
+    {id:'org_010',name:'Print Shop Co.',contact:'Lisa Tran',email:'lisa@printshop.com',type:'partner',billing:'na',plan:'',freq:'quarterly',notes:'Print fulfillment',status:'active',clientWorkspace:'',agencyNotes:''}
   ];
   projects=[
     {id:'proj_001',orgId:'org_001',orgName:'J. Anderson Auto',name:'Website Revamp',status:'active',progress:68,due:'2026-06-12'},
@@ -694,9 +843,10 @@ function renderAll(){
 }
 
 function renderHome(){
-  const clients=orgs.filter(o=>o.type==='client').length;
-  const yours=orgs.filter(o=>['personal','internal'].includes(o.type)).length;
-  document.getElementById('st-accts').textContent=orgs.length;
+  const active=orgs.filter(o=>o.status!=='archived');
+  const clients=active.filter(o=>o.type==='client').length;
+  const yours=active.filter(o=>['personal','internal'].includes(o.type)).length;
+  document.getElementById('st-accts').textContent=active.length;
   document.getElementById('st-accts-sub').textContent=clients+' clients · '+yours+' yours';
   const open=projects.filter(p=>p.status!=='done').length;
   const attn=projects.filter(p=>p.status==='review').length;
@@ -738,23 +888,52 @@ function renderHome(){
 
 function renderAccounts(){
   const list=document.getElementById('acc-list');
-  const filtered=currentFilter==='all'?orgs:orgs.filter(o=>o.type===currentFilter);
+  const bar=document.getElementById('archived-bar');
+  let pool=currentFilter==='all'?orgs:orgs.filter(o=>o.type===currentFilter);
+  const hasArchived=pool.some(o=>o.status==='archived');
+  if(bar){bar.style.display=hasArchived?'':'none';
+    bar.querySelector('.archived-pill').textContent=showArchived?'Hide archived':'Show archived';}
+  const filtered=showArchived?pool:pool.filter(o=>o.status!=='archived');
   if(!filtered.length){list.innerHTML='<div style="padding:24px;color:var(--text2);font-size:14px;text-align:center">No accounts</div>';return;}
   list.innerHTML=filtered.map(o=>{
     const tc=TYPE[o.type]||TYPE.partner;
     const pc=projects.filter(p=>p.orgId===o.id).length;
-    return '<div class="acc-card" onclick="openDetail(\''+o.id+'\')">'+
+    const isArchived=o.status==='archived';
+    return '<div class="acc-card'+(isArchived?' archived':'')+'" onclick="openDetail(\''+esc(o.id)+'\')">'+
       '<div class="avatar" style="background:'+tc.bg+';color:'+tc.color+'">'+initials(o.name)+'</div>'+
       '<div class="acc-info">'+
-        '<div class="acc-name">'+o.name+'</div>'+
+        '<div class="acc-name">'+esc(o.name)+(isArchived?' <span style="font-size:10px;color:var(--text3);font-weight:400">archived</span>':'')+'</div>'+
         '<div class="acc-meta">'+
           '<div class="tbadge"><div class="tdot" style="background:'+tc.color+'"></div><span style="color:'+tc.color+'">'+tc.label+'</span></div>'+
           (pc>0?'<span class="proj-ct">'+pc+' project'+(pc!==1?'s':'')+'</span>':'')+
-          (o.plan?'<span class="proj-ct">· '+o.plan+'</span>':'')+
+          (o.plan?'<span class="proj-ct">· '+esc(o.plan)+'</span>':'')+
         '</div>'+
       '</div>'+
-      '<span class="chev">›</span></div>';
+      (isArchived
+        ?'<button class="restore-btn" onclick="event.stopPropagation();restoreAccount(\''+esc(o.id)+'\')">Restore</button>'
+        :'<button class="trash-btn" onclick="event.stopPropagation();promptArchive(\''+esc(o.id)+'\')" title="Archive">🗑</button>'
+      )+'</div>';
   }).join('');
+}
+function toggleShowArchived(){showArchived=!showArchived;renderAccounts();}
+function promptArchive(orgId){
+  const o=orgs.find(x=>x.id===orgId);if(!o)return;
+  if(!confirm('Archive "'+o.name+'"? It will be hidden from active lists.'))return;
+  confirmArchive(orgId);
+}
+function confirmArchive(orgId){
+  const o=orgs.find(x=>x.id===orgId);if(!o)return;
+  o.status='archived';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'archiveAccount',orgId})}).catch(()=>{});
+  renderAccounts();renderHome();
+  showToast(o.name+' archived');
+}
+function restoreAccount(orgId){
+  const o=orgs.find(x=>x.id===orgId);if(!o)return;
+  o.status='active';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'restoreAccount',orgId})}).catch(()=>{});
+  renderAccounts();renderHome();
+  showToast(o.name+' restored');
 }
 function filterAccts(type,el){
   currentFilter=type;
@@ -838,9 +1017,43 @@ function openDetail(orgId){
   const oi=ideas.filter(i=>i.orgId===orgId);
   h+='<div class="section-hdr" style="padding:12px 0 6px">'+
     '<span class="section-lbl">Ideas'+(oi.length>0?' · '+oi.length:'')+'</span>'+
-    '<button class="add-task-btn" onclick="openAddIdeaForOrg(\''+orgId+'\')">+ Add idea</button>'+
+    '<button class="add-task-btn" onclick="openAddIdeaForOrg(\''+esc(orgId)+'\')">+ Add idea</button>'+
   '</div>'+
-  '<div class="info-block" id="ideas-for-org-'+orgId+'"></div>';
+  '<div class="info-block" id="ideas-for-org-'+esc(orgId)+'"></div>';
+
+  // Agency notes panel
+  h+='<div class="panel-block" id="panel-notes">'+
+    '<div class="panel-hdr" onclick="togglePanel(\'panel-notes\')">'+
+      '<span class="panel-hdr-lbl">Agency notes (internal)</span>'+
+      '<span class="panel-chev" id="chev-panel-notes">›</span>'+
+    '</div>'+
+    '<div class="panel-body" id="body-panel-notes">'+
+      '<textarea class="notes-ta" id="agency-notes-ta" placeholder="Internal notes visible only to you…">'+esc(o.agencyNotes||'')+'</textarea>'+
+      '<div style="padding:0 16px 12px;text-align:right"><button class="add-task-btn" onclick="saveAgencyNotes(\''+esc(orgId)+'\')">Save notes</button></div>'+
+    '</div>'+
+  '</div>';
+
+  // Onboarding panel
+  const obSteps=onboarding.filter(s=>s.orgId===orgId).sort((a,b)=>a.order-b.order);
+  const obDone=obSteps.filter(s=>s.done).length;
+  const obPct=obSteps.length?Math.round(obDone/obSteps.length*100):0;
+  h+='<div class="panel-block" id="panel-onboarding">'+
+    '<div class="panel-hdr" onclick="togglePanel(\'panel-onboarding\')">'+
+      '<span class="panel-hdr-lbl">Onboarding'+(obSteps.length?' · '+obDone+'/'+obSteps.length:'')+'</span>'+
+      '<span class="panel-chev" id="chev-panel-onboarding">›</span>'+
+    '</div>'+
+    '<div class="panel-body" id="body-panel-onboarding">'+
+      (obSteps.length===0
+        ?'<button class="ob-start-btn" onclick="startOnboarding(\''+esc(orgId)+'\')">Start onboarding</button>'
+        :'<div class="ob-pbar-wrap"><div class="pbar-wrap"><div class="pbar-fill" style="width:'+obPct+'%"></div></div></div>'+
+          obSteps.map(s=>buildObStepHTML(s,orgId)).join('')+
+          '<div class="ob-add-step-row">'+
+            '<input class="ob-add-input" id="ob-new-step-'+esc(orgId)+'" placeholder="New step name…">'+
+            '<button class="ob-add-go" onclick="addObStep(\''+esc(orgId)+'\')">Add</button>'+
+          '</div>'
+      )+
+    '</div>'+
+  '</div>';
 
   document.getElementById('detail-body').innerHTML=h;
   // Render tasks for each project
@@ -860,6 +1073,95 @@ function openDetail(orgId){
 
 function goBack(){
   switchTab('accounts');
+}
+
+function togglePanel(panelId){
+  const body=document.getElementById('body-'+panelId);
+  const chev=document.getElementById('chev-'+panelId);
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(chev)chev.classList.toggle('open',open);
+}
+
+function saveAgencyNotes(orgId){
+  const ta=document.getElementById('agency-notes-ta');if(!ta)return;
+  const val=ta.value;
+  const o=orgs.find(x=>x.id===orgId);if(o)o.agencyNotes=val;
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'updateAgencyNotes',orgId,value:val})}).catch(()=>{});
+  showToast('Notes saved ✓');
+}
+
+function startOnboarding(orgId){
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'stampOnboarding',orgId})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success&&d.steps){
+        onboarding=[...onboarding.filter(s=>s.orgId!==orgId),...normaliseOnboarding(d.steps)];
+        openDetail(orgId);showToast('Onboarding started ✓');
+      }else showToast(d.error||'Could not start onboarding');
+    }).catch(()=>showToast('Network error'));
+}
+
+function buildObStepHTML(s,orgId){
+  const badgeClass='ob-badge-'+(s.assignedTo==='agency'?'agency':s.assignedTo==='client'?'client':'both');
+  const badgeLabel=s.assignedTo==='agency'?'Agency':s.assignedTo==='client'?'Client':'Both';
+  return '<div class="ob-step-row" id="ob-row-'+esc(s.id)+'">'+
+    '<div class="ob-chk'+(s.done?' done':'')+'" onclick="toggleObStep(\''+esc(s.id)+'\',\''+esc(orgId)+'\')"></div>'+
+    '<span class="ob-step-name'+(s.done?' done':'')+'">'+esc(s.stepName)+'</span>'+
+    '<span class="'+badgeClass+'">'+badgeLabel+'</span>'+
+    '<button class="ob-del-btn" onclick="deleteObStep(\''+esc(s.id)+'\',\''+esc(orgId)+'\')">✕</button>'+
+  '</div>';
+}
+
+function toggleObStep(stepId,orgId){
+  const s=onboarding.find(x=>x.id===stepId);if(!s)return;
+  s.done=!s.done;
+  s.completedBy=s.done?'Admin':'';
+  s.doneDate=s.done?today():'';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'toggleOnboardingStep',stepId,done:String(s.done),completedBy:s.completedBy,doneDate:s.doneDate})}).catch(()=>{});
+  const row=document.getElementById('ob-row-'+stepId);
+  if(row){
+    const chk=row.querySelector('.ob-chk');
+    const nm=row.querySelector('.ob-step-name');
+    if(chk)chk.classList.toggle('done',s.done);
+    if(nm)nm.classList.toggle('done',s.done);
+  }
+  const steps=onboarding.filter(x=>x.orgId===orgId);
+  const done=steps.filter(x=>x.done).length;
+  const pct=steps.length?Math.round(done/steps.length*100):0;
+  const fill=document.querySelector('#panel-onboarding .pbar-fill');
+  if(fill)fill.style.width=pct+'%';
+  const hdr=document.querySelector('#panel-onboarding .panel-hdr-lbl');
+  if(hdr)hdr.textContent='Onboarding · '+done+'/'+steps.length;
+}
+
+function addObStep(orgId){
+  const inp=document.getElementById('ob-new-step-'+orgId);
+  if(!inp||!inp.value.trim())return;
+  const stepName=inp.value.trim();
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'addOnboardingStep',orgId,stepName,assignedTo:'both'})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){
+        const maxOrd=onboarding.filter(s=>s.orgId===orgId).reduce((m,s)=>Math.max(m,s.order),0);
+        const newStep={id:d.stepId||'step_'+Date.now(),orgId,stepName,assignedTo:'both',done:false,completedBy:'',doneDate:'',order:maxOrd+1};
+        onboarding.push(newStep);
+        inp.value='';
+        const container=document.querySelector('#panel-onboarding .panel-body');
+        if(container){
+          const addRow=document.querySelector('.ob-add-step-row');
+          const rowHtml=buildObStepHTML(newStep,orgId);
+          if(addRow)addRow.insertAdjacentHTML('beforebegin',rowHtml);
+        }
+        showToast('Step added ✓');
+      }
+    }).catch(()=>showToast('Network error'));
+}
+
+function deleteObStep(stepId,orgId){
+  const idx=onboarding.findIndex(s=>s.id===stepId);if(idx===-1)return;
+  onboarding.splice(idx,1);
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'deleteOnboardingStep',stepId})}).catch(()=>{});
+  const row=document.getElementById('ob-row-'+stepId);if(row)row.remove();
+  showToast('Step removed');
 }
 function editCurrentOrg(){
   if(!currentDetailId)return;
@@ -1121,6 +1423,7 @@ function openAddTask(projId,orgId){
   document.getElementById('task-modal-btns').innerHTML=
     '<button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>'+
     '<button class="btn-save" onclick="saveTask()">Save task</button>';
+  document.getElementById('task-comments-section').style.display='none';
   document.getElementById('task-modal').classList.add('open');
 }
 
@@ -1137,10 +1440,43 @@ function editTask(taskId){
   document.getElementById('t-category').value=t.category||'';
   document.getElementById('t-assigned').value=t.assigned||'Ramon';
   document.getElementById('task-modal-btns').innerHTML=
-    '<button class="btn-danger" onclick="deleteTask(\''+t.id+'\')">Delete</button>'+
+    '<button class="btn-danger" onclick="deleteTask(\''+esc(t.id)+'\')">Delete</button>'+
     '<button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>'+
     '<button class="btn-save" onclick="saveTask()">Save</button>';
+  renderTaskComments(taskId);
+  document.getElementById('task-comments-section').style.display='';
   document.getElementById('task-modal').classList.add('open');
+}
+
+function renderTaskComments(taskId){
+  const tc=comments.filter(c=>c.taskId===taskId).sort((a,b)=>a.timestamp>b.timestamp?1:-1);
+  const sec=document.getElementById('task-comments-section');
+  if(!sec)return;
+  let h='<div class="comments-section">'+
+    '<div class="comments-hdr">Comments</div>'+
+    tc.map(c=>'<div class="comment-item">'+
+      '<div class="comment-meta">'+esc(c.author)+' · <span style="text-transform:capitalize">'+esc(c.authorRole)+'</span> · '+fmtTimestamp(c.timestamp)+'</div>'+
+      '<div class="comment-body">'+esc(c.body)+'</div>'+
+    '</div>').join('')+
+    '<textarea class="comment-ta" id="comment-input-'+esc(taskId)+'" placeholder="Add a comment…"></textarea>'+
+    '<button class="comment-post-btn" onclick="submitTaskComment(\''+esc(taskId)+'\')">Post</button>'+
+  '</div>';
+  sec.innerHTML=h;
+}
+
+function submitTaskComment(taskId){
+  const ta=document.getElementById('comment-input-'+taskId);
+  if(!ta||!ta.value.trim())return;
+  const body=ta.value.trim();
+  const t=tasks.find(x=>x.id===taskId);
+  const orgId=t?t.orgId:'';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'addComment',taskId,orgId,author:'Admin',authorRole:'admin',body})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){
+        comments.push({id:d.commentId||'cmt_'+Date.now(),taskId,orgId,author:'Admin',authorRole:'admin',body,timestamp:d.timestamp||new Date().toISOString()});
+        renderTaskComments(taskId);showToast('Comment posted ✓');
+      }
+    }).catch(()=>showToast('Network error'));
 }
 
 function closeTaskModal(){document.getElementById('task-modal').classList.remove('open');}
@@ -1251,6 +1587,248 @@ function saveAccount(){
   editingId=null;
 }
 
+// ── ROUTING ────────────────────────────────────────────────
+function showView(view){
+  document.getElementById('app').style.display=view==='admin'?'':'none';
+  const lv=document.getElementById('login-view');
+  const cv=document.getElementById('client-view');
+  if(lv){lv.classList.toggle('active',view==='login');}
+  if(cv){cv.classList.toggle('active',view==='client');}
+}
+
+function detectAndRoute(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('token');
+  const view=params.get('view');
+  if(token){
+    showView('login');
+    handleTokenValidation(token);
+    return;
+  }
+  if(view==='client'){
+    const saved=sessionStorage.getItem('mp_client');
+    if(saved){clientSession=JSON.parse(saved);showView('client');loadClientData();return;}
+    showView('login');return;
+  }
+  // Admin — check key param or skip straight in
+  const key=params.get('key');
+  if(key===ADMIN_KEY||!key){initAdmin();return;}
+  showView('login');
+}
+
+function initAdmin(){
+  showView('admin');
+  loadFromSheet();
+  setTimeout(()=>{if(!orgs.length){loadCache();}},6000);
+}
+
+// ── MAGIC LINK ─────────────────────────────────────────────
+function requestMagicLink(){
+  const email=(document.getElementById('login-email').value||'').trim();
+  const status=document.getElementById('login-status');
+  if(!email){status.textContent='Please enter your email.';status.className='login-status error';return;}
+  status.textContent='Sending…';status.className='login-status';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'requestMagicLink',email})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){status.textContent='Check your email for a login link.';status.className='login-status ok';}
+      else{status.textContent=d.error||'Email not found.';status.className='login-status error';}
+    }).catch(()=>{status.textContent='Network error. Try again.';status.className='login-status error';});
+}
+
+function handleTokenValidation(token){
+  const status=document.getElementById('login-status');
+  if(status){status.textContent='Validating…';status.className='login-status';}
+  const cb='cb_tok_'+Date.now();
+  window[cb]=function(d){
+    delete window[cb];
+    if(d.valid){
+      clientSession={orgId:d.orgId,orgName:d.orgName,contactName:d.contactName};
+      sessionStorage.setItem('mp_client',JSON.stringify(clientSession));
+      window.history.replaceState({},'',window.location.pathname);
+      showView('client');loadClientData();
+    }else{
+      if(status){status.textContent=d.error||'Invalid or expired link.';status.className='login-status error';}
+    }
+  };
+  const s=document.createElement('script');
+  s.src=SCRIPT_URL+'?action=validateToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
+  s.onerror=()=>{delete window[cb];if(status){status.textContent='Network error.';status.className='login-status error';}};
+  document.head.appendChild(s);
+}
+
+// ── CLIENT PORTAL ──────────────────────────────────────────
+let cpData={projects:[],tasks:[],onboarding:[],comments:[],clientWorkspace:''};
+let cpCurrentTab='projects';
+
+function loadClientData(){
+  if(!clientSession)return;
+  document.getElementById('cp-org-name').textContent=clientSession.orgName||'My Portal';
+  const cb='cb_cp_'+Date.now();
+  window[cb]=function(d){
+    delete window[cb];
+    if(d.error){showToast('Error: '+d.error);return;}
+    cpData={
+      projects:normaliseProjects(d.projects||[]),
+      tasks:normaliseTasks(d.tasks||[]),
+      onboarding:normaliseOnboarding(d.onboarding||[]),
+      comments:normaliseComments(d.comments||[]),
+      clientWorkspace:d.clientWorkspace||''
+    };
+    renderCpProjects();renderCpTasks();renderCpOnboarding();
+    const ws=document.getElementById('cp-workspace-ta');if(ws)ws.value=cpData.clientWorkspace;
+  };
+  const s=document.createElement('script');
+  s.src=SCRIPT_URL+'?action=readClient&orgId='+encodeURIComponent(clientSession.orgId)+'&callback='+cb+'&t='+Date.now();
+  s.onerror=()=>{delete window[cb];showToast('Could not load portal data');};
+  document.head.appendChild(s);
+  // build workspace tab HTML
+  document.getElementById('cp-workspace').innerHTML=
+    '<div class="cp-section-hdr">Shared workspace</div>'+
+    '<div class="cp-task-block"><textarea class="cp-workspace-ta" id="cp-workspace-ta" placeholder="Notes, links, or info for your agency…"></textarea></div>'+
+    '<div style="padding:0 16px 12px;text-align:right"><button class="add-task-btn" onclick="saveClientWorkspaceCp()">Save</button></div>';
+}
+
+function renderCpProjects(){
+  const el=document.getElementById('cp-projects');if(!el)return;
+  if(!cpData.projects.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3);font-size:14px">No projects yet</div>';return;}
+  let h='<div class="cp-section-hdr">Projects</div>';
+  cpData.projects.forEach(p=>{
+    const open=cpData.tasks.filter(t=>t.projId===p.id&&!t.done).length;
+    h+='<div class="cp-proj-card">'+
+      '<div class="cp-proj-name">'+esc(p.name)+'</div>'+
+      '<div class="cp-proj-meta">'+(p.due&&p.due!=='TBD'?'Due '+fmtDue(p.due)+' · ':'')+open+' task'+(open!==1?'s':'')+' open</div>'+
+      '<div class="pbar-wrap"><div class="pbar-fill" style="width:'+p.progress+'%"></div></div>'+
+    '</div>';
+  });
+  el.innerHTML=h;
+}
+
+function renderCpTasks(){
+  const el=document.getElementById('cp-tasks');if(!el)return;
+  const open=cpData.tasks.filter(t=>!t.done);
+  const done=cpData.tasks.filter(t=>t.done);
+  if(!cpData.tasks.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3);font-size:14px">No tasks yet</div>';return;}
+  let h='<div class="cp-section-hdr">Open tasks</div>';
+  if(open.length){
+    h+='<div class="cp-task-block">';
+    open.sort((a,b)=>(PRIORITY_ORDER[a.priority]||1)-(PRIORITY_ORDER[b.priority]||1)).forEach(t=>{
+      h+=buildCpTaskHTML(t);
+    });
+    h+='</div>';
+  }
+  if(done.length){
+    h+='<div class="cp-section-hdr">Completed</div><div class="cp-task-block">';
+    done.forEach(t=>{h+=buildCpTaskHTML(t);});
+    h+='</div>';
+  }
+  el.innerHTML=h;
+}
+
+function buildCpTaskHTML(t){
+  const tc=comments.filter(c=>c.taskId===t.id);
+  return '<div class="task-item" onclick="showCpTaskComments(\''+esc(t.id)+'\')">'+
+    '<div class="task-check'+(t.done?' done':'')+'"></div>'+
+    '<div class="task-body">'+
+      '<div class="task-name'+(t.done?' done':'')+'">'+esc(t.name)+'</div>'+
+      '<div class="task-meta">'+
+        (t.priority?'<span class="task-priority p-'+esc(t.priority)+'">'+esc(t.priority)+'</span>':'')+
+        (t.due&&t.due!=='TBD'?'<span class="task-due">'+fmtDue(t.due)+'</span>':'')+
+        (tc.length?'<span class="task-cat">'+tc.length+' comment'+(tc.length!==1?'s':'')+'</span>':'')+
+      '</div>'+
+    '</div></div>';
+}
+
+function showCpTaskComments(taskId){
+  const t=cpData.tasks.find(x=>x.id===taskId);if(!t)return;
+  const tc=cpData.comments.filter(c=>c.taskId===taskId).sort((a,b)=>a.timestamp>b.timestamp?1:-1);
+  const modal=document.createElement('div');
+  modal.className='overlay open';
+  modal.innerHTML='<div class="sheet">'+
+    '<div class="handle"></div>'+
+    '<div class="modal-title">'+esc(t.name)+'</div>'+
+    '<div class="comments-section" style="margin-top:0;border-top:none;padding-top:0">'+
+      '<div class="comments-hdr">Comments</div>'+
+      (tc.length?tc.map(c=>'<div class="comment-item">'+
+        '<div class="comment-meta">'+esc(c.author)+' · '+fmtTimestamp(c.timestamp)+'</div>'+
+        '<div class="comment-body">'+esc(c.body)+'</div></div>').join(''):'<div style="color:var(--text3);font-size:13px;margin-bottom:10px">No comments yet</div>')+
+      '<textarea class="comment-ta" id="cp-comment-ta-'+esc(taskId)+'" placeholder="Leave a comment…"></textarea>'+
+      '<div style="display:flex;gap:8px;margin-top:8px">'+
+        '<button class="comment-post-btn" onclick="submitCpComment(\''+esc(taskId)+'\')">Post</button>'+
+        '<button class="btn-cancel" style="flex:1" onclick="this.closest(\'.overlay\').remove()">Close</button>'+
+      '</div>'+
+    '</div></div>';
+  document.body.appendChild(modal);
+  modal.addEventListener('click',function(e){if(e.target===this)this.remove();});
+}
+
+function submitCpComment(taskId){
+  const ta=document.getElementById('cp-comment-ta-'+taskId);
+  if(!ta||!ta.value.trim())return;
+  const body=ta.value.trim();
+  const orgId=clientSession?clientSession.orgId:'';
+  const author=clientSession?clientSession.contactName||'Client':'Client';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'addComment',taskId,orgId,author,authorRole:'client',body})})
+    .then(r=>r.json()).then(d=>{
+      if(d.success){
+        cpData.comments.push({id:d.commentId||'cmt_'+Date.now(),taskId,orgId,author,authorRole:'client',body,timestamp:d.timestamp||new Date().toISOString()});
+        const overlay=ta.closest('.overlay');if(overlay)overlay.remove();
+        renderCpTasks();showToast('Comment posted ✓');
+      }
+    }).catch(()=>showToast('Network error'));
+}
+
+function renderCpOnboarding(){
+  const el=document.getElementById('cp-onboarding');if(!el)return;
+  const steps=cpData.onboarding.sort((a,b)=>a.order-b.order);
+  if(!steps.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3);font-size:14px">No onboarding steps yet</div>';return;}
+  const done=steps.filter(s=>s.done).length;
+  const pct=Math.round(done/steps.length*100);
+  let h='<div class="cp-section-hdr">Onboarding · '+done+'/'+steps.length+'</div>'+
+    '<div class="cp-task-block">'+
+    '<div style="padding:10px 16px 4px"><div class="pbar-wrap"><div class="pbar-fill" style="width:'+pct+'%"></div></div></div>';
+  steps.forEach(s=>{
+    const canToggle=['client','both'].includes(s.assignedTo);
+    h+='<div class="cp-ob-row">'+
+      '<div class="ob-chk'+(s.done?' done':'')+'"'+
+        (canToggle?' onclick="toggleCpObStep(\''+esc(s.id)+'\')"':'')+'></div>'+
+      '<span class="ob-step-name'+(s.done?' done':'')+'">'+esc(s.stepName)+'</span>'+
+    '</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+}
+
+function toggleCpObStep(stepId){
+  const s=cpData.onboarding.find(x=>x.id===stepId);if(!s)return;
+  s.done=!s.done;
+  s.completedBy=s.done?(clientSession?clientSession.contactName||'Client':'Client'):'';
+  s.doneDate=s.done?today():'';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'toggleOnboardingStep',stepId,done:String(s.done),completedBy:s.completedBy,doneDate:s.doneDate})}).catch(()=>{});
+  renderCpOnboarding();
+}
+
+function saveClientWorkspaceCp(){
+  const ta=document.getElementById('cp-workspace-ta');if(!ta)return;
+  const value=ta.value;
+  cpData.clientWorkspace=value;
+  const orgId=clientSession?clientSession.orgId:'';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'updateClientWorkspace',orgId,value})}).catch(()=>{});
+  showToast('Workspace saved ✓');
+}
+
+function switchCpTab(tab){
+  cpCurrentTab=tab;
+  document.querySelectorAll('.cp-ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('cp-ni-'+tab)?.classList.add('on');
+  document.querySelectorAll('.cp-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('cp-'+tab)?.classList.add('active');
+}
+
+function clientLogout(){
+  clientSession=null;sessionStorage.removeItem('mp_client');
+  showView('login');
+}
+
 // ── NAV ────────────────────────────────────────────────────
 function switchTab(tab){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1277,13 +1855,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
   document.getElementById('task-modal').addEventListener('click',function(e){if(e.target===this)closeTaskModal();});
   document.getElementById('idea-modal').addEventListener('click',function(e){if(e.target===this)closeIdeaModal();});
-  // Always load fresh from sheet; fall back to cache if offline
-  loadFromSheet();
-  setTimeout(()=>{if(!orgs.length){
-    const c=localStorage.getItem('mp_cache');
-    if(c){const d=JSON.parse(c);orgs=d.orgs||[];projects=d.projects||[];tasks=d.tasks||[];ideas=d.ideas||[];messages=d.messages||[];renderAll();}
-    else{seedFallback();renderAll();}
-  }},6000);
+  detectAndRoute();
 });
 </script>
 </body>
