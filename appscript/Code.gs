@@ -261,16 +261,18 @@ function requestMagicLink(email) {
   if (!org) return { success: false, error: 'Email not found' };
 
   var token   = generateToken32();
+  var now     = new Date().toISOString();
   var expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  // Tokens tab columns: TokenID | OrgID | OrgName | Token | Expires | Used
+  // Tokens tab columns: Token | OrgID | Email | CreatedAt | ExpiresAt | Used | TokenType
   getTab('Tokens').appendRow([
-    generateId('tok'),
-    org.OrgID,
-    org.OrgName || '',
     token,
+    org.OrgID,
+    email,
+    now,
     expires,
-    false
+    false,
+    'client'
   ]);
 
   var link    = PORTAL_URL + '?token=' + token;
@@ -303,7 +305,7 @@ function validateToken(token) {
   }
 
   // Check expiry
-  if (new Date() > new Date(match.Expires)) {
+  if (new Date() > new Date(match.ExpiresAt)) {
     return { valid: false, error: 'Token expired' };
   }
 
@@ -314,14 +316,14 @@ function validateToken(token) {
     sheet.getRange(rowNum, usedCol + 1).setValue(true);
   }
 
-  // Enrich with ContactName from Orgs
+  // Enrich with OrgName and ContactName from Orgs
   var orgs = sheetToObjects(getTab('Orgs'));
   var org  = orgs.filter(function(r) { return String(r.OrgID) === String(match.OrgID); })[0] || {};
 
   return {
     valid:       true,
     orgId:       match.OrgID,
-    orgName:     match.OrgName || org.OrgName || '',
+    orgName:     org.OrgName || '',
     contactName: org.ContactName || ''
   };
 }
@@ -481,14 +483,15 @@ function requestAdminMagicLink(email) {
   }
 
   var token   = generateToken32();
+  var now     = new Date().toISOString();
   var expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  // Tokens tab: TokenID | OrgID | OrgName | Token | Expires | Used | TokenType
+  // Tokens tab columns: Token | OrgID | Email | CreatedAt | ExpiresAt | Used | TokenType
   getTab('Tokens').appendRow([
-    generateId('tok'),
-    admin.AdminID || '',
-    admin.Name    || '',
     token,
+    admin.AdminID || '',
+    email,
+    now,
     expires,
     false,
     'admin'
@@ -521,7 +524,7 @@ function validateAdminToken(token) {
   if (match.Used === true || String(match.Used).toUpperCase() === 'TRUE') {
     return { valid: false, error: 'Token already used' };
   }
-  if (new Date() > new Date(match.Expires)) {
+  if (new Date() > new Date(match.ExpiresAt)) {
     return { valid: false, error: 'Token expired' };
   }
 
@@ -540,7 +543,7 @@ function validateAdminToken(token) {
 
   return {
     valid: true,
-    name:  admin.Name  || match.OrgName || '',
-    email: admin.Email || ''
+    name:  admin.Name  || '',
+    email: admin.Email || match.Email || ''
   };
 }
