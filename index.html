@@ -322,7 +322,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 </style>
 </head>
 <body>
-<div id="app">
+<div id="login-screen" style="display:none;width:100%;max-width:430px;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)">
+  <div style="width:100%">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="width:52px;height:52px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <svg viewBox="0 0 14 14" style="width:22px;height:22px;fill:#fff"><circle cx="7" cy="7" r="5.5"/></svg>
+      </div>
+      <div style="font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.5px">MyPortal</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:5px">Sign in to continue</div>
+    </div>
+    <div style="background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:24px">
+      <div class="fgroup" style="margin-bottom:4px">
+        <label class="flabel">Access key</label>
+        <input class="finput" id="login-key" type="password" placeholder="Enter your access key" autocomplete="current-password" onkeydown="if(event.key==='Enter')attemptLogin()">
+      </div>
+      <div id="login-error" style="display:none;color:#F59E0B;font-size:12px;font-weight:600;margin:10px 0;text-align:center"></div>
+      <button class="btn-save" style="width:100%;margin-top:14px" onclick="attemptLogin()">Sign in →</button>
+    </div>
+  </div>
+</div>
+<div id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-left">
       <div class="logo-mark"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/></svg></div>
@@ -1610,11 +1629,36 @@ let adminSession=null;
 
 // ── ROUTING ────────────────────────────────────────────────
 function showView(view){
-  document.getElementById('app').style.display=view==='admin'?'':'none';
+  document.getElementById('app').style.display=view==='admin'?'flex':'none';
+  const ls=document.getElementById('login-screen');
   const lv=document.getElementById('login-view');
   const cv=document.getElementById('client-view');
+  if(ls){ls.style.display='none';}
   if(lv){lv.classList.toggle('active',view==='login');}
   if(cv){cv.classList.toggle('active',view==='client');}
+}
+
+function showLoginScreen(msg){
+  document.getElementById('app').style.display='none';
+  const lv=document.getElementById('login-view');
+  if(lv){lv.classList.remove('active');}
+  const ls=document.getElementById('login-screen');
+  if(ls){ls.style.display='flex';}
+  if(msg){const e=document.getElementById('login-error');if(e){e.textContent=msg;e.style.display='block';}}
+}
+
+function attemptLogin(){
+  const key=(document.getElementById('login-key').value||'').trim();
+  if(key===ADMIN_KEY){
+    sessionStorage.setItem('mp_admin_key',ADMIN_KEY);
+    const e=document.getElementById('login-error');if(e)e.style.display='none';
+    const ls=document.getElementById('login-screen');if(ls)ls.style.display='none';
+    initAdmin();
+  }else{
+    const e=document.getElementById('login-error');
+    if(e){e.textContent='Invalid access key. Please try again.';e.style.display='block';}
+    const inp=document.getElementById('login-key');if(inp){inp.value='';inp.focus();}
+  }
 }
 
 function detectAndRoute(){
@@ -1635,15 +1679,18 @@ function detectAndRoute(){
   if(view==='client'){
     const saved=sessionStorage.getItem('mp_client');
     if(saved){clientSession=JSON.parse(saved);showView('client');loadClientData();return;}
-    showView('login');return;
+    showLoginScreen();return;
   }
+  // Check mp_admin_key (password-based admin session)
+  if(sessionStorage.getItem('mp_admin_key')===ADMIN_KEY){initAdmin();return;}
   // Check for existing admin magic-link session
   const savedAdmin=sessionStorage.getItem('mp_admin');
   if(savedAdmin){adminSession=JSON.parse(savedAdmin);initAdmin();return;}
-  // Admin — check key param or skip straight in
-  const key=params.get('key');
-  if(key===ADMIN_KEY||!key){initAdmin();return;}
-  showView('login');
+  // Check for existing client session
+  const savedClient=sessionStorage.getItem('mp_client');
+  if(savedClient){clientSession=JSON.parse(savedClient);showView('client');loadClientData();return;}
+  // No valid session — require login
+  showLoginScreen();
 }
 
 function initAdmin(){
