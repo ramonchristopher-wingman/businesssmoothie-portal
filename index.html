@@ -82,6 +82,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .back-btn{font-size:14px;color:var(--green);font-weight:600;cursor:pointer;background:none;border:none;padding:0;font-family:var(--font)}
 .back-title{font-size:16px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .edit-btn{font-size:13px;color:var(--green);font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font)}
+.invite-btn{font-size:13px;color:var(--green);font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font);padding:0;}
+.invite-btn:disabled{color:var(--text3);cursor:default;}
 .detail-body{padding:14px 16px}
 .info-block{background:var(--surface);border-radius:14px;border:0.5px solid var(--border);margin-bottom:12px;overflow:hidden}
 .info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:0.5px solid var(--border2);font-size:14px}
@@ -447,6 +449,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div class="back-bar">
         <button class="back-btn" onclick="goBack()">← Back</button>
         <span class="back-title" id="detail-name"></span>
+        <button class="invite-btn" id="invite-btn" style="display:none" onclick="openInviteSheet()">Invite</button>
         <button class="edit-btn" onclick="editCurrentOrg()">Edit</button>
       </div>
       <div class="detail-body" id="detail-body"></div>
@@ -663,6 +666,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeProjModal()">Cancel</button>
         <button class="btn-save" onclick="saveProj()">Save project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVITE MODAL -->
+  <div class="overlay" id="invite-modal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="modal-title">Invite client</div>
+      <div id="invite-sheet-body"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeInviteModal()">Cancel</button>
+        <button class="btn-save" id="invite-send-btn" onclick="sendInvite()">Send Invite</button>
       </div>
     </div>
   </div>
@@ -1021,10 +1037,11 @@ function renderAccounts(){
     const tc=TYPE[o.type]||TYPE.partner;
     const pc=projects.filter(p=>p.orgId===o.id).length;
     const isArchived=o.status==='archived';
+    const isInvited=o.status==='invited';
     return '<div class="acc-card'+(isArchived?' archived':'')+'" draggable="true" data-id="'+esc(o.id)+'" onclick="openDetail(\''+esc(o.id)+'\')">'+
       '<div class="avatar" style="background:'+tc.bg+';color:'+tc.color+'">'+initials(o.name)+'</div>'+
       '<div class="acc-info">'+
-        '<div class="acc-name">'+esc(o.name)+(isArchived?' <span style="font-size:10px;color:var(--text3);font-weight:400">archived</span>':'')+'</div>'+
+        '<div class="acc-name">'+esc(o.name)+(isArchived?' <span style="font-size:10px;color:var(--text3);font-weight:400">archived</span>':isInvited?' <span style="font-size:10px;color:#60A5FA;font-weight:600;background:rgba(96,165,250,.12);padding:1px 6px;border-radius:5px">invited</span>':'')+'</div>'+
         '<div class="acc-meta">'+
           '<div class="tbadge"><div class="tdot" style="background:'+tc.color+'"></div><span style="color:'+tc.color+'">'+tc.label+'</span></div>'+
           (pc>0?'<span class="proj-ct">'+pc+' project'+(pc!==1?'s':'')+'</span>':'')+
@@ -1109,9 +1126,18 @@ function openDetail(orgId){
   currentDetailId=orgId;
   const tc=TYPE[o.type]||TYPE.partner;
   document.getElementById('detail-name').textContent=o.name;
+  // Invite button: only for clients, disabled without email
+  const invBtn=document.getElementById('invite-btn');
+  if(invBtn){
+    const isClient=o.type==='client';
+    invBtn.style.display=isClient?'':'none';
+    invBtn.disabled=isClient&&!o.email;
+    invBtn.title=isClient&&!o.email?'Add an email to this account first.':'';
+  }
   const op=projects.filter(p=>p.orgId===orgId);
   let h='<div class="info-block">'+
     '<div class="info-row"><span class="ilab">Type</span><span class="ival" style="color:'+tc.color+'">'+tc.label+'</span></div>'+
+    (o.status==='invited'?'<div class="info-row"><span class="ilab">Status</span><span class="ival" style="color:#60A5FA">Invited — awaiting first login</span></div>':'')+
     (o.contact?'<div class="info-row"><span class="ilab">Contact</span><span class="ival">'+o.contact+'</span></div>':'')+
     (o.email?'<div class="info-row"><span class="ilab">Email</span><span class="ival" style="font-size:12px;font-weight:500">'+o.email+'</span></div>':'')+
     (o.plan?'<div class="info-row"><span class="ilab">Plan</span><span class="ival">'+o.plan+'</span></div>':'')+
@@ -1296,6 +1322,36 @@ function deleteObStep(stepId,orgId){
   const row=document.getElementById('ob-row-'+stepId);if(row)row.remove();
   showToast('Step removed');
 }
+function openInviteSheet(){
+  const o=orgs.find(x=>x.id===currentDetailId);
+  if(!o||!o.email)return;
+  const body=document.getElementById('invite-sheet-body');
+  if(body){
+    body.innerHTML=
+      '<div style="background:var(--surface2);border-radius:12px;padding:14px 16px;margin-bottom:16px">'+
+        '<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">'+esc(o.name)+'</div>'+
+        '<div style="font-size:13px;color:var(--text2)">'+esc(o.email)+'</div>'+
+      '</div>'+
+      '<div style="font-size:14px;color:var(--text2);line-height:1.6">This will send a portal invite to <strong style="color:var(--text)">'+esc(o.email)+'</strong>. They\'ll receive a link to log in and view their projects and tasks.</div>';
+  }
+  document.getElementById('invite-modal').classList.add('open');
+}
+function closeInviteModal(){document.getElementById('invite-modal').classList.remove('open');}
+function sendInvite(){
+  const o=orgs.find(x=>x.id===currentDetailId);
+  if(!o||!o.email)return;
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'sendInvite',orgId:o.id,orgName:o.name,email:o.email})}).catch(()=>{});
+  o.status='invited';
+  closeInviteModal();
+  renderAccounts();
+  // Refresh invite button state
+  const invBtn=document.getElementById('invite-btn');
+  if(invBtn){invBtn.title='';invBtn.disabled=false;}
+  // Refresh status row in open detail
+  openDetail(o.id);
+  showToast('Invite sent to '+o.email);
+}
+
 function editCurrentOrg(){
   if(!currentDetailId)return;
   const o=orgs.find(x=>x.id===currentDetailId);if(!o)return;
@@ -2313,6 +2369,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('task-modal').addEventListener('click',function(e){if(e.target===this)closeTaskModal();});
   document.getElementById('idea-modal').addEventListener('click',function(e){if(e.target===this)closeIdeaModal();});
   document.getElementById('proj-modal').addEventListener('click',function(e){if(e.target===this)closeProjModal();});
+  document.getElementById('invite-modal').addEventListener('click',function(e){if(e.target===this)closeInviteModal();});
   detectAndRoute();
 });
 </script>
