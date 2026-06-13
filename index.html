@@ -610,6 +610,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     </div>
   </div>
 
+  <!-- PROJECT MODAL -->
+  <div class="overlay" id="proj-modal">
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="modal-title">Add project</div>
+      <input type="hidden" id="p-org-id">
+      <div class="fgroup"><label class="flabel">Project name *</label><input class="finput" id="p-name" placeholder="e.g. Website Revamp"></div>
+      <div class="fgroup"><label class="flabel">Status</label>
+        <select class="fselect" id="p-status">
+          <option value="pending">Pending</option>
+          <option value="active">Active</option>
+          <option value="review">Review</option>
+        </select>
+      </div>
+      <div class="fgroup"><label class="flabel">Due date</label><input class="finput" id="p-due" type="date"></div>
+      <div class="fgroup"><label class="flabel">Notes</label><input class="finput" id="p-notes" placeholder="Optional"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeProjModal()">Cancel</button>
+        <button class="btn-save" onclick="saveProj()">Save project</button>
+      </div>
+    </div>
+  </div>
+
   </div><!-- /#app -->
 
 <!-- CLIENT LOGIN VIEW -->
@@ -1071,7 +1094,7 @@ function openDetail(orgId){
       '</div>';
     });
   }
-  h+='<div class="add-proj-row">+ Add project</div>';
+  h+='<div class="add-proj-row" onclick="openAddProj(\''+esc(orgId)+'\')">+ Add project</div>';
 
   // Ideas for this org
   const oi=ideas.filter(i=>i.orgId===orgId);
@@ -1540,6 +1563,32 @@ function submitTaskComment(taskId){
 }
 
 function closeTaskModal(){document.getElementById('task-modal').classList.remove('open');}
+
+function openAddProj(orgId){
+  const o=orgs.find(x=>x.id===orgId);if(!o)return;
+  document.getElementById('p-org-id').value=orgId;
+  document.getElementById('p-name').value='';
+  document.getElementById('p-status').value='pending';
+  document.getElementById('p-due').value='';
+  document.getElementById('p-notes').value='';
+  document.getElementById('proj-modal').classList.add('open');
+}
+function closeProjModal(){document.getElementById('proj-modal').classList.remove('open');}
+function saveProj(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){document.getElementById('p-name').focus();return;}
+  const orgId=document.getElementById('p-org-id').value;
+  const o=orgs.find(x=>x.id===orgId)||{};
+  const proj={id:'proj_'+Date.now(),orgId,orgName:o.name||'',name,
+    status:document.getElementById('p-status').value,
+    progress:0,due:document.getElementById('p-due').value,
+    assigned:'Ramon',notes:document.getElementById('p-notes').value.trim()};
+  projects.push(proj);
+  writeToSheet('Projects',proj);
+  closeProjModal();
+  openDetail(orgId);
+  showToast(name+' added ✓');
+}
 
 function saveTask(){
   const name=document.getElementById('t-name').value.trim();
@@ -2042,6 +2091,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
   document.getElementById('task-modal').addEventListener('click',function(e){if(e.target===this)closeTaskModal();});
   document.getElementById('idea-modal').addEventListener('click',function(e){if(e.target===this)closeIdeaModal();});
+  document.getElementById('proj-modal').addEventListener('click',function(e){if(e.target===this)closeProjModal();});
   detectAndRoute();
 });
 </script>
