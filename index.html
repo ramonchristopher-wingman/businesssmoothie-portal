@@ -226,6 +226,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .loading{display:flex;align-items:center;justify-content:center;padding:40px 16px;gap:10px;color:var(--text2);font-size:14px}
 .spinner{width:18px;height:18px;border:2px solid var(--surface2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* DRAG AND DROP */
+.dragging{opacity:.3;pointer-events:none;}
+.drag-target{border-top:2px solid var(--green)!important;}
+[draggable]{cursor:grab;}
+/* TASK FILTERS */
+.task-filter-bar{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 4px;border-bottom:0.5px solid var(--border2);}
+.task-filter-bar:empty{display:none}
+.task-filter-bar::-webkit-scrollbar{display:none}
+.tpill{border:0.5px solid var(--input-border);background:var(--pill-bg);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.tpill.on{background:var(--green);color:#fff;border-color:var(--green);}
 /* ARCHIVE */
 .acc-card.archived{opacity:.45}
 .trash-btn{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px 6px;flex-shrink:0;line-height:1}
@@ -405,11 +415,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div class="toolbar">
         <button class="add-btn" onclick="openAddModal()">+ Account</button>
         <div class="filter-row">
-          <span class="fpill on" onclick="filterAccts('all',this)">All</span>
-          <span class="fpill" onclick="filterAccts('client',this)">Clients</span>
-          <span class="fpill" onclick="filterAccts('prospect',this)">Prospects</span>
-          <span class="fpill" onclick="filterAccts('personal',this)">Personal</span>
-          <span class="fpill" onclick="filterAccts('internal',this)">Internal</span>
+          <span class="fpill type-pill on" onclick="filterAccts('all',this)">All</span>
+          <span class="fpill type-pill" onclick="filterAccts('client',this)">Clients</span>
+          <span class="fpill type-pill" onclick="filterAccts('prospect',this)">Prospects</span>
+          <span class="fpill type-pill" onclick="filterAccts('personal',this)">Personal</span>
+          <span class="fpill type-pill" onclick="filterAccts('internal',this)">Internal</span>
+          <span class="fpill plan-pill" onclick="filterPlan('Splash',this)">Splash</span>
+          <span class="fpill plan-pill" onclick="filterPlan('Lite',this)">Lite</span>
+          <span class="fpill plan-pill" onclick="filterPlan('Solo',this)">Solo</span>
+          <span class="fpill plan-pill" onclick="filterPlan('Team',this)">Team</span>
+          <span class="fpill plan-pill" onclick="filterPlan('Enterprise',this)">Enterprise</span>
         </div>
       </div>
       <div class="acc-list" id="acc-list"></div>
@@ -430,13 +445,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 
     <!-- PROJECTS -->
     <div class="screen" id="screen-projects">
-      <div class="toolbar">
-        <div class="filter-row">
+      <div class="toolbar" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div class="filter-row" id="proj-status-pills">
           <span class="fpill on" onclick="filterProjs('all',this)">All</span>
           <span class="fpill" onclick="filterProjs('active',this)">Active</span>
           <span class="fpill" onclick="filterProjs('review',this)">Needs review</span>
           <span class="fpill" onclick="filterProjs('pending',this)">Pending</span>
         </div>
+        <div class="filter-row" id="proj-org-pills" style="display:none;padding-bottom:2px"></div>
       </div>
       <div class="proj-list" id="proj-list"></div>
     </div>
@@ -454,15 +470,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 
     <!-- IDEAS -->
     <div class="screen" id="screen-ideas">
-      <div class="toolbar">
-        <button class="add-btn" onclick="openAddIdea()">+ Idea</button>
-        <div class="filter-row">
-          <span class="fpill on" id="if-all" onclick="filterIdeas('all',this)">All</span>
-          <span class="fpill" id="if-new" onclick="filterIdeas('new',this)">New</span>
-          <span class="fpill" id="if-review" onclick="filterIdeas('review',this)">Review</span>
-          <span class="fpill" id="if-planned" onclick="filterIdeas('planned',this)">Planned</span>
-          <span class="fpill" id="if-done" onclick="filterIdeas('done',this)">Done</span>
+      <div class="toolbar" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div style="display:flex;gap:8px;align-items:center;width:100%">
+          <button class="add-btn" onclick="openAddIdea()">+ Idea</button>
+          <div class="filter-row" id="idea-status-pills">
+            <span class="fpill on" id="if-all" onclick="filterIdeas('all',this)">All</span>
+            <span class="fpill" id="if-new" onclick="filterIdeas('new',this)">New</span>
+            <span class="fpill" id="if-review" onclick="filterIdeas('review',this)">Review</span>
+            <span class="fpill" id="if-planned" onclick="filterIdeas('planned',this)">Planned</span>
+            <span class="fpill" id="if-done" onclick="filterIdeas('done',this)">Done</span>
+          </div>
         </div>
+        <div class="filter-row" id="idea-org-pills" style="display:none;padding-bottom:2px"></div>
       </div>
       <div class="idea-list" id="idea-list"></div>
     </div>
@@ -570,9 +589,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </select>
       </div>
       <div class="fgroup"><label class="flabel">Assigned to</label>
-        <select class="fselect" id="t-assigned">
-          <option value="Ramon">Ramon</option>
-        </select>
+        <input class="finput" id="t-assigned" placeholder="e.g. Ramon" list="t-assigned-list" autocomplete="off">
+        <datalist id="t-assigned-list"></datalist>
       </div>
       <div id="task-comments-section" style="display:none"></div>
       <div class="modal-btns" id="task-modal-btns">
@@ -691,9 +709,10 @@ const TYPE={
 };
 const PRIORITY_ORDER={high:0,medium:1,low:2};
 let orgs=[],projects=[],tasks=[],ideas=[],messages=[],onboarding=[],comments=[];
-let currentFilter='all',currentProjFilter='all',currentIdeaFilter='all';
+let currentFilter='all',currentPlanFilter='',currentProjFilter='all',currentProjOrgFilter='',currentIdeaFilter='all',currentIdeaOrgFilter='';
 let currentDetailId=null,editingId=null,calYear=0,calMonth=0,calSelectedDate=null;
 let showArchived=false,clientSession=null;
+let taskFilters={};
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function initials(n){if(!n)return'?';const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase()}
@@ -758,7 +777,8 @@ function normaliseOrgs(rows){
     notes:r.notes||r.Notes||'',
     status:(r.status||r.Status||'active').toLowerCase(),
     clientWorkspace:r.clientWorkspace||r.ClientWorkspace||'',
-    agencyNotes:r.agencyNotes||r.AgencyNotes||''
+    agencyNotes:r.agencyNotes||r.AgencyNotes||'',
+    sortOrder:parseInt(r.sortOrder||r.SortOrder||9999)||9999
   }));
 }
 function normaliseOnboarding(rows){
@@ -788,7 +808,8 @@ function normaliseProjects(rows){
     progress:parseInt(r.progress||r.Progress||0)||0,
     due:parseSheetDate(r.due||r.DueDate||''),
     assigned:r.assigned||r.AssignedTo||'Ramon',
-    notes:r.notes||r.Notes||''
+    notes:r.notes||r.Notes||'',
+    sortOrder:parseInt(r.sortOrder||r.SortOrder||9999)||9999
   }));
 }
 function normaliseTasks(rows){
@@ -810,7 +831,8 @@ function normaliseIdeas(rows){
     status:(r.status||r.Status||'new').toLowerCase(),
     votes:parseInt(r.votes||r.Votes||0)||0,
     submittedBy:r.submittedBy||r.SubmittedBy||'Ramon',
-    notes:r.notes||r.Notes||''
+    notes:r.notes||r.Notes||'',
+    sortOrder:parseInt(r.sortOrder||r.SortOrder||9999)||9999
   }));
 }
 function normaliseMessages(rows){
@@ -973,16 +995,17 @@ function renderAccounts(){
   const list=document.getElementById('acc-list');
   const bar=document.getElementById('archived-bar');
   let pool=currentFilter==='all'?orgs:orgs.filter(o=>o.type===currentFilter);
+  if(currentPlanFilter)pool=pool.filter(o=>o.plan===currentPlanFilter);
   const hasArchived=pool.some(o=>o.status==='archived');
   if(bar){bar.style.display=hasArchived?'':'none';
     bar.querySelector('.archived-pill').textContent=showArchived?'Hide archived':'Show archived';}
-  const filtered=showArchived?pool:pool.filter(o=>o.status!=='archived');
+  const filtered=[...(showArchived?pool:pool.filter(o=>o.status!=='archived'))].sort((a,b)=>(a.sortOrder||9999)-(b.sortOrder||9999));
   if(!filtered.length){list.innerHTML='<div style="padding:24px;color:var(--text2);font-size:14px;text-align:center">No accounts</div>';return;}
   list.innerHTML=filtered.map(o=>{
     const tc=TYPE[o.type]||TYPE.partner;
     const pc=projects.filter(p=>p.orgId===o.id).length;
     const isArchived=o.status==='archived';
-    return '<div class="acc-card'+(isArchived?' archived':'')+'" onclick="openDetail(\''+esc(o.id)+'\')">'+
+    return '<div class="acc-card'+(isArchived?' archived':'')+'" draggable="true" data-id="'+esc(o.id)+'" onclick="openDetail(\''+esc(o.id)+'\')">'+
       '<div class="avatar" style="background:'+tc.bg+';color:'+tc.color+'">'+initials(o.name)+'</div>'+
       '<div class="acc-info">'+
         '<div class="acc-name">'+esc(o.name)+(isArchived?' <span style="font-size:10px;color:var(--text3);font-weight:400">archived</span>':'')+'</div>'+
@@ -997,6 +1020,7 @@ function renderAccounts(){
         :'<button class="trash-btn" onclick="event.stopPropagation();promptArchive(\''+esc(o.id)+'\')" title="Archive">🗑</button>'
       )+'</div>';
   }).join('');
+  enableDragSort('acc-list',orgs,'Orgs');
 }
 function toggleShowArchived(){showArchived=!showArchived;renderAccounts();}
 function promptArchive(orgId){
@@ -1020,20 +1044,28 @@ function restoreAccount(orgId){
 }
 function filterAccts(type,el){
   currentFilter=type;
-  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('#screen-accounts .type-pill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');renderAccounts();
+}
+function filterPlan(plan,el){
+  if(currentPlanFilter===plan){currentPlanFilter='';el.classList.remove('on');}
+  else{currentPlanFilter=plan;document.querySelectorAll('#screen-accounts .plan-pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+  renderAccounts();
 }
 function filterProjs(status,el){
   currentProjFilter=status;
-  document.querySelectorAll('#screen-projects .fpill').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('#proj-status-pills .fpill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');renderProjects();
 }
 
 // ── TASK RENDERING ─────────────────────────────────────────
 function renderTasksForProject(projId,container){
-  const pt=tasks.filter(t=>t.projId===projId);
+  let pt=tasks.filter(t=>t.projId===projId);
+  const f=taskFilters[projId]||{};
+  if(f.priority)pt=pt.filter(t=>t.priority===f.priority);
+  if(f.assigned)pt=pt.filter(t=>t.assigned===f.assigned);
   if(!pt.length){
-    container.innerHTML='<div style="padding:12px 16px;color:var(--text3);font-size:13px">No tasks yet — add one below</div>';
+    container.innerHTML='<div style="padding:12px 16px;color:var(--text3);font-size:13px">'+(tasks.some(t=>t.projId===projId)?'No tasks match filter':'No tasks yet — add one below')+'</div>';
     return;
   }
   const sorted=[...pt].sort((a,b)=>{
@@ -1090,6 +1122,7 @@ function openDetail(orgId){
           '<span class="task-section-lbl">Tasks'+(projTaskCount>0?' · '+projTaskCount+' open':'')+'</span>'+
           '<button class="add-task-btn" onclick="openAddTask(\''+p.id+'\',\''+orgId+'\')">+ Add task</button>'+
         '</div>'+
+        '<div class="task-filter-bar" id="task-filter-bar-'+p.id+'"></div>'+
         '<div id="tasks-'+p.id+'"></div>'+
       '</div>';
     });
@@ -1141,6 +1174,7 @@ function openDetail(orgId){
   document.getElementById('detail-body').innerHTML=h;
   // Render tasks for each project
   op.forEach(p=>{
+    renderTaskFilterBar(p.id);
     const container=document.getElementById('tasks-'+p.id);
     if(container)renderTasksForProject(p.id,container);
   });
@@ -1266,17 +1300,36 @@ function editCurrentOrg(){
 
 function renderProjects(){
   const list=document.getElementById('proj-list');
-  const filtered=currentProjFilter==='all'?projects:projects.filter(p=>p.status===currentProjFilter);
+  renderProjOrgPills();
+  let pool=currentProjFilter==='all'?projects:projects.filter(p=>p.status===currentProjFilter);
+  if(currentProjOrgFilter)pool=pool.filter(p=>p.orgId===currentProjOrgFilter);
+  const filtered=[...pool].sort((a,b)=>(a.sortOrder||9999)-(b.sortOrder||9999));
   if(!filtered.length){list.innerHTML='<div style="padding:24px;color:var(--text2);font-size:14px;text-align:center">No projects</div>';return;}
   list.innerHTML=filtered.map(p=>{
     const openCount=tasks.filter(t=>t.projId===p.id&&!t.done).length;
-    return '<div class="proj-card" onclick="openDetail(\''+p.orgId+'\')">'+
+    return '<div class="proj-card" draggable="true" data-id="'+esc(p.id)+'" onclick="openDetail(\''+p.orgId+'\')">'+
       '<div class="proj-card-hdr"><span class="proj-card-name">'+p.name+'</span>'+
       '<span class="spill '+(p.status==='active'?'s-active':p.status==='review'?'s-review':p.status==='done'?'s-done':'s-pending')+'">'+p.status+'</span></div>'+
       '<div class="proj-org-lbl">'+p.orgName+(p.due&&p.due!=='TBD'?' · Due '+fmtDue(p.due):'')+(openCount>0?' · '+openCount+' task'+(openCount!==1?'s':'')+'':'')+' open</div>'+
       '<div class="prog-row"><div class="pbar-wrap" style="flex:1"><div class="pbar-fill" style="width:'+p.progress+'%"></div></div>'+
       '<span class="prog-pct">'+p.progress+'%</span></div></div>';
   }).join('');
+  enableDragSort('proj-list',projects,'Projects');
+}
+function renderProjOrgPills(){
+  const row=document.getElementById('proj-org-pills');if(!row)return;
+  const orgIds=[...new Set(projects.map(p=>p.orgId).filter(Boolean))];
+  if(!orgIds.length){row.style.display='none';row.innerHTML='';return;}
+  row.style.display='';
+  row.innerHTML=orgIds.map(id=>{
+    const name=(orgs.find(o=>o.id===id)||{}).name||(projects.find(p=>p.orgId===id)||{}).orgName||id;
+    return '<span class="fpill'+(currentProjOrgFilter===id?' on':'')+'" onclick="filterProjOrg(\''+esc(id)+'\',this)">'+esc(name)+'</span>';
+  }).join('');
+}
+function filterProjOrg(orgId,el){
+  if(currentProjOrgFilter===orgId){currentProjOrgFilter='';el.classList.remove('on');}
+  else{currentProjOrgFilter=orgId;document.querySelectorAll('#proj-org-pills .fpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+  renderProjects();
 }
 
 function renderMessages(){
@@ -1371,10 +1424,15 @@ function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}calSelectedD
 // ── IDEAS ──────────────────────────────────────────────────
 function renderIdeas(){
   const list=document.getElementById('idea-list');
-  const filtered=currentIdeaFilter==='all'?ideas:ideas.filter(i=>i.status===currentIdeaFilter);
-  // sort: new/review first, then planned, then done; within group by votes desc
+  renderIdeaOrgPills();
+  let pool=currentIdeaFilter==='all'?ideas:ideas.filter(i=>i.status===currentIdeaFilter);
+  if(currentIdeaOrgFilter)pool=pool.filter(i=>i.orgId===currentIdeaOrgFilter);
+  // sort by sortOrder first, then by status/votes
   const order={new:0,review:1,planned:2,done:3};
-  const sorted=[...filtered].sort((a,b)=>(order[a.status]||0)-(order[b.status]||0)||b.votes-a.votes);
+  const hasSortOrder=pool.some(i=>(i.sortOrder||9999)<9999);
+  const sorted=hasSortOrder
+    ?[...pool].sort((a,b)=>(a.sortOrder||9999)-(b.sortOrder||9999))
+    :[...pool].sort((a,b)=>(order[a.status]||0)-(order[b.status]||0)||b.votes-a.votes);
   if(!sorted.length){
     list.innerHTML='<div style="padding:32px 16px;text-align:center;color:var(--text3);font-size:14px">No ideas yet — tap + Idea to add one</div>';
     return;
@@ -1383,7 +1441,7 @@ function renderIdeas(){
     const statusClass={new:'is-new',review:'is-review',planned:'is-planned',done:'is-done'}[i.status]||'is-new';
     const statusLabel={new:'New',review:'Review',planned:'Planned',done:'Done'}[i.status]||i.status;
     const hasOrg=i.orgId&&i.orgName;
-    return '<div class="idea-card" onclick="editIdea(\''+i.id+'\')">'+
+    return '<div class="idea-card" draggable="true" data-id="'+esc(i.id)+'" onclick="editIdea(\''+i.id+'\')">'+
       '<div class="idea-card-hdr">'+
         '<span class="idea-card-title">'+i.title+'</span>'+
         '<span class="idea-status '+statusClass+'">'+statusLabel+'</span>'+
@@ -1396,10 +1454,26 @@ function renderIdeas(){
       (i.notes?'<div style="font-size:12px;color:var(--text3);margin-top:5px">'+i.notes+'</div>':'')+
     '</div>';
   }).join('');
+  enableDragSort('idea-list',ideas,'Ideas');
+}
+function renderIdeaOrgPills(){
+  const row=document.getElementById('idea-org-pills');if(!row)return;
+  const orgIds=[...new Set(ideas.filter(i=>i.orgId).map(i=>i.orgId))];
+  if(!orgIds.length){row.style.display='none';row.innerHTML='';return;}
+  row.style.display='';
+  row.innerHTML=orgIds.map(id=>{
+    const name=(orgs.find(o=>o.id===id)||{}).name||(ideas.find(i=>i.orgId===id)||{}).orgName||id;
+    return '<span class="fpill'+(currentIdeaOrgFilter===id?' on':'')+'" onclick="filterIdeaOrg(\''+esc(id)+'\',this)">'+esc(name)+'</span>';
+  }).join('');
+}
+function filterIdeaOrg(orgId,el){
+  if(currentIdeaOrgFilter===orgId){currentIdeaOrgFilter='';el.classList.remove('on');}
+  else{currentIdeaOrgFilter=orgId;document.querySelectorAll('#idea-org-pills .fpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+  renderIdeas();
 }
 function filterIdeas(status,el){
   currentIdeaFilter=status;
-  document.querySelectorAll('#screen-ideas .fpill').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('#idea-status-pills .fpill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
   renderIdeas();
 }
@@ -1502,6 +1576,7 @@ function openAddTask(projId,orgId){
   document.getElementById('t-priority').value='medium';
   document.getElementById('t-due').value='';
   document.getElementById('t-category').value='';
+  populateAssignedList(orgId);
   document.getElementById('t-assigned').value='Ramon';
   document.getElementById('task-modal-btns').innerHTML=
     '<button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>'+
@@ -1521,6 +1596,7 @@ function editTask(taskId){
   document.getElementById('t-priority').value=t.priority||'medium';
   document.getElementById('t-due').value=t.due||'';
   document.getElementById('t-category').value=t.category||'';
+  populateAssignedList(t.orgId);
   document.getElementById('t-assigned').value=t.assigned||'Ramon';
   document.getElementById('task-modal-btns').innerHTML=
     '<button class="btn-danger" onclick="deleteTask(\''+esc(t.id)+'\')">Delete</button>'+
@@ -1564,8 +1640,81 @@ function submitTaskComment(taskId){
 
 function closeTaskModal(){document.getElementById('task-modal').classList.remove('open');}
 
+function populateAssignedList(orgId){
+  const dl=document.getElementById('t-assigned-list');if(!dl)return;
+  const vals=[...new Set(tasks.filter(t=>t.orgId===orgId&&t.assigned).map(t=>t.assigned))];
+  if(!vals.includes('Ramon'))vals.unshift('Ramon');
+  dl.innerHTML=vals.map(v=>'<option value="'+esc(v)+'">').join('');
+}
+
+function renderTaskFilterBar(projId){
+  const bar=document.getElementById('task-filter-bar-'+projId);if(!bar)return;
+  const pt=tasks.filter(t=>t.projId===projId);
+  if(!pt.length){bar.innerHTML='';return;}
+  const f=taskFilters[projId]||{};
+  const assignees=[...new Set(pt.filter(t=>t.assigned).map(t=>t.assigned))];
+  let h='<span class="tpill'+(f.priority==='high'?' on':'')+'" onclick="filterTaskPriority(\''+projId+'\',\'high\')">High</span>'+
+    '<span class="tpill'+(f.priority==='medium'?' on':'')+'" onclick="filterTaskPriority(\''+projId+'\',\'medium\')">Medium</span>'+
+    '<span class="tpill'+(f.priority==='low'?' on':'')+'" onclick="filterTaskPriority(\''+projId+'\',\'low\')">Low</span>';
+  if(assignees.length>1)h+=assignees.map(a=>'<span class="tpill'+(f.assigned===a?' on':'')+'" onclick="filterTaskAssigned(\''+projId+'\',\''+esc(a)+'\')">'+esc(a)+'</span>').join('');
+  bar.innerHTML=h;
+}
+function filterTaskPriority(projId,val){
+  if(!taskFilters[projId])taskFilters[projId]={priority:'',assigned:''};
+  taskFilters[projId].priority=taskFilters[projId].priority===val?'':val;
+  renderTaskFilterBar(projId);
+  const c=document.getElementById('tasks-'+projId);if(c)renderTasksForProject(projId,c);
+}
+function filterTaskAssigned(projId,val){
+  if(!taskFilters[projId])taskFilters[projId]={priority:'',assigned:''};
+  taskFilters[projId].assigned=taskFilters[projId].assigned===val?'':val;
+  renderTaskFilterBar(projId);
+  const c=document.getElementById('tasks-'+projId);if(c)renderTasksForProject(projId,c);
+}
+
+function enableDragSort(containerId,items,tabName){
+  const container=document.getElementById(containerId);
+  if(!container||container._dndInit)return;
+  container._dndInit=true;
+  let draggingEl=null;
+  container.addEventListener('dragstart',e=>{
+    const el=e.target.closest('[data-id]');if(!el)return;
+    draggingEl=el;e.dataTransfer.effectAllowed='move';
+    setTimeout(()=>{if(draggingEl)draggingEl.classList.add('dragging');},0);
+  });
+  container.addEventListener('dragend',()=>{
+    if(draggingEl){draggingEl.classList.remove('dragging');draggingEl=null;}
+    container.querySelectorAll('.drag-target').forEach(x=>x.classList.remove('drag-target'));
+  });
+  container.addEventListener('dragover',e=>{
+    e.preventDefault();
+    const el=e.target.closest('[data-id]');
+    container.querySelectorAll('.drag-target').forEach(x=>x.classList.remove('drag-target'));
+    if(el&&draggingEl&&el!==draggingEl)el.classList.add('drag-target');
+  });
+  container.addEventListener('dragleave',e=>{
+    if(!container.contains(e.relatedTarget))container.querySelectorAll('.drag-target').forEach(x=>x.classList.remove('drag-target'));
+  });
+  container.addEventListener('drop',e=>{
+    e.preventDefault();
+    const target=e.target.closest('[data-id]');
+    container.querySelectorAll('.drag-target').forEach(x=>x.classList.remove('drag-target'));
+    if(!target||!draggingEl||target===draggingEl)return;
+    const rect=target.getBoundingClientRect();
+    if(e.clientY<rect.top+rect.height/2)container.insertBefore(draggingEl,target);
+    else container.insertBefore(draggingEl,target.nextSibling);
+    saveSortOrder(container,items,tabName);
+  });
+}
+function saveSortOrder(container,items,tabName){
+  Array.from(container.querySelectorAll('[data-id]')).forEach((card,i)=>{
+    const item=items.find(x=>x.id===card.dataset.id);
+    if(item){item.sortOrder=i;writeToSheet(tabName,item);}
+  });
+  showToast('Order saved ✓');
+}
+
 function openAddProj(orgId){
-  const o=orgs.find(x=>x.id===orgId);if(!o)return;
   document.getElementById('p-org-id').value=orgId;
   document.getElementById('p-name').value='';
   document.getElementById('p-status').value='pending';
