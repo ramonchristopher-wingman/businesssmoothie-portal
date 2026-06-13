@@ -340,6 +340,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 .cp-ob-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:0.5px solid var(--border2)}
 .cp-ob-row:last-child{border-bottom:none}
 .cp-workspace-ta{width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;padding:14px 16px;resize:none;outline:none;min-height:120px;line-height:1.5}
+/* ATTACHMENTS */
+.att-section{padding:10px 0 4px}
+.att-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.att-lbl{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.att-add{font-size:12px;color:var(--green);font-weight:700;cursor:pointer}
+.att-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border2)}
+.att-item:last-child{border-bottom:none}
+.att-icon{font-size:18px;flex-shrink:0;line-height:1.4}
+.att-info{flex:1;min-width:0}
+.att-name{font-size:13px;font-weight:600;color:var(--green);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.att-name:active{opacity:.6}
+.att-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.att-del-btn{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 4px;flex-shrink:0;line-height:1}
+.att-del-btn:active{color:#F87171}
+.att-uploading{display:flex;align-items:center;gap:8px;padding:8px 0;color:var(--text2);font-size:13px}
+.att-spinner{width:14px;height:14px;border:2px solid var(--surface2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.att-empty-note{font-size:12px;color:var(--text3);padding:6px 0}
 </style>
 </head>
 <body>
@@ -612,6 +629,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         <datalist id="t-assigned-list"></datalist>
       </div>
       <div id="task-comments-section" style="display:none"></div>
+      <div id="task-att-section" style="display:none">
+        <div class="att-section" style="border-top:0.5px solid var(--border2);margin-top:4px;padding-top:14px">
+          <div class="att-hdr">
+            <span class="att-lbl">Files</span>
+            <label class="att-add" for="task-att-input">+ Add File</label>
+            <input type="file" id="task-att-input" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.zip">
+          </div>
+          <div id="att-list-task-modal"></div>
+        </div>
+      </div>
       <div class="modal-btns" id="task-modal-btns">
         <button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>
         <button class="btn-save" onclick="saveTask()">Save task</button>
@@ -732,6 +759,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec';
 const ADMIN_KEY='Custom1234!';
+const ATTACHMENTS_WORKER=''; // Set to your Worker URL after deploying, e.g. 'https://myportal-attachments-worker.YOUR-SUBDOMAIN.workers.dev'
 const TYPE={
   client:  {label:'Client',  color:'#00C45A',bg:'rgba(0,196,90,.18)',   text:'#00C45A'},
   prospect:{label:'Prospect',color:'#F59E0B',bg:'rgba(245,158,11,.18)', text:'#F59E0B'},
@@ -740,7 +768,7 @@ const TYPE={
   partner: {label:'Partner', color:'#9CA3AF',bg:'rgba(156,163,175,.18)',text:'#9CA3AF'}
 };
 const PRIORITY_ORDER={high:0,medium:1,low:2};
-let orgs=[],projects=[],tasks=[],ideas=[],messages=[],onboarding=[],comments=[];
+let orgs=[],projects=[],tasks=[],ideas=[],messages=[],onboarding=[],comments=[],attachments=[];
 let currentFilter='all',currentPlanFilter='',currentProjFilter='all',currentProjOrgFilter='',currentIdeaFilter='all',currentIdeaOrgFilter='';
 let currentDetailId=null,editingId=null,calYear=0,calMonth=0,calSelectedDate=null;
 let showArchived=false,clientSession=null;
@@ -774,7 +802,8 @@ function loadFromSheet(){
       messages=normaliseMessages(data.messages||[]);
       onboarding=normaliseOnboarding(data.onboarding||[]);
       comments=normaliseComments(data.comments||[]);
-      localStorage.setItem('mp_cache',JSON.stringify({orgs,projects,tasks,ideas,messages,onboarding,comments,ts:Date.now()}));
+      attachments=normaliseAttachments(data.attachments||[]);
+      localStorage.setItem('mp_cache',JSON.stringify({orgs,projects,tasks,ideas,messages,onboarding,comments,attachments,ts:Date.now()}));
       const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
       document.getElementById('last-sync-time').textContent=t;
       const el2=document.getElementById('last-sync-time-settings');
@@ -875,13 +904,25 @@ function normaliseMessages(rows){
     read:r.read==='true'||r.read===true||r.Read==='true'||r.Read===true
   }));
 }
+function normaliseAttachments(rows){
+  return rows.map(r=>({
+    id:r.id||r.AttachmentID||'',orgId:r.orgId||r.OrgID||'',
+    contextType:r.contextType||r.ContextType||'task',
+    contextId:r.contextId||r.ContextID||'',
+    filename:r.filename||r.Filename||'',
+    r2path:r.r2path||r.R2Path||'',
+    filesize:parseInt(r.filesize||r.FileSize||0)||0,
+    uploadedBy:r.uploadedBy||r.UploadedBy||'',
+    uploadedAt:r.uploadedAt||r.UploadedAt||''
+  }));
+}
 function loadCache(){
   const c=localStorage.getItem('mp_cache');
   if(c){
     const d=JSON.parse(c);
     orgs=d.orgs||[];projects=d.projects||[];
     tasks=d.tasks||[];ideas=d.ideas||[];messages=d.messages||[];
-    onboarding=d.onboarding||[];comments=d.comments||[];
+    onboarding=d.onboarding||[];comments=d.comments||[];attachments=d.attachments||[];
     renderAll();
   }else{seedFallback();renderAll();}
 }
@@ -1166,6 +1207,14 @@ function openDetail(orgId){
         '</div>'+
         '<div class="task-filter-bar" id="task-filter-bar-'+p.id+'"></div>'+
         '<div id="tasks-'+p.id+'"></div>'+
+        '<div style="padding:10px 16px 4px;border-top:0.5px solid var(--border2)">'+
+          '<div class="att-hdr">'+
+            '<span class="att-lbl">Files</span>'+
+            '<label class="att-add" for="att-finput-'+p.id+'">+ Add File</label>'+
+            '<input type="file" id="att-finput-'+p.id+'" style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.zip">'+
+          '</div>'+
+          '<div id="att-list-'+p.id+'"></div>'+
+        '</div>'+
       '</div>';
     });
   }
@@ -1213,16 +1262,34 @@ function openDetail(orgId){
     '</div>'+
   '</div>';
 
+  // All Files panel (admin only — consolidated view of all org attachments)
+  const orgAtts=attachments.filter(a=>a.orgId===orgId);
+  h+='<div class="panel-block" id="panel-files">'+
+    '<div class="panel-hdr" onclick="togglePanel(\'panel-files\')">'+
+      '<span class="panel-hdr-lbl">All Files'+(orgAtts.length?' · '+orgAtts.length:'')+'</span>'+
+      '<span class="panel-chev" id="chev-panel-files">›</span>'+
+    '</div>'+
+    '<div class="panel-body" id="body-panel-files" style="padding:0 16px 12px">'+
+      '<div id="att-list-consolidated-'+esc(orgId)+'"></div>'+
+    '</div>'+
+  '</div>';
+
   document.getElementById('detail-body').innerHTML=h;
-  // Render tasks for each project
+  // Render tasks and attachments for each project
   op.forEach(p=>{
     renderTaskFilterBar(p.id);
     const container=document.getElementById('tasks-'+p.id);
     if(container)renderTasksForProject(p.id,container);
+    renderContextAttachments(p.id,'att-list-'+p.id);
+    const pfi=document.getElementById('att-finput-'+p.id);
+    if(pfi){const _pid=p.id,_oid=orgId;pfi.onchange=e=>handleFileSelect(e,'project',_pid,_oid,'att-list-'+_pid);}
   });
   // Render ideas for this org
   const ideaContainer=document.getElementById('ideas-for-org-'+orgId);
   if(ideaContainer)renderIdeasForOrg(orgId,ideaContainer);
+  // Render consolidated attachments panel
+  const consEl=document.getElementById('att-list-consolidated-'+orgId);
+  if(consEl)renderConsolidatedAttachments(orgId,consEl);
 
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-detail').classList.add('active');
@@ -1710,6 +1777,7 @@ function openAddTask(projId,orgId){
     '<button class="btn-cancel" onclick="closeTaskModal()">Cancel</button>'+
     '<button class="btn-save" onclick="saveTask()">Save task</button>';
   document.getElementById('task-comments-section').style.display='none';
+  document.getElementById('task-att-section').style.display='none';
   document.getElementById('task-modal').classList.add('open');
 }
 
@@ -1732,6 +1800,10 @@ function editTask(taskId){
     '<button class="btn-save" onclick="saveTask()">Save</button>';
   renderTaskComments(taskId);
   document.getElementById('task-comments-section').style.display='';
+  document.getElementById('task-att-section').style.display='';
+  const tfi=document.getElementById('task-att-input');
+  if(tfi){const _tid=t.id,_oid=t.orgId;tfi.onchange=e=>handleFileSelect(e,'task',_tid,_oid,'att-list-task-modal');}
+  renderContextAttachments(t.id,'att-list-task-modal');
   document.getElementById('task-modal').classList.add('open');
 }
 
@@ -1773,6 +1845,111 @@ function populateAssignedList(orgId){
   const vals=[...new Set(tasks.filter(t=>t.orgId===orgId&&t.assigned).map(t=>t.assigned))];
   if(!vals.includes('Ramon'))vals.unshift('Ramon');
   dl.innerHTML=vals.map(v=>'<option value="'+esc(v)+'">').join('');
+}
+
+// ATTACHMENTS
+function getFileIcon(filename){
+  const ext=(filename||'').split('.').pop().toLowerCase();
+  if(ext==='pdf')return '📄';
+  if(['doc','docx'].includes(ext))return '📝';
+  if(['xls','xlsx'].includes(ext))return '📊';
+  if(['png','jpg','jpeg','gif'].includes(ext))return '🖼️';
+  if(ext==='zip')return '📦';
+  return '📎';
+}
+function fmtFileSize(bytes){
+  if(!bytes)return '';
+  if(bytes<1024)return bytes+'B';
+  if(bytes<1048576)return Math.round(bytes/1024)+'KB';
+  return (bytes/1048576).toFixed(1)+'MB';
+}
+function buildAttachmentItemHTML(a,showContext){
+  const icon=getFileIcon(a.filename);
+  const dt=a.uploadedAt?new Date(a.uploadedAt).toLocaleDateString([],{month:'short',day:'numeric'}):'';
+  let ctx='';
+  if(showContext){
+    if(a.contextType==='task'){const t=tasks.find(x=>x.id===a.contextId);ctx=t?esc(t.name):'';}
+    else{const p=projects.find(x=>x.id===a.contextId);ctx=p?esc(p.name):'';}
+  }
+  return '<div class="att-item">'+
+    '<span class="att-icon">'+icon+'</span>'+
+    '<div class="att-info">'+
+      '<div class="att-name" onclick="openAttachment(\''+esc(a.r2path)+'\')">'+esc(a.filename)+'</div>'+
+      '<div class="att-meta">'+
+        (ctx?'<strong style="color:var(--text2)">'+ctx+'</strong> &middot; ':'')+
+        (a.uploadedBy?esc(a.uploadedBy)+' &middot; ':'')+
+        dt+
+        (a.filesize?' &middot; '+fmtFileSize(a.filesize):'')+
+      '</div>'+
+    '</div>'+
+    '<button class="att-del-btn" onclick="deleteAttachment(\''+esc(a.id)+'\',\''+esc(a.r2path)+'\',\''+esc(a.contextId)+'\',\''+esc(a.orgId)+'\')">✕</button>'+
+  '</div>';
+}
+function renderContextAttachments(contextId,containerId){
+  const container=document.getElementById(containerId);if(!container)return;
+  const atts=attachments.filter(a=>a.contextId===contextId);
+  if(!atts.length){container.innerHTML='<div class="att-empty-note">No files yet</div>';return;}
+  container.innerHTML=atts.map(a=>buildAttachmentItemHTML(a,false)).join('');
+}
+function renderConsolidatedAttachments(orgId,container){
+  const atts=attachments.filter(a=>a.orgId===orgId);
+  container.innerHTML=atts.length
+    ?atts.map(a=>buildAttachmentItemHTML(a,true)).join('')
+    :'<div style="padding:8px 0;color:var(--text3);font-size:13px">No files uploaded for this account yet</div>';
+}
+function handleFileSelect(event,contextType,contextId,orgId,listContainerId){
+  const file=event.target.files[0];if(!file)return;
+  event.target.value='';
+  const ALLOWED=['pdf','doc','docx','xls','xlsx','png','jpg','jpeg','gif','zip'];
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!ALLOWED.includes(ext)){showToast('File type .'+ext+' is not supported');return;}
+  if(file.size>10*1024*1024){showToast('File must be under 10MB');return;}
+  uploadFileToR2(file,contextType,contextId,orgId,listContainerId);
+}
+function uploadFileToR2(file,contextType,contextId,orgId,listContainerId){
+  if(!ATTACHMENTS_WORKER){showToast('Attachments worker not configured');return;}
+  const uploaderName='Admin';
+  const listEl=document.getElementById(listContainerId);
+  const upId='att-up-'+Date.now();
+  if(listEl){
+    const upRow=document.createElement('div');
+    upRow.id=upId;upRow.className='att-uploading';
+    upRow.innerHTML='<div class="att-spinner"></div><span>Uploading '+esc(file.name)+'…</span>';
+    listEl.prepend(upRow);
+  }
+  const fd=new FormData();
+  fd.append('file',file);fd.append('orgId',orgId);fd.append('contextType',contextType);
+  fd.append('contextId',contextId);fd.append('uploaderName',uploaderName);
+  fetch(ATTACHMENTS_WORKER+'/upload',{method:'POST',body:fd})
+    .then(r=>r.json())
+    .then(d=>{
+      document.getElementById(upId)?.remove();
+      if(d.success){
+        const att={id:'att_'+Date.now(),orgId,contextType,contextId,filename:d.filename,r2path:d.path,filesize:d.size,uploadedBy:d.uploadedBy,uploadedAt:d.uploadedAt};
+        attachments.push(att);
+        writeToSheet('Attachments',att);
+        renderContextAttachments(contextId,listContainerId);
+        const consEl=document.getElementById('att-list-consolidated-'+orgId);
+        if(consEl)renderConsolidatedAttachments(orgId,consEl);
+        showToast(d.filename+' uploaded ✓');
+      }else showToast('Upload failed: '+(d.error||'Unknown error'));
+    })
+    .catch(()=>{document.getElementById(upId)?.remove();showToast('Upload failed — check connection');});
+}
+function openAttachment(r2path){
+  if(!ATTACHMENTS_WORKER){showToast('Attachments worker not configured');return;}
+  window.open(ATTACHMENTS_WORKER+'/file?path='+encodeURIComponent(r2path),'_blank');
+}
+function deleteAttachment(attId,r2path,contextId,orgId){
+  if(!confirm('Delete this file?'))return;
+  if(ATTACHMENTS_WORKER)fetch(ATTACHMENTS_WORKER+'/file?path='+encodeURIComponent(r2path),{method:'DELETE'}).catch(()=>{});
+  deleteFromSheet('Attachments',attId);
+  const idx=attachments.findIndex(a=>a.id===attId);if(idx!==-1)attachments.splice(idx,1);
+  renderContextAttachments(contextId,'att-list-'+contextId);
+  renderContextAttachments(contextId,'att-list-task-modal');
+  const consEl=document.getElementById('att-list-consolidated-'+orgId);
+  if(consEl)renderConsolidatedAttachments(orgId,consEl);
+  showToast('File deleted');
 }
 
 function renderTaskFilterBar(projId){

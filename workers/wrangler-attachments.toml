@@ -1,0 +1,8 @@
+name = "myportal-attachments-worker"
+main = "myportal-attachments-worker.js"
+compatibility_date = "2026-05-13"
+account_id = "5d2c200edc4a94e8f6809775cd695b46"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "myportal-attachments"
