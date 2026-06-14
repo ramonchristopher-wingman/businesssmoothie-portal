@@ -544,7 +544,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
         <div class="sec-lbl">Info</div>
         <div class="settings-block">
-          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.1 — Jun 2026</span></div>
+          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.2 — Jun 2026</span></div>
           <div class="s-row" onclick="loadFromSheet()"><span class="s-row-lbl">Sync now</span><span class="s-row-val" style="color:var(--green)">↻ Refresh</span></div>
           <div class="s-row"><span class="s-row-lbl">Last synced</span><span class="s-row-val" id="last-sync-time-settings">—</span></div>
         </div>
@@ -927,7 +927,8 @@ function loadCache(){
   }else{seedFallback();renderAll();}
 }
 function writeToSheet(tab,row){
-  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'upsert',tab,data:JSON.stringify(row)})}).catch(()=>{});
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'upsert',tab,data:JSON.stringify(row)})})
+    .catch(()=>showToast('⚠ Could not reach the server — change may not be saved'));
 }
 function deleteFromSheet(tab,id){
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'delete',tab,id})}).catch(()=>{});
@@ -1045,15 +1046,22 @@ function renderHome(){
   document.getElementById('st-msgs-sub').textContent=unread>0?uOrgs+' account'+(uOrgs!==1?'s':''):'All read';
   const badge=document.getElementById('msg-badge');
   if(unread>0){badge.style.display='';badge.textContent=unread;}else{badge.style.display='none';}
-  // activity = recent projects + unread messages
-  const recent=[
-    ...projects.filter(p=>p.status==='active').slice(0,3).map(p=>({
-      orgId:p.orgId,orgName:p.orgName,desc:p.name,dot:'#00C45A',time:p.due!=='TBD'?'Due '+fmtDue(p.due):''
-    })),
-    ...messages.filter(m=>!m.read).slice(0,2).map(m=>({
-      orgId:m.orgId,orgName:m.orgName,desc:m.sender+': '+m.body,dot:'#F59E0B',time:m.timestamp
-    }))
-  ].slice(0,5);
+  // activity = unread messages + active projects, sorted by date (newest first)
+  const acts=[];
+  messages.filter(m=>!m.read).forEach(m=>acts.push({
+    orgId:m.orgId,orgName:m.orgName,desc:m.sender+': '+m.body,dot:'#F59E0B',
+    date:m.timestamp||'',time:m.timestamp?fmtTimestamp(m.timestamp):''
+  }));
+  projects.filter(p=>p.status==='active').forEach(p=>acts.push({
+    orgId:p.orgId,orgName:p.orgName,desc:p.name,dot:'#00C45A',
+    date:(p.due&&p.due!=='TBD')?p.due:'',time:(p.due&&p.due!=='TBD')?'Due '+fmtDue(p.due):''
+  }));
+  acts.sort((a,b)=>{
+    const da=a.date?new Date(a.date).getTime():0;
+    const db=b.date?new Date(b.date).getTime():0;
+    return db-da;
+  });
+  const recent=acts.slice(0,6);
   const wrap=document.getElementById('activity-wrap');
   if(!recent.length){wrap.innerHTML='<div style="padding:20px;color:var(--text2);font-size:14px;text-align:center">No recent activity</div>';return;}
   wrap.innerHTML=recent.map(a=>'<div class="act-card" onclick="openDetail(\''+a.orgId+'\')">'+
@@ -1228,6 +1236,18 @@ function openDetail(orgId){
   '</div>'+
   '<div class="info-block" id="ideas-for-org-'+esc(orgId)+'"></div>';
 
+  // Shared notes panel (client can see + edit — maps to clientWorkspace)
+  h+='<div class="panel-block" id="panel-shared">'+
+    '<div class="panel-hdr" onclick="togglePanel(\'panel-shared\')">'+
+      '<span class="panel-hdr-lbl">Shared notes (client can see)</span>'+
+      '<span class="panel-chev" id="chev-panel-shared">\u203a</span>'+
+    '</div>'+
+    '<div class="panel-body" id="body-panel-shared">'+
+      '<textarea class="notes-ta" id="shared-notes-ta" placeholder="Notes shared between you and the client\u2026">'+esc(o.clientWorkspace||'')+'</textarea>'+
+      '<div style="padding:0 16px 12px;text-align:right"><button class="add-task-btn" onclick="saveSharedNotes(\''+esc(orgId)+'\')">Save notes</button></div>'+
+    '</div>'+
+  '</div>';
+
   // Agency notes panel
   h+='<div class="panel-block" id="panel-notes">'+
     '<div class="panel-hdr" onclick="togglePanel(\'panel-notes\')">'+
@@ -1237,6 +1257,21 @@ function openDetail(orgId){
     '<div class="panel-body" id="body-panel-notes">'+
       '<textarea class="notes-ta" id="agency-notes-ta" placeholder="Internal notes visible only to you…">'+esc(o.agencyNotes||'')+'</textarea>'+
       '<div style="padding:0 16px 12px;text-align:right"><button class="add-task-btn" onclick="saveAgencyNotes(\''+esc(orgId)+'\')">Save notes</button></div>'+
+    '</div>'+
+  '</div>';
+
+  // Messages panel (chat with this account)
+  h+='<div class="panel-block" id="panel-messages">'+
+    '<div class="panel-hdr" onclick="togglePanel(\'panel-messages\')">'+
+      '<span class="panel-hdr-lbl">Messages</span>'+
+      '<span class="panel-chev" id="chev-panel-messages">\u203a</span>'+
+    '</div>'+
+    '<div class="panel-body" id="body-panel-messages">'+
+      '<div id="acct-thread-'+esc(orgId)+'" style="padding:8px 16px 0">'+accountThreadHTML(orgId)+'</div>'+
+      '<div style="padding:8px 16px 12px">'+
+        '<textarea class="comment-ta" id="acct-msg-ta-'+esc(orgId)+'" placeholder="Write a message to this account\u2026"></textarea>'+
+        '<button class="comment-post-btn" onclick="sendAccountMessage(\''+esc(orgId)+'\')">Send</button>'+
+      '</div>'+
     '</div>'+
   '</div>';
 
@@ -1315,6 +1350,45 @@ function saveAgencyNotes(orgId){
   const o=orgs.find(x=>x.id===orgId);if(o)o.agencyNotes=val;
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'updateAgencyNotes',orgId,value:val})}).catch(()=>{});
   showToast('Notes saved ✓');
+}
+
+function saveSharedNotes(orgId){
+  const ta=document.getElementById('shared-notes-ta');if(!ta)return;
+  const value=ta.value;
+  const o=orgs.find(x=>x.id===orgId);if(o)o.clientWorkspace=value;
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'updateClientWorkspace',orgId,value})})
+    .catch(()=>showToast('⚠ Could not reach the server — change may not be saved'));
+  showToast('Shared notes saved ✓');
+}
+
+function accountThreadHTML(orgId){
+  const thread=messages.filter(m=>m.orgId===orgId).sort((a,b)=>(a.timestamp||'')>(b.timestamp||'')?1:-1);
+  if(!thread.length)return '<div style="color:var(--text3);font-size:13px;padding:4px 0 8px">No messages yet. Start the conversation below.</div>';
+  return thread.map(m=>{
+    const mine=(m.sender||'').toLowerCase()==='ramon'||(m.sender||'').toLowerCase()==='admin';
+    return '<div style="display:flex;flex-direction:column;align-items:'+(mine?'flex-end':'flex-start')+';margin-bottom:10px">'+
+      '<div style="max-width:80%;background:'+(mine?'var(--green)':'var(--surface2)')+';color:'+(mine?'#fff':'var(--text)')+';border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.45;word-break:break-word">'+esc(m.body)+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);margin-top:3px">'+esc(m.sender||'')+' · '+fmtTimestamp(m.timestamp||'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function sendAccountMessage(orgId){
+  const ta=document.getElementById('acct-msg-ta-'+orgId);
+  if(!ta||!ta.value.trim())return;
+  const body=ta.value.trim();
+  const o=orgs.find(x=>x.id===orgId)||{};
+  const orgName=o.name||'';
+  fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'addMessage',orgId,orgName,sender:'Ramon',body})})
+    .then(r=>r.json()).then(d=>{
+      const msg={id:(d&&d.msgId)||'msg_'+Date.now(),orgId,orgName,sender:'Ramon',body,timestamp:(d&&d.timestamp)||new Date().toISOString(),read:true};
+      messages.push(msg);
+      const thread=document.getElementById('acct-thread-'+orgId);
+      if(thread)thread.innerHTML=accountThreadHTML(orgId);
+      ta.value='';
+      renderMessages();renderHome();
+      showToast('Message sent ✓');
+    }).catch(()=>showToast('⚠ Could not reach the server — message not sent'));
 }
 
 function startOnboarding(orgId){
