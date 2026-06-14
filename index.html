@@ -371,32 +371,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
     </div>
     <div style="background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:24px">
 
-      <!-- Client magic link -->
+      <!-- CLIENT LOGIN -->
+      <div class="flabel" style="font-size:13px;margin-bottom:10px">Client Login</div>
       <div class="fgroup" style="margin-bottom:6px">
-        <label class="flabel">Your email</label>
         <input class="finput" id="ls-client-email" type="email" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')requestClientMagicLink()">
       </div>
       <button class="btn-save" style="width:100%" onclick="requestClientMagicLink()">Send my link →</button>
       <div id="ls-client-status" style="display:none;font-size:12px;font-weight:600;margin-top:10px;text-align:center"></div>
 
-      <!-- Divider + team member toggle -->
-      <hr style="border:none;border-top:0.5px solid var(--border2);margin:18px 0 14px">
-      <div class="team-toggle-text" onclick="toggleAdminSection()">Are you a team member? <span>Sign in here</span></div>
-      <div id="ls-admin-section" style="display:none;margin-top:14px">
-        <label class="admin-signin-lbl">Team member email</label>
-        <input class="finput" id="ls-admin-email" type="email" placeholder="you@businesssmoothie.com" autocomplete="email" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')sendAdminMagicLinkFromScreen()">
-        <button class="btn-save" style="width:100%" onclick="sendAdminMagicLinkFromScreen()">Send my link</button>
-        <div id="ls-admin-status" style="font-size:12px;font-weight:600;margin-top:10px;text-align:center;min-height:18px"></div>
+      <!-- ADMIN LOGIN -->
+      <hr style="border:none;border-top:0.5px solid var(--border2);margin:20px 0 14px">
+      <div class="flabel" style="font-size:13px;margin-bottom:10px">Admin Login</div>
+      <div class="fgroup" style="margin-bottom:6px">
+        <input class="finput" id="ls-admin-email" type="email" placeholder="you@businesssmoothie.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendAdminMagicLinkFromScreen()">
       </div>
-
-      <!-- Divider + access key -->
-      <hr style="border:none;border-top:0.5px solid var(--border2);margin:18px 0 14px">
-      <div class="fgroup" style="margin-bottom:4px">
-        <label class="flabel">Access key</label>
-        <input class="finput" id="login-key" type="password" placeholder="Enter your access key" autocomplete="current-password" onkeydown="if(event.key==='Enter')attemptLogin()">
-      </div>
-      <div id="login-error" style="display:none;color:#F59E0B;font-size:12px;font-weight:600;margin:10px 0;text-align:center"></div>
-      <button class="btn-save" style="width:100%;margin-top:6px" onclick="attemptLogin()">Sign in →</button>
+      <button class="btn-save" style="width:100%" onclick="sendAdminMagicLinkFromScreen()">Send my link →</button>
+      <div id="ls-admin-status" style="display:none;font-size:12px;font-weight:600;margin-top:10px;text-align:center;min-height:18px"></div>
 
     </div>
   </div>
@@ -407,7 +397,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div class="logo-mark"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/></svg></div>
       <span class="topbar-title">MyPortal</span>
     </div>
-    <span class="topbar-right" id="topbar-right"></span>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="topbar-right" id="topbar-right"></span>
+      <span id="topbar-gear" onclick="switchTab('settings')" style="cursor:pointer;font-size:18px;line-height:1;color:var(--text2)" title="Settings">⚙</span>
+    </div>
   </div>
 
   <nav class="bnav">
@@ -544,13 +537,55 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
         <div class="sec-lbl">Info</div>
         <div class="settings-block">
-          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.2 — Jun 2026</span></div>
+          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.3 — Jun 2026</span></div>
           <div class="s-row" onclick="loadFromSheet()"><span class="s-row-lbl">Sync now</span><span class="s-row-val" style="color:var(--green)">↻ Refresh</span></div>
           <div class="s-row"><span class="s-row-lbl">Last synced</span><span class="s-row-val" id="last-sync-time-settings">—</span></div>
         </div>
         <div class="sec-lbl">Data</div>
         <div class="settings-block">
           <div class="s-row" onclick="clearCache()"><span class="s-row-lbl">Clear local cache</span><span class="s-row-val" style="color:#F87171">Clear</span></div>
+        </div>
+        <div class="sec-lbl">Help</div>
+        <div class="settings-block">
+          <div class="s-row" onclick="switchTab('guide')"><span class="s-row-lbl">How to use MyPortal</span><span class="s-row-val" style="color:var(--green)">Open →</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE (client-facing) -->
+    <div class="screen" id="screen-guide">
+      <div class="settings-body" style="max-width:560px;margin:0 auto">
+        <div style="font-size:20px;font-weight:800;color:var(--text);margin:6px 0 4px;letter-spacing:-.3px">How to use your portal</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">Everything you need to stay in the loop with your Business Smoothie team, in one place.</div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Signing in</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">No password to remember. Enter your email on the login screen and we'll send you a secure sign-in link. Tap it from your inbox and you're in. The link works once and expires after 24 hours — just request a new one anytime.</div>
+        </div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Projects</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">Your Projects tab shows what your team is working on for you and where each piece stands. Open a project to see its progress and the tasks inside it.</div>
+        </div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Tasks</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">The Tasks tab lists the to-dos tied to your projects. You can see what's done, what's in progress, and what's coming up next.</div>
+        </div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Onboarding</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">When you first come on board, the Onboarding tab walks you through the setup steps. Check off the items on your side as you complete them — your team sees your progress and handles their part.</div>
+        </div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Notes</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">The Notes tab is a shared space between you and your team. Drop links, questions, or anything you want them to see — they're working from the same notes you are.</div>
+        </div>
+
+        <div class="settings-block" style="padding:16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Need a hand?</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.55">Reach out to your Business Smoothie team anytime — we're here to help you get the most out of your platform.</div>
         </div>
       </div>
     </div>
@@ -758,7 +793,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec';
-const ADMIN_KEY='Custom1234!';
 const ATTACHMENTS_WORKER='https://myportal-attachments-worker.summer-mouse-2464.workers.dev';
 const TYPE={
   client:  {label:'Client',  color:'#00C45A',bg:'rgba(0,196,90,.18)',   text:'#00C45A'},
@@ -2216,8 +2250,9 @@ function saveAccount(){
       billing:['personal','internal'].includes(type)?'na':'unpaid',
       plan:document.getElementById('f-plan').value,
       freq:document.getElementById('f-freq').value,
-      notes:document.getElementById('f-notes').value.trim()};
-    orgs.push(newOrg);writeToSheet('Orgs',newOrg);showToast(name+' added ✓');
+      notes:document.getElementById('f-notes').value.trim(),
+      status:'active',sortOrder:0};
+    orgs.unshift(newOrg);writeToSheet('Orgs',newOrg);showToast(name+' added ✓');
   }
   closeModal();renderAll();
   if(editingId)openDetail(editingId);
@@ -2243,22 +2278,9 @@ function showLoginScreen(msg){
   if(lv){lv.classList.remove('active');}
   const ls=document.getElementById('login-screen');
   if(ls){ls.style.display='flex';}
-  if(msg){const e=document.getElementById('login-error');if(e){e.textContent=msg;e.style.display='block';}}
+  if(msg){const e=document.getElementById('ls-admin-status');if(e){e.textContent=msg;e.style.color='#F87171';e.style.display='block';}}
 }
 
-function attemptLogin(){
-  const key=(document.getElementById('login-key').value||'').trim();
-  if(key===ADMIN_KEY){
-    sessionStorage.setItem('mp_admin_key',ADMIN_KEY);
-    const e=document.getElementById('login-error');if(e)e.style.display='none';
-    const ls=document.getElementById('login-screen');if(ls)ls.style.display='none';
-    initAdmin();
-  }else{
-    const e=document.getElementById('login-error');
-    if(e){e.textContent='Invalid access key. Please try again.';e.style.display='block';}
-    const inp=document.getElementById('login-key');if(inp){inp.value='';inp.focus();}
-  }
-}
 
 function requestClientMagicLink(){
   const email=(document.getElementById('ls-client-email').value||'').trim();
@@ -2280,8 +2302,8 @@ function toggleAdminSection(){
 function sendAdminMagicLinkFromScreen(){
   const email=(document.getElementById('ls-admin-email').value||'').trim();
   const status=document.getElementById('ls-admin-status');
-  if(!email){status.textContent='Please enter your email.';status.style.color='#F87171';return;}
-  status.textContent='Sending…';status.style.color='var(--text2)';
+  if(!email){status.textContent='Please enter your email.';status.style.color='#F87171';status.style.display='block';return;}
+  status.textContent='Sending…';status.style.color='var(--text2)';status.style.display='block';
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'requestAdminMagicLink',email})})
     .then(r=>r.json()).then(d=>{
       if(d.success){status.textContent='Check your email — your login link is on its way.';status.style.color='var(--green)';}
@@ -2309,8 +2331,6 @@ function detectAndRoute(){
     if(saved){clientSession=JSON.parse(saved);showView('client');loadClientData();return;}
     showLoginScreen();return;
   }
-  // Check mp_admin_key (password-based admin session)
-  if(sessionStorage.getItem('mp_admin_key')===ADMIN_KEY){initAdmin();return;}
   // Check for existing admin magic-link session
   const savedAdmin=sessionStorage.getItem('mp_admin');
   if(savedAdmin){adminSession=JSON.parse(savedAdmin);initAdmin();return;}
