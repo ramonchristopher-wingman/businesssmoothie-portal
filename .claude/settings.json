@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(clasp deployments*)",
+      "Bash(clasp --version*)",
+      "Bash(clasp versions*)",
+      "Bash(npm -v*)",
+      "Bash(npm --version*)",
+      "Bash(npm list*)"
+    ]
+  }
+}
