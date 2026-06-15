@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>MyPortal</title>
+<title>Portal</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -372,7 +372,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
       <div style="width:52px;height:52px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
         <svg viewBox="0 0 14 14" style="width:22px;height:22px;fill:#fff"><circle cx="7" cy="7" r="5.5"/></svg>
       </div>
-      <div style="font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.5px">MyPortal</div>
+      <div style="font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.5px">Portal</div>
       <div style="font-size:13px;color:var(--text2);margin-top:5px">Sign in to continue</div>
     </div>
     <div style="background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:24px">
@@ -401,7 +401,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
   <div class="topbar">
     <div class="topbar-left">
       <div class="logo-mark"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/></svg></div>
-      <span class="topbar-title">MyPortal</span>
+      <span class="topbar-title">Portal</span>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
       <span class="topbar-right" id="topbar-right"></span>
@@ -543,7 +543,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
         </div>
         <div class="sec-lbl">Info</div>
         <div class="settings-block">
-          <div class="s-row"><span class="s-row-lbl">MyPortal</span><span class="s-row-val">v7.3 — Jun 2026</span></div>
+          <div class="s-row"><span class="s-row-lbl">Portal</span><span class="s-row-val">v7.3 — Jun 2026</span></div>
           <div class="s-row" onclick="loadFromSheet()"><span class="s-row-lbl">Sync now</span><span class="s-row-val" style="color:var(--green)">↻ Refresh</span></div>
           <div class="s-row"><span class="s-row-lbl">Last synced</span><span class="s-row-val" id="last-sync-time-settings">—</span></div>
         </div>
@@ -801,7 +801,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec?authuser=admin@smoothiesystems.com';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec';
 const ATTACHMENTS_WORKER='https://myportal-attachments-worker.summer-mouse-2464.workers.dev';
 
 // ── Firebase / FCM ─────────────────────────────────────────────────────────
@@ -992,7 +992,16 @@ function loadCache(){
 }
 function writeToSheet(tab,row){
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'upsert',tab,data:JSON.stringify(row)})})
-    .catch(()=>showToast('⚠ Could not reach the server — change may not be saved'));
+    .then(r=>{
+      if(!r.ok){
+        console.error('[GAS] writeToSheet failed:',r.status,r.statusText,'tab:',tab);
+        showToast('⚠ Server error ('+r.status+') — change may not be saved');
+      }
+    })
+    .catch(err=>{
+      console.error('[GAS] writeToSheet network error:',err,'tab:',tab);
+      showToast('⚠ Could not reach the server — change may not be saved');
+    });
 }
 function deleteFromSheet(tab,id){
   fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({action:'delete',tab,id})}).catch(()=>{});
@@ -2495,7 +2504,8 @@ async function requestPushPermission(recipientId,recipientType){
     })}).then(r=>r.text());
     console.log('[FCM] saveFcmToken response:',responseText);
   }catch(err){
-    console.error('[FCM] requestPushPermission failed:',err);
+    console.error('[FCM] requestPushPermission failed:',err && err.message ? err.message : err, err && err.stack ? err.stack : '');
+    showToast('⚠ Push notifications unavailable — check console for details');
   }
 }
 
