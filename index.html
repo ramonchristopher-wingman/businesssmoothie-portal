@@ -792,7 +792,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec?authuser=admin@smoothiesystems.com';
 const ATTACHMENTS_WORKER='https://myportal-attachments-worker.summer-mouse-2464.workers.dev';
 const TYPE={
   client:  {label:'Client',  color:'#00C45A',bg:'rgba(0,196,90,.18)',   text:'#00C45A'},
@@ -848,7 +848,7 @@ function loadFromSheet(){
     delete window[cb];
   };
   const s=document.createElement('script');
-  s.src=SCRIPT_URL+'?action=read&callback='+cb+'&t='+Date.now();
+  s.src=SCRIPT_URL+'&action=read&callback='+cb+'&t='+Date.now();
   s.onerror=()=>{showToast('Using cached data');loadCache();delete window[cb]};
   document.head.appendChild(s);
 }
@@ -2384,7 +2384,7 @@ function handleTokenValidation(token){
     }
   };
   const s=document.createElement('script');
-  s.src=SCRIPT_URL+'?action=validateToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
+  s.src=SCRIPT_URL+'&action=validateToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
   s.onerror=()=>{delete window[cb];if(status){status.textContent='Network error.';status.className='login-status error';}};
   document.head.appendChild(s);
 }
@@ -2429,7 +2429,7 @@ function handleAdminTokenValidation(token){
     }
   };
   const s=document.createElement('script');
-  s.src=SCRIPT_URL+'?action=validateAdminToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
+  s.src=SCRIPT_URL+'&action=validateAdminToken&token='+encodeURIComponent(token)+'&callback='+cb+'&t='+Date.now();
   s.onerror=()=>{delete window[cb];if(status){status.textContent='Network error.';status.className='login-status error';}};
   document.head.appendChild(s);
 }
@@ -2462,7 +2462,7 @@ function loadClientData(){
     const ws=document.getElementById('cp-workspace-ta');if(ws)ws.value=cpData.clientWorkspace;
   };
   const s=document.createElement('script');
-  s.src=SCRIPT_URL+'?action=readClient&orgId='+encodeURIComponent(clientSession.orgId)+'&callback='+cb+'&t='+Date.now();
+  s.src=SCRIPT_URL+'&action=readClient&orgId='+encodeURIComponent(clientSession.orgId)+'&callback='+cb+'&t='+Date.now();
   s.onerror=()=>{delete window[cb];showToast('Could not load portal data');};
   document.head.appendChild(s);
   // build workspace tab HTML
