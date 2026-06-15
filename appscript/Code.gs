@@ -25,13 +25,15 @@ var NOTIFICATION_CONFIG = {
   commentFromClient:      true   // client → admin: client left a comment
 };
 
-// ── Firebase / FCM credentials ────────────────────────────────────
-// Store these in Apps Script → Project Settings → Script Properties:
+// ── Firebase / FCM setup ──────────────────────────────────────────
+// Auth: ScriptApp.getOAuthToken() — no service account key needed.
+// Requires appsscript.json oauthScopes to include firebase.messaging (already done).
+// Script Property needed:
 //   FCM_PROJECT_ID  →  business-smoothie-portal
-//   FCM_SA_EMAIL    →  your-sa@business-smoothie-portal.iam.gserviceaccount.com
-//   FCM_SA_KEY      →  -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
-// Also add FCMToken column to Orgs tab and Admins tab (one device per user for now).
-// Also add NotifSent column to Messages tab (boolean — email dedup guard).
+// Sheet columns to add (one-time, manual):
+//   Orgs tab    → FCMToken column
+//   Admins tab  → FCMToken column
+//   Messages tab → NotifSent column (boolean, email dedup guard)
 
 // ── Entry points ───────────────────────────────────────────────────
 
@@ -624,36 +626,11 @@ function saveFcmToken(orgId, token, tokenType) {
   return { success: true };
 }
 
-// Exchange service account key for a short-lived OAuth2 access token for FCM.
+// Return the Apps Script executor's OAuth2 token scoped to firebase.messaging.
+// Requires appsscript.json to include https://www.googleapis.com/auth/firebase.messaging.
+// No service account key needed — works as long as the deploying account has FCM access.
 function getFcmAccessToken() {
-  var props   = PropertiesService.getScriptProperties();
-  var saEmail = props.getProperty('FCM_SA_EMAIL');
-  var saKey   = props.getProperty('FCM_SA_KEY');
-  if (!saEmail || !saKey) throw new Error('FCM_SA_EMAIL or FCM_SA_KEY not set in Script Properties');
-
-  var now     = Math.floor(Date.now() / 1000);
-  var header  = Utilities.base64EncodeWebSafe(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).replace(/=+$/, '');
-  var payload = Utilities.base64EncodeWebSafe(JSON.stringify({
-    iss:   saEmail,
-    scope: 'https://www.googleapis.com/auth/firebase.messaging',
-    aud:   'https://oauth2.googleapis.com/token',
-    iat:   now,
-    exp:   now + 3600
-  })).replace(/=+$/, '');
-
-  var toSign    = header + '.' + payload;
-  var signature = Utilities.base64EncodeWebSafe(
-    Utilities.computeRsaSha256Signature(toSign, saKey)
-  ).replace(/=+$/, '');
-
-  var resp   = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', {
-    method:  'post',
-    payload: { grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: toSign + '.' + signature },
-    muteHttpExceptions: true
-  });
-  var parsed = JSON.parse(resp.getContentText());
-  if (!parsed.access_token) throw new Error('Token exchange failed: ' + resp.getContentText());
-  return parsed.access_token;
+  return ScriptApp.getOAuthToken();
 }
 
 // Send a push notification via FCM HTTP v1 API. Returns true on success.

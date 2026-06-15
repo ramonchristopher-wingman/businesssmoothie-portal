@@ -9,12 +9,13 @@ self.addEventListener('activate', () => self.clients.claim());
 // Firebase config — must match index.html
 // Fill in from Firebase Console: Project Settings → Your Apps → Web app
 firebase.initializeApp({
-  apiKey:            'FILL_IN_FROM_FIREBASE_CONSOLE',
+  apiKey:            'AIzaSyCb3T-4_hcroNdjb4nkhZIx7DQ77XXyb2k',
   authDomain:        'business-smoothie-portal.firebaseapp.com',
   projectId:         'business-smoothie-portal',
   storageBucket:     'business-smoothie-portal.firebasestorage.app',
-  messagingSenderId: 'FILL_IN_FROM_FIREBASE_CONSOLE',
-  appId:             'FILL_IN_FROM_FIREBASE_CONSOLE'
+  messagingSenderId: '556504277167',
+  appId:             '1:556504277167:web:f0f0635f68a7f31112b45a',
+  measurementId:     'G-2FJ7Q51EXD'
 });
 
 const messaging = firebase.messaging();

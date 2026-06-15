@@ -809,17 +809,18 @@ const ATTACHMENTS_WORKER='https://myportal-attachments-worker.summer-mouse-2464.
 //   Project Settings → Your Apps → Web app  (apiKey, messagingSenderId, appId)
 //   Cloud Messaging → Web Push certificates  (VAPID key)
 const FIREBASE_CONFIG={
-  apiKey:           'FILL_IN_FROM_FIREBASE_CONSOLE',
+  apiKey:           'AIzaSyCb3T-4_hcroNdjb4nkhZIx7DQ77XXyb2k',
   authDomain:       'business-smoothie-portal.firebaseapp.com',
   projectId:        'business-smoothie-portal',
   storageBucket:    'business-smoothie-portal.firebasestorage.app',
-  messagingSenderId:'FILL_IN_FROM_FIREBASE_CONSOLE',
-  appId:            'FILL_IN_FROM_FIREBASE_CONSOLE'
+  messagingSenderId:'556504277167',
+  appId:            '1:556504277167:web:f0f0635f68a7f31112b45a',
+  measurementId:    'G-2FJ7Q51EXD'
 };
-const FIREBASE_VAPID_KEY='FILL_IN_FROM_FIREBASE_CONSOLE';
+const FIREBASE_VAPID_KEY='BLRUXa_y19-U0xeoFOEQgE5SFjVknUsUzDvolvMB_8Uk1jqGjB9_HjJpSyo3Kbhu4eK9unx9PWpw1H-3OLS_koE';
 
 // Init Firebase app only once and only when config has been filled in
-if(typeof firebase!=='undefined'&&!FIREBASE_CONFIG.apiKey.startsWith('FILL_IN')){
+if(typeof firebase!=='undefined'){
   firebase.initializeApp(FIREBASE_CONFIG);
 }
 
@@ -2474,7 +2475,7 @@ function adminLogout(){
 // and saves it to the sheet via saveFcmToken. Silent no-op on any failure.
 async function requestPushPermission(recipientId,recipientType){
   if(!('Notification' in window))return;
-  if(typeof firebase==='undefined'||FIREBASE_VAPID_KEY.startsWith('FILL_IN'))return;
+  if(typeof firebase==='undefined')return;
   try{
     const permission=await Notification.requestPermission();
     if(permission!=='granted')return;
