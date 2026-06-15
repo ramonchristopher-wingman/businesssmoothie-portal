@@ -797,9 +797,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);display:flex;justify-co
 
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK — must load before app script for FCM support -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbz-yYxVv-0moprMrhPeDRCBDDmXFhEOlykODhrUNJReuQmM-ooInKZpqVL0jeE7SjzC0g/exec?authuser=admin@smoothiesystems.com';
 const ATTACHMENTS_WORKER='https://myportal-attachments-worker.summer-mouse-2464.workers.dev';
+
+// ── Firebase / FCM ─────────────────────────────────────────────────────────
+// Fill in from Firebase Console after project setup:
+//   Project Settings → Your Apps → Web app  (apiKey, messagingSenderId, appId)
+//   Cloud Messaging → Web Push certificates  (VAPID key)
+const FIREBASE_CONFIG={
+  apiKey:           'FILL_IN_FROM_FIREBASE_CONSOLE',
+  authDomain:       'business-smoothie-portal.firebaseapp.com',
+  projectId:        'business-smoothie-portal',
+  storageBucket:    'business-smoothie-portal.firebasestorage.app',
+  messagingSenderId:'FILL_IN_FROM_FIREBASE_CONSOLE',
+  appId:            'FILL_IN_FROM_FIREBASE_CONSOLE'
+};
+const FIREBASE_VAPID_KEY='FILL_IN_FROM_FIREBASE_CONSOLE';
+
+// Init Firebase app only once and only when config has been filled in
+if(typeof firebase!=='undefined'&&!FIREBASE_CONFIG.apiKey.startsWith('FILL_IN')){
+  firebase.initializeApp(FIREBASE_CONFIG);
+}
+
 const TYPE={
   client:  {label:'Client',  color:'#00C45A',bg:'rgba(0,196,90,.18)',   text:'#00C45A'},
   prospect:{label:'Prospect',color:'#F59E0B',bg:'rgba(245,158,11,.18)', text:'#F59E0B'},
@@ -2384,7 +2407,7 @@ function handleTokenValidation(token){
       clientSession={orgId:d.orgId,orgName:d.orgName,contactName:d.contactName};
       sessionStorage.setItem('mp_client',JSON.stringify(clientSession));
       window.history.replaceState({},'',window.location.pathname);
-      showView('client');loadClientData();
+      showView('client');loadClientData();requestPushPermission(d.orgId,'client');
     }else{
       if(status){status.textContent=d.error||'Invalid or expired link.';status.className='login-status error';}
     }
@@ -2422,7 +2445,7 @@ function handleAdminTokenValidation(token){
       adminSession={name:d.name,email:d.email};
       sessionStorage.setItem('mp_admin',JSON.stringify(adminSession));
       window.history.replaceState({},'',window.location.pathname);
-      initAdmin();
+      initAdmin();requestPushPermission(adminSession.email,'admin');
     }else{
       showView('login');
       if(status){
@@ -2444,6 +2467,27 @@ function adminLogout(){
   adminSession=null;
   sessionStorage.removeItem('mp_admin');
   window.location.reload();
+}
+
+// ── Firebase push permission ────────────────────────────────────────────────
+// Called after successful login. Requests notification permission, gets FCM token,
+// and saves it to the sheet via saveFcmToken. Silent no-op on any failure.
+async function requestPushPermission(recipientId,recipientType){
+  if(!('Notification' in window))return;
+  if(typeof firebase==='undefined'||FIREBASE_VAPID_KEY.startsWith('FILL_IN'))return;
+  try{
+    const permission=await Notification.requestPermission();
+    if(permission!=='granted')return;
+    const messaging=firebase.messaging();
+    const reg=await navigator.serviceWorker.ready;
+    const token=await messaging.getToken({vapidKey:FIREBASE_VAPID_KEY,serviceWorkerRegistration:reg});
+    if(!token)return;
+    fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({
+      action:'saveFcmToken',orgId:recipientId,token,tokenType:recipientType
+    })});
+  }catch(err){
+    console.warn('Push permission:',err);
+  }
 }
 
 // ── CLIENT PORTAL ──────────────────────────────────────────
@@ -2652,7 +2696,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/firebase-messaging-sw.js');
   }
 </script>
 </body>

@@ -6,9 +6,32 @@
 //        stampOnboarding, toggleOnboardingStep, addOnboardingStep, deleteOnboardingStep,
 //        addComment
 // v7.1: requestAdminMagicLink, validateAdminToken, addComment (+ email notifications)
+// v7.2: addMessage
+// v8.0: saveFcmToken; FCM push via HTTP v1 API; unified notifyClient/notifyAdmin; email fallback
 
 var SHEET_ID   = '1UgVcQPbMI4cp6I1AvV7r1W_xBFb9rcAhhCPQa6f3Cmg';
-var PORTAL_URL = 'https://myportal.businesssmoothie.com';
+var PORTAL_URL = 'https://portal.businesssmoothie.com';
+
+// ── Notification event config ──────────────────────────────────────
+// Set any value to false to disable that notification type globally.
+var NOTIFICATION_CONFIG = {
+  newMessage:             true,  // admin → client: new message sent
+  clientMessageReply:     true,  // client → admin: client sent a message
+  taskAssigned:           true,  // admin → client: task assigned
+  taskStatusChange:       true,  // admin → client: task status updated
+  onboardingStepComplete: true,  // client → admin: client completed a step
+  projectUpdate:          true,  // admin → client: project updated
+  commentFromAdmin:       true,  // admin → client: admin left a comment
+  commentFromClient:      true   // client → admin: client left a comment
+};
+
+// ── Firebase / FCM credentials ────────────────────────────────────
+// Store these in Apps Script → Project Settings → Script Properties:
+//   FCM_PROJECT_ID  →  business-smoothie-portal
+//   FCM_SA_EMAIL    →  your-sa@business-smoothie-portal.iam.gserviceaccount.com
+//   FCM_SA_KEY      →  -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+// Also add FCMToken column to Orgs tab and Admins tab (one device per user for now).
+// Also add NotifSent column to Messages tab (boolean — email dedup guard).
 
 // ── Entry points ───────────────────────────────────────────────────
 
@@ -91,6 +114,16 @@ function doPost(e) {
         break;
       case 'requestAdminMagicLink':
         result = requestAdminMagicLink(p.email || '');
+        break;
+
+      // ── v7.2 ──────────────────────────────────────────────────
+      case 'addMessage':
+        result = addMessage(p.orgId || '', p.orgName || '', p.sender || 'Ramon', p.body || '');
+        break;
+
+      // ── v8.0 ──────────────────────────────────────────────────
+      case 'saveFcmToken':
+        result = saveFcmToken(p.orgId || '', p.token || '', p.tokenType || 'client');
         break;
 
       default:
@@ -380,6 +413,20 @@ function toggleOnboardingStep(stepId, done, completedBy, doneDate) {
     done ? (doneDate || new Date().toISOString().slice(0, 10)) : ''
   );
 
+  // Notify Ramon when a client (non-admin) completes a step
+  if (done && completedBy && completedBy.toLowerCase() !== 'ramon') {
+    try {
+      var steps    = sheetToObjects(sheet);
+      var step     = steps.filter(function(r) { return String(r.StepID) === String(stepId); })[0];
+      var stepName = step ? (step.StepName || stepId) : stepId;
+      notifyAdmin(
+        'Onboarding step completed',
+        (completedBy || 'A client') + ' completed: ' + stepName + '\n\n' + PORTAL_URL,
+        'onboardingStepComplete'
+      );
+    } catch (e) { }
+  }
+
   return { success: true };
 }
 
@@ -428,37 +475,21 @@ function addComment(taskId, orgId, author, authorRole, body) {
     timestamp
   ]);
 
-  // ── v7.1: email notification ──────────────────────────────
+  // ── v8.0: unified push / email notification ───────────────
   try {
-    var taskRows    = sheetToObjects(getTab('Tasks'));
-    var taskRow     = taskRows.filter(function(r) { return String(r.TaskID) === String(taskId); })[0];
-    var taskName    = taskRow ? (taskRow.TaskName || '') : '';
+    var taskRows = sheetToObjects(getTab('Tasks'));
+    var taskRow  = taskRows.filter(function(r) { return String(r.TaskID) === String(taskId); })[0];
+    var taskName = taskRow ? (taskRow.TaskName || 'a task') : 'a task';
 
-    var orgRows     = sheetToObjects(getTab('Orgs'));
-    var orgRow      = orgRows.filter(function(r) { return String(r.OrgID) === String(orgId); })[0];
-    var contactEmail = orgRow ? (orgRow.ContactEmail || '') : '';
-    var contactName  = orgRow ? (orgRow.ContactName  || 'Client') : 'Client';
-
-    if (contactEmail) {
-      if ((authorRole || '').toLowerCase() === 'client') {
-        MailApp.sendEmail({
-          to:      'ramon@businesssmoothie.com',
-          name:    'Business Smoothie',
-          subject: 'New comment from ' + contactName + ' — ' + taskName,
-          body:    contactName + ' left a comment on ' + taskName + ':\n\n' +
-                   body + '\n\n' +
-                   'View in MyPortal: ' + PORTAL_URL
-        });
-      } else {
-        MailApp.sendEmail({
-          to:      contactEmail,
-          name:    'Business Smoothie',
-          subject: 'New update on your task — ' + taskName,
-          body:    'Your Business Smoothie team left a note on ' + taskName + ':\n\n' +
-                   body + '\n\n' +
-                   'Log in to view: ' + PORTAL_URL
-        });
-      }
+    if ((authorRole || '').toLowerCase() === 'client') {
+      notifyAdmin(
+        'New comment from ' + (author || 'a client'),
+        (author || 'Client') + ' commented on ' + taskName + ':\n\n' + body + '\n\n' + PORTAL_URL,
+        'commentFromClient'
+      );
+    } else {
+      notifyClient(orgId, null, 'Business Smoothie Portal',
+        'New update on your task: ' + taskName, 'commentFromAdmin');
     }
   } catch (e) {
     // notification failure must not break the comment save
@@ -546,4 +577,178 @@ function validateAdminToken(token) {
     name:  admin.Name  || '',
     email: admin.Email || match.Email || ''
   };
+}
+
+// ── v7.2: addMessage ──────────────────────────────────────────────
+
+function addMessage(orgId, orgName, sender, body) {
+  if (!orgId || !body) return { success: false, error: 'orgId and body required' };
+  var msgId     = generateId('msg');
+  var timestamp = new Date().toISOString();
+
+  // Messages tab columns: MsgID | OrgID | OrgName | SenderName | Body | Timestamp | Read | NotifSent
+  // Add NotifSent column to the Messages tab in the sheet if not already present.
+  getTab('Messages').appendRow([msgId, orgId, orgName || '', sender || 'Ramon', body, timestamp, true, false]);
+
+  try {
+    var isAdminSender = ((sender || '').toLowerCase() === 'ramon');
+    if (isAdminSender) {
+      notifyClient(orgId, msgId, 'Business Smoothie Portal',
+        'You have a new message from your team.', 'newMessage');
+    } else {
+      notifyAdmin(
+        'New message from ' + (orgName || 'a client'),
+        (sender || 'Client') + ' says: ' + body.slice(0, 200),
+        'clientMessageReply'
+      );
+    }
+  } catch (e) { }
+
+  return { success: true, msgId: msgId, timestamp: timestamp };
+}
+
+// ── v8.0: FCM push notifications ─────────────────────────────────
+
+// Save an FCM device token for a client (orgId = OrgID) or admin (orgId = Email).
+// Requires FCMToken column in Orgs tab (for clients) and Admins tab (for admins).
+function saveFcmToken(orgId, token, tokenType) {
+  if (!orgId || !token) return { success: false, error: 'orgId and token required' };
+  var tabName = (tokenType === 'admin') ? 'Admins' : 'Orgs';
+  var idCol   = (tokenType === 'admin') ? 'Email'  : 'OrgID';
+  var sheet   = getTab(tabName);
+  var rowNum  = findRowById(sheet, idCol, orgId);
+  var col     = findColIndex(sheet, 'FCMToken');
+  if (col < 0)    return { success: false, error: 'FCMToken column missing from ' + tabName + ' tab — add it first' };
+  if (rowNum < 1) return { success: false, error: 'Record not found in ' + tabName };
+  sheet.getRange(rowNum, col + 1).setValue(token);
+  return { success: true };
+}
+
+// Exchange service account key for a short-lived OAuth2 access token for FCM.
+function getFcmAccessToken() {
+  var props   = PropertiesService.getScriptProperties();
+  var saEmail = props.getProperty('FCM_SA_EMAIL');
+  var saKey   = props.getProperty('FCM_SA_KEY');
+  if (!saEmail || !saKey) throw new Error('FCM_SA_EMAIL or FCM_SA_KEY not set in Script Properties');
+
+  var now     = Math.floor(Date.now() / 1000);
+  var header  = Utilities.base64EncodeWebSafe(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).replace(/=+$/, '');
+  var payload = Utilities.base64EncodeWebSafe(JSON.stringify({
+    iss:   saEmail,
+    scope: 'https://www.googleapis.com/auth/firebase.messaging',
+    aud:   'https://oauth2.googleapis.com/token',
+    iat:   now,
+    exp:   now + 3600
+  })).replace(/=+$/, '');
+
+  var toSign    = header + '.' + payload;
+  var signature = Utilities.base64EncodeWebSafe(
+    Utilities.computeRsaSha256Signature(toSign, saKey)
+  ).replace(/=+$/, '');
+
+  var resp   = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', {
+    method:  'post',
+    payload: { grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: toSign + '.' + signature },
+    muteHttpExceptions: true
+  });
+  var parsed = JSON.parse(resp.getContentText());
+  if (!parsed.access_token) throw new Error('Token exchange failed: ' + resp.getContentText());
+  return parsed.access_token;
+}
+
+// Send a push notification via FCM HTTP v1 API. Returns true on success.
+function sendPush(fcmToken, title, body) {
+  var props     = PropertiesService.getScriptProperties();
+  var projectId = props.getProperty('FCM_PROJECT_ID');
+  if (!projectId) { console.warn('FCM_PROJECT_ID not set in Script Properties'); return false; }
+
+  try {
+    var accessToken = getFcmAccessToken();
+    var message = {
+      message: {
+        token: fcmToken,
+        notification: { title: title, body: body },
+        webpush: { fcm_options: { link: PORTAL_URL } }
+      }
+    };
+    var resp = UrlFetchApp.fetch(
+      'https://fcm.googleapis.com/v1/projects/' + projectId + '/messages:send',
+      {
+        method:      'post',
+        contentType: 'application/json',
+        headers:     { Authorization: 'Bearer ' + accessToken },
+        payload:     JSON.stringify(message),
+        muteHttpExceptions: true
+      }
+    );
+    return resp.getResponseCode() === 200;
+  } catch (err) {
+    console.error('sendPush failed: ' + err.message);
+    return false;
+  }
+}
+
+// Notify a client: push if they have an FCM token, else email with NotifSent dedup guard.
+// msgId is the Messages tab row ID — pass null for non-message events (comments, etc.).
+function notifyClient(orgId, msgId, title, body, eventType) {
+  if (!NOTIFICATION_CONFIG[eventType]) return;
+  if (!orgId) return;
+
+  var orgs = sheetToObjects(getTab('Orgs'));
+  var org  = orgs.filter(function(r) { return String(r.OrgID) === String(orgId); })[0];
+  if (!org) return;
+
+  var fcmToken = String(org.FCMToken || '').trim();
+  if (fcmToken) {
+    sendPush(fcmToken, title, body);
+    return;
+  }
+
+  // Email fallback — only if a contact email is set
+  if (!org.ContactEmail) return;
+
+  // Dedup guard: if this is a message event, check/set NotifSent before emailing
+  if (msgId) {
+    var msgSheet = getTab('Messages');
+    var rowNum   = findRowById(msgSheet, 'MsgID', msgId);
+    var notifCol = findColIndex(msgSheet, 'NotifSent');
+    if (rowNum > 0 && notifCol >= 0) {
+      var sent = msgSheet.getRange(rowNum, notifCol + 1).getValue();
+      if (sent === true || String(sent).toUpperCase() === 'TRUE') return;
+      msgSheet.getRange(rowNum, notifCol + 1).setValue(true); // mark before sending
+    }
+  }
+
+  var firstName = String(org.ContactName || '').split(' ')[0] || 'there';
+  MailApp.sendEmail({
+    to:      org.ContactEmail,
+    name:    'Business Smoothie Portal',
+    subject: 'You have a new message in your Business Smoothie Portal',
+    body:    'Hi ' + firstName + ',\n\n' +
+             'You have a new message waiting in your Business Smoothie Portal.\n\n' +
+             'View Message → ' + PORTAL_URL + '\n\n' +
+             '— The Smoothie Squad'
+  });
+}
+
+// Notify the admin (Ramon): push if FCM token registered, else email ramon@businesssmoothie.com.
+function notifyAdmin(title, body, eventType) {
+  if (!NOTIFICATION_CONFIG[eventType]) return;
+
+  var admins = sheetToObjects(getTab('Admins'));
+  var admin  = admins.filter(function(r) { return String(r.Active).toUpperCase() === 'TRUE'; })[0];
+  if (!admin) return;
+
+  var fcmToken = String(admin.FCMToken || '').trim();
+  if (fcmToken) {
+    sendPush(fcmToken, title, body);
+    return;
+  }
+
+  MailApp.sendEmail({
+    to:      'ramon@businesssmoothie.com',
+    name:    'Business Smoothie Portal',
+    subject: title,
+    body:    body
+  });
 }
