@@ -2474,11 +2474,17 @@ function adminLogout(){
 // Called after successful login. Requests notification permission, gets FCM token,
 // and saves it to the sheet via saveFcmToken. Silent no-op on any failure.
 async function requestPushPermission(recipientId,recipientType){
-  if(!('Notification' in window))return;
-  if(typeof firebase==='undefined')return;
+  console.log('[FCM] entry — Notification:'+('Notification' in window ? Notification.permission : 'unsupported')+' firebase:'+typeof firebase+' id:'+recipientId);
+  if(!('Notification' in window)||typeof firebase==='undefined')return;
   try{
-    const permission=await Notification.requestPermission();
-    if(permission!=='granted')return;
+    // Check permission state directly — requestPermission() can return undefined
+    // on some browsers when already granted, causing a false 'not granted' exit.
+    if(Notification.permission==='denied')return;
+    if(Notification.permission!=='granted'){
+      const p=await Notification.requestPermission();
+      if(p!=='granted')return;
+    }
+    // Always get/refresh token on every login regardless of prior grant state
     const messaging=firebase.messaging();
     const reg=await navigator.serviceWorker.ready;
     const token=await messaging.getToken({vapidKey:FIREBASE_VAPID_KEY,serviceWorkerRegistration:reg});
