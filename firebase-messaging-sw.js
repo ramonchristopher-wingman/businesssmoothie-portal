@@ -9,7 +9,7 @@ self.addEventListener('activate', () => self.clients.claim());
 // Firebase config — must match index.html
 // Fill in from Firebase Console: Project Settings → Your Apps → Web app
 firebase.initializeApp({
-  apiKey:            'AIzaSyCb3T-4_hcroNdjb4nkhZIx7DQ77XXyb2k',
+  apiKey:            'AIzaSyCb3T-4_hcroNdjb4nkhZIx7DQ77XYxb2k',
   authDomain:        'business-smoothie-portal.firebaseapp.com',
   projectId:         'business-smoothie-portal',
   storageBucket:     'business-smoothie-portal.firebasestorage.app',
