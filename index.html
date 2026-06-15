@@ -2482,12 +2482,14 @@ async function requestPushPermission(recipientId,recipientType){
     const messaging=firebase.messaging();
     const reg=await navigator.serviceWorker.ready;
     const token=await messaging.getToken({vapidKey:FIREBASE_VAPID_KEY,serviceWorkerRegistration:reg});
+    console.log('[FCM] token obtained:',token,'recipientId:',recipientId,'type:',recipientType);
     if(!token)return;
-    await fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({
+    const responseText=await fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({
       action:'saveFcmToken',orgId:recipientId,token,tokenType:recipientType
     })}).then(r=>r.text());
+    console.log('[FCM] saveFcmToken response:',responseText);
   }catch(err){
-    console.error('requestPushPermission failed:',err);
+    console.error('[FCM] requestPushPermission failed:',err);
   }
 }
 
