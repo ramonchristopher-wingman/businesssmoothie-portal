@@ -2483,11 +2483,11 @@ async function requestPushPermission(recipientId,recipientType){
     const reg=await navigator.serviceWorker.ready;
     const token=await messaging.getToken({vapidKey:FIREBASE_VAPID_KEY,serviceWorkerRegistration:reg});
     if(!token)return;
-    fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({
+    await fetch(SCRIPT_URL,{method:'POST',body:new URLSearchParams({
       action:'saveFcmToken',orgId:recipientId,token,tokenType:recipientType
-    })});
+    })}).then(r=>r.text());
   }catch(err){
-    console.warn('Push permission:',err);
+    console.error('requestPushPermission failed:',err);
   }
 }
 
