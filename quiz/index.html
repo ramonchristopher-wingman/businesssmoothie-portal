@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Smoothie Biz Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:         #00C45A;
+  --green-dim:     #00a34a;
+  --dark-green:    #1A5C35;
+  --bg:            #0f0f0f;
+  --surface:       #1a1a1a;
+  --surface-2:     #222222;
+  --border:        rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.14);
+  --text:          #ffffff;
+  --text-mid:      #999999;
+  --text-soft:     #555555;
+  --radius:        16px;
+  --radius-sm:     10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; width: 100%; max-width: 660px; padding: 40px 24px 60px; animation: rise 0.3s ease both; }
+.screen.active { display: block; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 32px; }
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+.progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
+
+/* ── INTRO ── */
+.intro-wrap { text-align: center; padding: 16px 0 8px; }
+.intro-logo {
+  width: 200px;
+  display: block;
+  margin: 0 auto 28px;
+  mix-blend-mode: screen;
+}
+.intro-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(32px, 8vw, 44px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 14px;
+  letter-spacing: -0.03em;
+}
+.intro-body { font-size: 1rem; color: var(--text-mid); line-height: 1.7; max-width: 460px; margin: 0 auto 28px; }
+.intro-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 36px; }
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 99px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+}
+.btn-green { background: var(--green); color: #fff; font-size: 16px; padding: 14px 32px; }
+.btn-green:hover { background: var(--green-dim); transform: translateY(-1px); }
+.btn-green:active { transform: translateY(0); }
+.btn-green:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: none;
+  border: none;
+  color: var(--text-soft);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 24px;
+}
+.btn-ghost:hover { color: var(--text-mid); }
+
+/* ── QUESTIONS ── */
+.q-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 10px; }
+.q-sub { font-size: 0.85rem; color: var(--text-soft); line-height: 1.55; margin-top: -10px; margin-bottom: 20px; }
+.q-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  text-align: left;
+  width: 100%;
+}
+.option:hover { border-color: var(--green); background: var(--surface-2); }
+.option.picked { border-color: var(--green); background: var(--surface-2); }
+.opt-badge {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-soft);
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.option.picked .opt-badge { background: var(--green); border-color: var(--green); color: #fff; }
+.opt-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.45; padding-top: 3px; }
+.q-footer { margin-top: 20px; }
+
+/* ── RESULTS: LABELS ── */
+.result-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+.result-label-lg {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 14px;
+}
+
+/* ── RESULTS: OPENING LINE ── */
+.result-opening {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(20px, 4vw, 24px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 28px;
+}
+
+/* ── RESULTS: SECTION HEADING ── */
+.result-section-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(22px, 4vw, 26px);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+/* ── RESULTS: BULLET LIST ── */
+.result-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+}
+.result-bullet {
+  position: relative;
+  padding-left: 20px;
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.result-bullet::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ── RESULTS: FIRST TAKE ── */
+.first-take {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+
+/* ── RESULTS: INLINE FORM ── */
+.result-form { margin-bottom: 28px; }
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface-2);
+  outline: none;
+  transition: border-color 0.18s;
+}
+.field input:focus { border-color: var(--green); }
+.field input::placeholder { color: var(--text-soft); }
+.form-note { font-size: 11px; color: var(--text-soft); margin-top: 8px; line-height: 1.5; }
+.contact-sent { text-align: center; padding: 12px 0; font-size: 14px; color: var(--green); font-weight: 600; }
+.contact-submit { width: 100%; margin-top: 4px; font-size: 17px; padding: 15px; border-radius: 9px; }
+
+/* ── PLAN CARD ── */
+.plan-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 22px 24px;
+  position: relative;
+  margin-bottom: 0;
+}
+.plan-card.is-primary { border-color: var(--green); }
+.plan-badge {
+  position: absolute;
+  top: -14px;
+  left: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 16px;
+  border-radius: 99px;
+}
+.badge-best { background: var(--green); color: #fff; }
+.plan-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.plan-teaser {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.plan-secondary {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ── SPLASH NUDGE ── */
+.splash-nudge {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ── ACTION CARD ── */
+.action-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 18px;
+  margin-bottom: 14px;
+}
+.action-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.action-cta { font-size: 14px; padding: 11px 20px; border-radius: 8px; }
+
+/* ── RESULTS FOOTER ── */
+.result-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+.result-footer-link {
+  background: none;
+  border: none;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--text-soft);
+  padding: 0;
+  transition: color 0.15s;
+}
+.result-footer-link:hover { color: var(--text-mid); }
+a.result-footer-link { display: inline; }
+
+@media (max-width: 480px) {
+  .intro-title { font-size: 30px; }
+  .q-text { font-size: 20px; }
+  .plan-name { font-size: 1.15rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-wrap">
+    <img src="../assets/Copy_of_Business__10_.png" alt="Business Smoothie" class="intro-logo" />
+    <h1 class="intro-title">Business Smoothie Biz Quiz</h1>
+    <p class="intro-body">Find out where your business stands and what your next move should be. Takes about 3 minutes.</p>
+    <div class="intro-chips">
+      <span class="chip">~3 minutes</span>
+      <span class="chip">Personalized plan match</span>
+      <span class="chip">No pressure</span>
+    </div>
+    <button class="btn btn-green" onclick="startQuiz()">Start the Quiz →</button>
+  </div>
+</div>
+
+<!-- ── QUESTION ── -->
+<div class="screen" id="screen-question">
+  <button class="btn-ghost" onclick="goBack()">← Back</button>
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">Question 1 of 13</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="q-label" id="q-label">Question 1</div>
+  <div class="q-text" id="q-text"></div>
+  <p class="q-sub" id="q-sub" style="display:none"></p>
+  <div class="options" id="options"></div>
+  <div class="q-footer">
+    <button class="btn btn-green" id="btn-next" onclick="nextQ()" disabled>Continue →</button>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div class="screen" id="screen-results">
+
+  <!-- 1. Opening line -->
+  <p class="result-opening">Congratulations — you took the first step.</p>
+
+  <!-- 2. WHAT WE HEARD -->
+  <p class="result-label-lg">What We Heard</p>
+  <ul class="result-bullets" id="r-bullets"></ul>
+
+  <!-- 3. YOUR RESULTS heading -->
+  <h2 class="result-section-heading">Your Results</h2>
+
+  <!-- 4. FIRST TAKE -->
+  <p class="result-eyebrow">First Take</p>
+  <p class="first-take" id="r-first-take"></p>
+
+  <!-- 5. Inline form -->
+  <div class="result-form">
+    <form id="contact-form" onsubmit="submitContact(event)">
+      <div class="field">
+        <label for="f-name">First Name</label>
+        <input type="text" id="f-name" placeholder="Your first name" required oninput="checkContactForm()" />
+      </div>
+      <div class="field">
+        <label for="f-email">Email Address</label>
+        <input type="email" id="f-email" placeholder="you@yourbusiness.com" required oninput="checkContactForm()" />
+      </div>
+      <button class="btn btn-green contact-submit" id="contact-submit-btn" type="submit" disabled>Get Your Full Results →</button>
+    </form>
+    <div class="contact-sent" id="contact-sent" style="display:none">✓ Your full results are on the way — check your inbox in the next few minutes.</div>
+  </div>
+
+  <!-- 6. Plan Card -->
+  <div id="r-plan-wrap" style="margin-bottom:28px"></div>
+
+  <!-- 7. Book a Specialist Call -->
+  <div class="action-card">
+    <h3 class="action-heading">Ready to talk through your results and take the next step with Business Smoothie?</h3>
+    <a class="btn btn-green action-cta" href="https://link.businesssmoothie.com/widget/booking/Y6ptSOI0hEEvhwyLaUxU" target="_blank">Book a Specialist Call →</a>
+  </div>
+
+  <!-- 8. Footer -->
+  <div class="result-footer-links">
+    <a class="result-footer-link" href="tel:5154000448">Call Us</a>
+    <a class="result-footer-link" href="tel:5154000332">Experience the AI Demo</a>
+    <button class="result-footer-link" onclick="shareQuiz(this)">Share the Biz Quiz</button>
+    <button class="result-footer-link" onclick="restartQuiz()">Retake the Quiz</button>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   QUESTION DATA
+   13 questions — locked May 2026
+   ═══════════════════════════════════════════════════ */
+const QS = [
+  {
+    q: "How long have you been in business?",
+    opts: [
+      "Less than a year",
+      "1 to 3 years",
+      "3 to 10 years",
+      "10 years or more"
+    ]
+  },
+  {
+    q: "What is your website situation?",
+    opts: [
+      "No website yet",
+      "I have one but it is not doing much for me",
+      "I have one — but I would consider something better",
+      "I have one and it is working well for me"
+    ]
+  },
+  {
+    q: "When it comes to AI, where does your business stand right now?",
+    opts: [
+      "Haven't gone there yet — not sure where to start",
+      "Just dipping a toe in — tried a thing or two",
+      "We use AI in some places — but I think we could be doing more with it",
+      "AI is running well for us — and we're always looking for what's next"
+    ]
+  },
+  {
+    q: "If one thing could run on autopilot while you focus on your business, what would it be?",
+    opts: [
+      "Answering customers 24/7 — calls, texts, messages",
+      "Following up with leads automatically",
+      "Keeping my social media active and consistent",
+      "All of it — I want the whole thing running"
+    ]
+  },
+  {
+    q: "How are you managing your customers and follow-ups right now?",
+    opts: [
+      "It is all in my head — or a notebook",
+      "Spreadsheets or manual processes",
+      "We have something in place — it could be better",
+      "We have a solid system that is working well"
+    ]
+  },
+  {
+    q: "How do new customers find you today?",
+    opts: [
+      "Word of mouth and referrals mostly",
+      "They find me on social media",
+      "They search for me on Google",
+      "Honestly — I am not sure"
+    ]
+  },
+  {
+    q: "Are you posting on social media?",
+    opts: [
+      "Pretty quiet — I rarely post",
+      "I show up sometimes but not consistently",
+      "I post regularly — but I would consider a more strategic approach",
+      "I am posting regularly and it is working"
+    ]
+  },
+  {
+    q: "Do you have an email list for your business?",
+    opts: [
+      "No email list yet",
+      "I have one but barely use it",
+      "I have a list — but I am not confident it is actually doing anything",
+      "Email is part of how I stay in touch and it is working"
+    ]
+  },
+  {
+    q: "How big is your team?",
+    opts: [
+      "Just me",
+      "2 people",
+      "3 to 8 people",
+      "More than 8"
+    ]
+  },
+  {
+    q: "How many apps or systems are you currently using to run your business?",
+    sub: "Think CRM, email tools, scheduling, social media, messaging apps — the tools you use to run things day to day.",
+    opts: [
+      "None — I am doing it all manually",
+      "1 to 2",
+      "3 to 5",
+      "More than 5 — it is a lot to manage"
+    ]
+  },
+  {
+    q: "How many people work within your business systems day to day?",
+    opts: [
+      "Just me",
+      "2 people",
+      "3 to 8 people",
+      "More than 8"
+    ]
+  },
+  {
+    q: "When are you looking to get something in place?",
+    opts: [
+      "I needed this yesterday",
+      "In the next few weeks",
+      "Within the next few months",
+      "Still exploring — no timeline yet"
+    ]
+  },
+  {
+    q: "What would make this a home run for your business?",
+    opts: [
+      "Showing up better online and more people finding us",
+      "Never losing a lead or dropping the ball on a client",
+      "Getting help with the heavy lifting — calls, follow-ups, social media, etc.",
+      "My whole operation running without me holding it together"
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════
+   PLANS — NO PRICING
+   ═══════════════════════════════════════════════════ */
+const PLANS = {
+  splash: {
+    name: "Business Smoothie — Splash",
+    desc: "The focused entry. One priority, done right, running for your business from day one. Pick your Focus — Business AI, Smart Website, Integrated CRM, Digital Freedom Phone, Integrated Social Media, or Reputation and Review Management. Complete on its own — and you can add more when you are ready.",
+    forText: "Any business that wants to start focused, add one specific thing, or move fast without overhauling everything.",
+    users: "",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  lite: {
+    name: "Business Smoothie — Lite",
+    desc: "The full foundation. Business AI, Smart Website, and Integrated CRM — everything you need to show up, stay connected, and never miss a lead.",
+    forText: "Solo operators ready to stop piecing things together and run on a real system.",
+    users: "",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  solo: {
+    name: "Business Smoothie — Solo",
+    desc: "The complete Business Smoothie system. Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — all running for your business.",
+    forText: "Solo operators and 2-person teams ready for the full platform.",
+    users: "1–2 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  team: {
+    name: "Business Smoothie — Team",
+    desc: "The complete Business Smoothie system — Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — built for teams of up to 8.",
+    forText: "Teams of 3 to 8 who need everyone on the same platform, with AI running for the whole operation.",
+    users: "Up to 8 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  },
+  enterprise: {
+    name: "Business Smoothie — Enterprise",
+    desc: "The complete Business Smoothie system — Business AI, Smart Website, Integrated CRM, Automations and Funnels, Digital Freedom Phone, Integrated Social Media, Reputation and Review Management, and Reporting Dashboard — built for larger organizations with real volume and complexity.",
+    forText: "Larger teams, multi-location operations, and businesses that need infrastructure that matches what they are running.",
+    users: "Up to 50 users",
+    call: "https://link.businesssmoothie.com/widget/bookings/bs-strategy-call234"
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   CONFIG
+   ═══════════════════════════════════════════════════ */
+var QUIZ_SUBMIT_URL = 'https://quiz-submit.summer-mouse-2464.workers.dev';
+
+var PLAN_TAGS = {
+  splash:     'quiz-match-splash',
+  lite:       'quiz-match-lite',
+  solo:       'quiz-match-solo',
+  team:       'quiz-match-team',
+  enterprise: 'quiz-match-enterprise'
+};
+
+/* ═══════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════ */
+let qIndex             = 0;
+let answers            = [];
+let picked             = null;
+let recommendedPlanKey = '';
+let _quizPayload       = {};
+
+/* ═══════════════════════════════════════════════════
+   QUIZ FLOW
+   ═══════════════════════════════════════════════════ */
+function startQuiz() {
+  qIndex = 0; answers = []; picked = null;
+  renderQuestion();
+  show('screen-question');
+}
+
+function renderQuestion() {
+  var q = QS[qIndex];
+  picked = (answers[qIndex] !== undefined) ? answers[qIndex] : null;
+
+  var pct = Math.round((qIndex / QS.length) * 100);
+  document.getElementById('prog-label').textContent = 'Question ' + (qIndex + 1) + ' of ' + QS.length;
+  document.getElementById('prog-pct').textContent   = pct + '%';
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('q-label').textContent    = 'Question ' + (qIndex + 1);
+  document.getElementById('q-text').textContent     = q.q;
+  var subEl = document.getElementById('q-sub');
+  if (q.sub) { subEl.textContent = q.sub; subEl.style.display = ''; }
+  else        { subEl.textContent = '';    subEl.style.display = 'none'; }
+
+  var letters = ['A','B','C','D','E','F'];
+  document.getElementById('options').innerHTML = q.opts.map(function(o, i) {
+    var cls = 'option' + (picked === i ? ' picked' : '');
+    return '<button class="' + cls + '" onclick="pick(this,' + i + ')">' +
+           '<div class="opt-badge">' + letters[i] + '</div>' +
+           '<div class="opt-text">' + o + '</div>' +
+           '</button>';
+  }).join('');
+
+  document.getElementById('btn-next').disabled = (picked === null);
+}
+
+function pick(el, idx) {
+  document.querySelectorAll('.option').forEach(function(o) { o.classList.remove('picked'); });
+  el.classList.add('picked');
+  picked = idx;
+  answers[qIndex] = idx;
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQ() {
+  if (picked === null) return;
+  answers[qIndex] = picked;
+  if (qIndex < QS.length - 1) {
+    qIndex++;
+    renderQuestion();
+    window.scrollTo(0, 0);
+  } else {
+    renderResults();
+    show('screen-results');
+    window.scrollTo(0, 0);
+  }
+}
+
+function goBack() {
+  if (qIndex > 0) {
+    qIndex--;
+    renderQuestion();
+  } else {
+    show('screen-intro');
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════════════
+   SIGNAL CALCULATION
+   Index map (0-based, 13 questions):
+   Q1=0  Q2=1  Q3=2  Q4=3  Q5=4
+   Q6=5  Q7=6  Q8=7  Q9=8  Q10=9
+   Q11=10 Q12=11 Q13=12
+   ═══════════════════════════════════════════════════ */
+function calcSignals(ans) {
+
+  /* Q3 (idx 2) — AI business stance */
+  var aiNotStarted = ans[2] === 0;
+  var aiToeIn      = ans[2] === 1;
+  var aiDisconn    = ans[2] === 2;
+  var aiAheadBiz   = ans[2] === 3;
+
+  var aiForward = aiAheadBiz;
+  var aiPassive = aiNotStarted || aiToeIn;
+  var aiFomo    = false;
+  var noAi      = false;
+
+  /* Q4 (idx 3) — autopilot want */
+  var autoAi     = ans[3] === 0;
+  var autoLeads  = ans[3] === 1;
+  var autoSocial = ans[3] === 2;
+  var autoAll    = ans[3] === 3;
+
+  /* Q5 (idx 4) — current system */
+  var sysHead    = ans[4] === 0;
+  var sysSheet   = ans[4] === 1;
+  var sysBroken  = ans[4] === 2;
+  var sysPartial = ans[4] === 3;
+  var aiAddon    = false;
+
+  /* Q9 (idx 8) — team size */
+  var tmSolo  = ans[8] === 0;
+  var tmSmall = ans[8] === 1;
+  var tmMed   = ans[8] === 2;
+  var tmLarge = ans[8] === 3;
+  var tmTwo   = tmSmall;
+  var tmXL    = false;
+
+  /* Q10 (idx 9) — app count */
+  var manyApps = ans[9] === 3;
+
+  /* Q11 (idx 10) — platform users */
+  var puSolo  = ans[10] === 0;
+  var puTwo   = ans[10] === 1;
+  var puMed   = ans[10] === 2;
+  var puLarge = ans[10] === 3;
+  var isSmall = puSolo || puTwo;
+
+  /* Q12 (idx 11) — timeline */
+  var rMoving  = ans[11] === 0;
+  var rReady   = ans[11] === 1;
+  var rGuided  = ans[11] === 2;
+  var rLooking = ans[11] === 3;
+
+  /* Q13 (idx 12) — outcome */
+  var oFound    = ans[12] === 0;
+  var oLeads    = ans[12] === 1;
+  var oSystem   = ans[12] === 2;
+  var oAi       = ans[12] === 3;
+  var oOneThing = false;
+
+  var splashTrigger = aiAddon || rLooking || autoAi;
+
+  return {
+    aiFomo: aiFomo, aiForward: aiForward, aiAddon: aiAddon, aiPassive: aiPassive, noAi: noAi,
+    aiDisconn: aiDisconn,
+    autoAi: autoAi, autoAll: autoAll,
+    sysHead: sysHead, sysSheet: sysSheet, sysBroken: sysBroken, sysPartial: sysPartial,
+    isSmall: isSmall, puMed: puMed, puLarge: puLarge,
+    tmSolo: tmSolo, tmSmall: tmSmall, tmTwo: tmTwo, tmMed: tmMed, tmLarge: tmLarge, tmXL: tmXL,
+    manyApps: manyApps,
+    rLooking: rLooking, rGuided: rGuided, rReady: rReady, rMoving: rMoving,
+    oOneThing: oOneThing, oSystem: oSystem, oLeads: oLeads, oAi: oAi, oFound: oFound,
+    splashTrigger: splashTrigger,
+    bizType: null
+  };
+}
+
+function calcTiers(sig) {
+  var tiers, personaKey;
+
+  if (sig.puLarge) {
+    tiers = ['enterprise', 'team'];
+    personaKey = 'signature-large';
+
+  } else if (sig.puMed) {
+    tiers = ['team', 'solo'];
+    personaKey = 'signature-team';
+
+  } else {
+    var secondary = 'lite';
+    personaKey = 'lite';
+
+    if (sig.aiAddon) {
+      secondary  = 'splash';
+      personaKey = 'splash-addon';
+    } else if (sig.aiForward || sig.autoAll || sig.oAi) {
+      secondary  = 'lite';
+      personaKey = 'signature-forward';
+    } else if (sig.sysBroken || sig.manyApps) {
+      secondary  = 'lite';
+      personaKey = 'signature-consolidate';
+    } else if (sig.rLooking && !sig.aiForward) {
+      secondary  = 'splash';
+      personaKey = 'lite';
+    } else if (sig.oSystem) {
+      secondary  = 'lite';
+      personaKey = 'signature-forward';
+    }
+
+    tiers = ['solo', secondary];
+  }
+
+  return { tiers: tiers.slice(0, 2), personaKey: personaKey };
+}
+
+/* ═══════════════════════════════════════════════════
+   INTRO TEXT — DO NOT EDIT COPY
+   ═══════════════════════════════════════════════════ */
+function getIntroText(tiers, sig) {
+  var key = tiers.join('+');
+
+  if (sig.aiFomo) {
+    return {
+      a: "Your competitors are not waiting. Neither should you.",
+      b: "Here is what fits your business — and the fastest way to get AI running for you right now."
+    };
+  }
+
+  if (sig.noAi) {
+    return {
+      a: "You know your business. Let's build the right foundation.",
+      b: "Not everything has to be about AI — and Splash lets you choose exactly where to start."
+    };
+  }
+
+  var combos = {
+    'splash+lite': {
+      a: "You are ready to start — and you want it to feel right, not overwhelming.",
+      b: "Two ways in. Both have the core tools running for your business from day one."
+    },
+    'splash+signature': {
+      a: "You have built something that works. The question is whether you add to it or replace everything with one system.",
+      b: "Both are solid moves. Splash adds what you are missing. Signature replaces everything with the full platform."
+    },
+    'lite+splash': {
+      a: "You are ready to build something real — and you want it to feel manageable.",
+      b: "Two options depending on how fast you want to move. Either way, you are not piecing things together anymore."
+    },
+    'signature+lite': {
+      a: "You are ready to move — and you want a real system, not another tool.",
+      b: "The full platform or the full foundation. Either way, you stop duct-taping things together."
+    },
+    'signature+splash': {
+      a: "You are running something real — and it is ready to grow.",
+      b: "Signature is built for where you are headed. Splash is there if you want to start with one thing first."
+    },
+    'splash+lite+signature': {
+      a: "You have been making it work — but making it work is not the same as having it work.",
+      b: "A few options depending on how fast you want to move. Either way, AI is running for your business from day one."
+    }
+  };
+
+  if (combos[key]) return combos[key];
+
+  var personas = {
+    'splash-one-thing': {
+      a: "You know exactly what needs fixing — and you are right to start there.",
+      b: "Splash is built for that. One thing, done right, running for your business from day one."
+    },
+    'splash-addon': {
+      a: "You have built something that works. Now it needs AI in the mix.",
+      b: "Splash puts Business AI on top of what you already have — without starting over."
+    },
+    'lite': {
+      a: "You are ready to build something real — and you want it to feel manageable.",
+      b: "Lite gives you the full foundation — AI, website, phone, CRM — without the overwhelm."
+    },
+    'signature-forward': {
+      a: "You have been stitching things together. It is time for one system that actually works.",
+      b: "Signature brings everything under one roof — AI running 24/7, tools consolidated, business on autopilot."
+    },
+    'signature-team': {
+      a: "Your team is moving fast — your systems need to keep up.",
+      b: "Signature puts everyone on the same platform, with AI running for the whole operation."
+    },
+    'signature-large': {
+      a: "You are running a real operation — and it needs infrastructure that matches.",
+      b: "Signature gives you the full Business Smoothie platform — AI, automation, and scale — built for the complexity you are actually dealing with."
+    },
+    'signature-consolidate': {
+      a: "You have been stitching things together. It is time for one system that actually works.",
+      b: "Signature consolidates everything — AI, website, CRM, automations — into one platform that runs your business."
+    }
+  };
+
+  return personas[sig.personaKey] || {
+    a: "You are in the right place.",
+    b: "Here is what we recommend based on where you are and where you are headed."
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   WHY THIS FITS YOU — per plan + signal
+   ═══════════════════════════════════════════════════ */
+function getWhyText(key, sig) {
+  if (key === 'solo') {
+    if (sig.aiForward)  return "You already have AI working — Solo wraps the complete system around it so everything runs together on one platform.";
+    if (sig.aiAddon)    return "You have a system you trust — Solo adds Business AI and the full suite without replacing what is already working.";
+    if (sig.oSystem)    return "You want the whole operation running — Solo gives you every tool on one platform, built to work as a single system.";
+    if (sig.autoAll)    return "You want the whole thing on autopilot — Solo is the complete platform that makes that possible.";
+    if (sig.oLeads)     return "Never missing a lead means having Business AI, CRM, and follow-up working together — Solo has all of it.";
+    if (sig.isSmall)    return "For a solo operator or 2-person team, Solo gives you the complete Business Smoothie platform without the enterprise footprint.";
+    return "Solo gives you the complete Business Smoothie system — every tool running together for your business from day one.";
+  }
+  if (key === 'team') {
+    if (sig.tmMed)   return "Your team of 3 to 8 needs everyone working in the same system — Team puts them all on one platform with AI running for all of it.";
+    if (sig.oSystem) return "When the whole operation needs to run together, everyone on your team needs to work from the same tools — Team is built for exactly that.";
+    return "Team keeps your growing team connected and your systems running without things falling through the cracks.";
+  }
+  if (key === 'enterprise') {
+    if (sig.tmLarge || sig.tmXL) return "At your scale, you need infrastructure that handles the volume and complexity — Enterprise is purpose-built for that.";
+    return "Enterprise gives your organization the full Business Smoothie platform with the user capacity and depth to match what you are running.";
+  }
+  if (key === 'lite') {
+    if (sig.rLooking)  return "You are still figuring out your next move — Lite gives you the full foundation to work from without overcommitting.";
+    if (sig.aiPassive) return "Starting with Business AI, Smart Website, and Integrated CRM gives you something real to build on as you get comfortable.";
+    return "Lite gives you the three tools that move the needle most — Business AI, Smart Website, and Integrated CRM — all running from day one.";
+  }
+  if (key === 'splash') {
+    if (sig.aiAddon)  return "You have a system you trust — Splash adds the one thing you are missing without touching what is working.";
+    if (sig.rLooking) return "If you are not ready to commit to the full platform, Splash lets you start with one focused priority and prove it out first.";
+    return "Splash is the fastest way to get one thing working well — no overhaul, no overwhelm.";
+  }
+  return "This plan fits where you are and gives you the tools to move forward.";
+}
+
+/* ═══════════════════════════════════════════════════
+   WHAT WE HEARD — reflects actual answers back
+   maxLines: optional cap on number of sentences returned
+   ═══════════════════════════════════════════════════ */
+function getWhatWeHeard(sig, answers, maxLines) {
+  var lines = [];
+
+  if (answers[2] === 0)      lines.push("You have not made a move with AI yet — and figuring out where to start is the real question.");
+  else if (answers[2] === 1) lines.push("You have experimented a little with AI, but have not found the right way to put it to work for your business.");
+  else if (answers[2] === 2) lines.push("You are using AI in places — and you sense there is more it could be doing for your business.");
+  else                       lines.push("AI is already working for your business — and you are looking for what makes it work even better.");
+
+  if (answers[4] === 0)      lines.push("Your customer follow-ups are running from memory right now, which means some things are probably slipping through.");
+  else if (answers[4] === 1) lines.push("Spreadsheets are holding your client management together — a real system would take that weight off.");
+  else if (answers[4] === 2) lines.push("You have something in place for managing clients, though you know it could be doing more.");
+  else                       lines.push("Your customer management system is solid — which gives you a strong foundation to build on.");
+
+  if (sig.isSmall && sig.tmSolo) lines.push("You are running this yourself, so every system you bring in needs to actually save you time, not add to it.");
+  else if (sig.isSmall)          lines.push("You are running a lean operation — the systems you use need to be tight and efficient, not complicated.");
+  else if (sig.puMed)            lines.push("You have a team working inside your systems, which means what you put in place needs to work for everyone, not just you.");
+  else                           lines.push("You are running a larger operation, and the complexity you are managing shows that you need real infrastructure.");
+
+  if (answers[6] === 0)      lines.push("Your social presence has been pretty quiet — which is one of the clearest places to create fast visibility.");
+  else if (answers[6] === 1) lines.push("You are showing up on social sometimes, but the consistency has not been there yet.");
+  else if (sig.manyApps)     lines.push("You are juggling a lot of different apps to run your business, and that kind of fragmentation has a real cost.");
+  else if (answers[5] === 0) lines.push("Most of your new clients come through referrals — a strong signal that you need a system that never lets one go cold.");
+  else                       lines.push("You are actively working to grow, and the question is making sure the right systems are in place to support that.");
+
+  if (maxLines) lines = lines.slice(0, maxLines);
+  return lines.join(' ');
+}
+
+/* ═══════════════════════════════════════════════════
+   WHAT WE HEARD — BULLETS
+   3-4 signal-driven observations, read as a connected story
+   ═══════════════════════════════════════════════════ */
+function getWhatWeHeardBullets(sig, answers) {
+  var bullets = [];
+
+  // AI stance — always add one
+  if (sig.aiForward)
+    bullets.push("Your AI is working — the opportunity now is making sure everything else runs with the same efficiency.");
+  else if (sig.aiDisconn)
+    bullets.push("You have AI in your toolkit — it just does not feel like one connected system yet.");
+  else
+    bullets.push("You have not fully committed to AI yet — figuring out where it fits for your specific business is the real starting point.");
+
+  // Systems / client management — always add one
+  if (sig.sysHead)
+    bullets.push("Client follow-ups are running from memory right now — which means things are slipping through without you knowing it.");
+  else if (sig.sysSheet)
+    bullets.push("Client management is held together by spreadsheets — a real system would take that weight off.");
+  else if (sig.sysBroken)
+    bullets.push("You have something in place for managing clients, but you know it could be doing more.");
+  else
+    bullets.push("Your client management system is solid — the next move is making sure it scales without adding overhead.");
+
+  // Team context — always add one
+  if (sig.tmSolo)
+    bullets.push("You are running this yourself, so every system you bring in needs to actually save you time, not add to it.");
+  else if (sig.isSmall)
+    bullets.push("You are running a lean operation — the tools you use need to be tight and efficient, not complicated.");
+  else if (sig.puMed)
+    bullets.push("You have a team working inside your systems, which means what you put in place needs to work for everyone, not just you.");
+  else
+    bullets.push("You are running a larger operation — the complexity you are managing means you need infrastructure that actually scales.");
+
+  // Fourth bullet — strongest remaining signal
+  if (sig.manyApps)
+    bullets.push("You are juggling multiple tools to run your business — consolidating them would save time and reduce mistakes.");
+  else if (answers[6] === 0)
+    bullets.push("Your social presence has been pretty quiet — which is one of the clearest places to create visibility quickly.");
+  else if (answers[6] === 1)
+    bullets.push("You are showing up on social sometimes, but consistency has not been there yet.");
+  else if (answers[5] === 0)
+    bullets.push("Most of your new clients come through referrals, which means you need a system that never lets one go cold.");
+  else if (sig.rMoving || sig.rReady)
+    bullets.push("You are ready to move — the question is what to put in place first.");
+  else if (answers[7] === 0)
+    bullets.push("You do not have an email list yet — which means you are leaving a direct line to your audience on the table.");
+
+  return bullets;
+}
+
+/* ═══════════════════════════════════════════════════
+   WHAT IT SOUNDS LIKE YOU NEED
+   ═══════════════════════════════════════════════════ */
+function getWhatYouNeed(sig) {
+  var parts = [];
+
+  if (sig.isSmall) {
+    if (sig.aiPassive) parts.push("What you need is a system that handles the repetitive work — answering questions, following up on leads, staying visible online — so you can focus on the business itself.");
+    else               parts.push("What you need is a platform that ties your AI, your website, your CRM, and your communications together so everything runs from one place.");
+  } else if (sig.puMed) {
+    parts.push("What you need is a system your whole team can work from — with AI running in the background so nothing falls through the cracks across people, conversations, or follow-ups.");
+  } else {
+    parts.push("What you need is infrastructure that matches the scale of what you are running — AI and automation built into the core, not layered on top as an afterthought.");
+  }
+
+  if (sig.autoAll || sig.oSystem)  parts.push("The goal is an operation that runs without you holding it together — where the right things happen automatically and you have visibility into all of it.");
+  else if (sig.oLeads)             parts.push("Specifically, you need a system that captures every lead, follows up without you thinking about it, and never lets a prospect go cold.");
+  else if (sig.oFound)             parts.push("Getting found consistently means your website, your social presence, and your reputation all need to be working together — not as separate tasks on a to-do list.");
+  else                             parts.push("The short version: less friction, more automation, and tools that actually talk to each other.");
+
+  return parts.join(' ');
+}
+
+/* ═══════════════════════════════════════════════════
+   HOW BUSINESS SMOOTHIE FITS
+   ═══════════════════════════════════════════════════ */
+function getHowFits(sig) {
+  if (sig.puLarge) return "Business Smoothie is the operating system for a modern business running at real scale — AI, website, CRM, phone, social, reputation, and reporting, all connected from one place. At your size, having everything talk to each other is not a nice-to-have. It is how you keep pace with what you are building without adding headcount just to manage the tools.";
+  if (sig.puMed || sig.tmMed) return "Business Smoothie gives your team a single platform to work from — Business AI on the front lines, a shared CRM so nothing gets lost between people, automations running in the background, and a dashboard that shows you what is actually happening. When your systems are connected, your team runs cleaner and your business grows faster.";
+  return "Business Smoothie is built for businesses like yours — where the owner is close to the work, the team is lean, and the systems need to actually run without constant babysitting. It is not a collection of apps to figure out. It is one platform where Business AI answers your calls and texts, your website works, your leads do not disappear, and your social media stays active without you touching it every week.";
+}
+
+/* ═══════════════════════════════════════════════════
+   BIG ISSUE OR OPPORTUNITY
+   ═══════════════════════════════════════════════════ */
+function getBigIssueOrOpportunity(sig) {
+  if (sig.sysHead)     return "The biggest thing standing in your way right now is doing everything from memory — there is no system catching what you miss, which means leads and clients are slipping through without you knowing it.";
+  if (sig.sysSheet)    return "Spreadsheets are a starting point, not a system — and running client management manually is costing you time and momentum every single week.";
+  if (sig.aiDisconn || sig.sysBroken) return "You have pieces in place, but they are not talking to each other — the real cost is the time you spend bridging the gaps and the things that fall through when you cannot.";
+  if (sig.aiForward && sig.puLarge)   return "At your scale, the opportunity is less about adding tools and more about making the infrastructure you have run smarter and more connected across your whole team.";
+  if (sig.aiForward)   return "AI is already working in your business — the opportunity is connecting it to your full platform so it runs everything together, not just individual tasks.";
+  if (sig.manyApps)    return "You are managing too many disconnected tools — consolidating onto one platform would save you time, money, and the mental overhead of keeping everything stitched together.";
+  if (sig.aiPassive)   return "The biggest opportunity for your business right now is getting AI working for you — not as an experiment, but as a real part of how your business runs day to day.";
+  if (sig.oLeads)      return "Leads are the lifeblood of any business, and right now there is no system making sure every one of them gets followed up on. That gap has a real cost.";
+  if (sig.oFound)      return "Getting found consistently requires your website, your social media, and your reputation to work together — right now those pieces are not connected in a way that compounds.";
+  return "Your biggest opportunity is getting the right systems working together — so your business runs with less manual effort and fewer things falling through the cracks.";
+}
+
+/* ═══════════════════════════════════════════════════
+   RECOMMENDATION — 1-2 sentences per plan
+   ═══════════════════════════════════════════════════ */
+function getRecommendation(sig, planKey) {
+  var name = (PLANS[planKey] || {}).name || 'Business Smoothie';
+  if (planKey === 'enterprise') return name + " gives your organization the complete platform — AI, automation, and the user depth to match the complexity you are running.";
+  if (planKey === 'team')       return name + " puts your whole team on one platform with Business AI running for everyone — so nothing falls through the cracks across people and conversations.";
+  if (planKey === 'splash') {
+    if (sig.aiAddon)  return name + " — add Business AI to what you already have without starting over. One thing, done right, running for your business.";
+    if (sig.rLooking) return name + " — start with one focused priority and prove it out before committing to the full platform.";
+    return name + " — the fastest way to get one high-leverage thing working well for your business.";
+  }
+  if (planKey === 'lite')   return name + " — Business AI, Smart Website, and Integrated CRM, all running together. The full foundation without the complexity.";
+  if (sig.isSmall)          return name + " — the complete Business Smoothie platform built for solo operators and 2-person teams. Everything running from one place.";
+  return name + " — the complete Business Smoothie system running for your business from day one.";
+}
+
+/* ═══════════════════════════════════════════════════
+   SHARE QUIZ
+   ═══════════════════════════════════════════════════ */
+function shareQuiz(el) {
+  var url = window.location.href;
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'Business Smoothie Biz Quiz',
+      text:  'Take the Business Smoothie Biz Quiz — find out which plan fits your business.',
+      url:   url
+    }).catch(function() {});
+  } else {
+    navigator.clipboard.writeText(url).then(function() {
+      if (el) {
+        var orig = el.textContent;
+        el.textContent = 'Link copied!';
+        setTimeout(function() { el.textContent = orig; }, 2000);
+      }
+    }).catch(function() {
+      if (el) {
+        var orig = el.textContent;
+        el.textContent = 'Link copied!';
+        setTimeout(function() { el.textContent = orig; }, 2000);
+      }
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   BUILD PLAN CARD — minimal, no why block, no CTA
+   ═══════════════════════════════════════════════════ */
+function buildCard(key, sig) {
+  var p = PLANS[key];
+
+  var match   = p.desc.match(/[^.!?]*[.!?]+/);
+  var oneLine = match ? match[0].trim() : p.desc;
+
+  var div = document.createElement('div');
+  div.className = 'plan-card is-primary';
+
+  div.innerHTML =
+    '<div class="plan-badge badge-best">Your Best Match</div>' +
+    '<div class="plan-name">' + p.name + '</div>' +
+    '<div class="plan-teaser">' + oneLine + '</div>' +
+    '<p class="plan-secondary">See your full quiz results for the complete recommendation.</p>';
+
+  return div;
+}
+
+/* ═══════════════════════════════════════════════════
+   FIRST TAKE — warm 3-4 sentence read on their situation
+   No product names, no plan names
+   ═══════════════════════════════════════════════════ */
+function getFirstTake(sig) {
+  if (sig.aiForward && sig.puLarge) {
+    return "You have built something real here — AI is in the mix, your systems have some structure, and you are running at a scale that most businesses never reach. The challenge at your level is not about adding new tools, it is about making sure everything you have is actually connected and running at full capacity. The complexity you are managing is significant, and the gap between what your business could do on autopilot versus what it is doing right now is where the real opportunity lives. You have put in the work — the next move is making sure your infrastructure matches the operation you have built.";
+  }
+  if (sig.aiForward && sig.puMed) {
+    return "You have done something most businesses have not — you have AI actually working for you, and you have a team to back it up. That combination puts you ahead of most of the businesses you are competing with. The opportunity now is making sure your team is all working from the same systems, with AI running for everyone, not just in pockets. When that clicks, the whole operation runs cleaner and the ceiling gets higher.";
+  }
+  if (sig.aiForward && sig.isSmall) {
+    return "You are running lean and you have AI working — that is a stronger position than you might realize. Most businesses your size are still figuring out where AI fits, and you have already moved past that question. The work now is making sure your systems are tight enough to let AI do more of the heavy lifting, so your time goes toward the business and not toward managing the tools. There is real upside here, and you are closer to it than you think.";
+  }
+  if (sig.aiDisconn && (sig.sysBroken || sig.sysSheet || sig.sysHead)) {
+    return "You have made some real moves — AI is in your toolkit and you are managing a business that is actively operating. But there is a gap between having these pieces and having them work as one system, and that gap is probably costing you more than you realize on a daily basis. The things slipping through the cracks, the manual steps that slow everything down, the follow-ups that do not happen automatically — that is what a connected system solves. You are not starting from zero, which means the path forward is shorter than it might feel.";
+  }
+  if (sig.puLarge || sig.tmLarge) {
+    return "You are running a real operation — multiple people, real complexity, and a business that needs infrastructure that can actually keep up. At your scale, the cost of disconnected systems is not just inefficiency, it is opportunity that slips away every day because the tools are not talking to each other. The good news is that the complexity you are managing is exactly what the right platform is designed for. The businesses that get this right at your size do not just run cleaner — they grow faster.";
+  }
+  if (sig.puMed || sig.tmMed) {
+    return "You have a team, which means you have already built something worth protecting and growing. The challenge for businesses at your stage is that the informal systems that worked when it was just you start to break down as more people get involved. Leads fall through between conversations, follow-ups depend on whoever remembers to do them, and the consistency you built early gets harder to maintain. Getting everyone working from the same tools is the move that changes all of that.";
+  }
+  if ((sig.sysHead || sig.sysSheet) && sig.aiPassive) {
+    return "You have been running on grit and good instincts — and that gets a business further than most people give it credit for. But you are also at the point where doing it all manually is starting to cost you more than it saves. Client follow-ups running from memory, AI still on the shelf, social presence inconsistent — each of those is a real gap, and they compound. The good news is that any one of those moving in the right direction would change how the whole operation feels to run.";
+  }
+  return "You have built something here — and the answers you gave show a business that is actively working to get better, not one that is standing still. There are real gaps to close, but there are also clear strengths to build on. The difference between where you are now and where you want to be is mostly about which systems are in place and which ones are not yet. That is a more solvable problem than it usually feels like from the inside.";
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER RESULTS
+   ═══════════════════════════════════════════════════ */
+function renderResults() {
+  var sig    = calcSignals(answers);
+  var result = calcTiers(sig);
+  sig.personaKey = result.personaKey;
+
+  recommendedPlanKey = result.tiers[0];
+
+  var whatHeard = getWhatWeHeard(sig, answers);
+  var bigIssue  = getBigIssueOrOpportunity(sig);
+  var whatNeed  = getWhatYouNeed(sig);
+  var howFits   = getHowFits(sig);
+  var recommend = getRecommendation(sig, recommendedPlanKey);
+
+  _quizPayload = {
+    whatWeHeard:      whatHeard,
+    bigIssue:         bigIssue,
+    recommendation:   recommend,
+    howBSFits:        howFits,
+    secondaryPlanKey: result.tiers[1] || null
+  };
+
+  // Section 2: WHAT WE HEARD bullets
+  var bullets = getWhatWeHeardBullets(sig, answers);
+  var ul = document.getElementById('r-bullets');
+  ul.innerHTML = bullets.map(function(b) {
+    return '<li class="result-bullet">' + b + '</li>';
+  }).join('');
+
+  // Section 4: FIRST TAKE
+  document.getElementById('r-first-take').textContent = getFirstTake(sig);
+
+  // Section 5: Plan card + optional nudge
+  var wrap = document.getElementById('r-plan-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(buildCard(recommendedPlanKey, sig));
+
+  if (sig.aiForward && sig.sysPartial) {
+    var nudge = document.createElement('p');
+    nudge.className = 'splash-nudge';
+    nudge.textContent = 'Or start with one specific thing through Business Smoothie — Splash.';
+    wrap.appendChild(nudge);
+  }
+
+  // Reset form
+  document.getElementById('contact-form').style.display = '';
+  document.getElementById('contact-form').reset();
+  document.getElementById('contact-sent').style.display = 'none';
+  var submitBtn = document.getElementById('contact-submit-btn');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Get Your Full Results →'; }
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACT CAPTURE — posts to GHL via Worker proxy
+   ═══════════════════════════════════════════════════ */
+function checkContactForm() {
+  var ok = !!(document.getElementById('f-name').value.trim() && document.getElementById('f-email').value.trim());
+  document.getElementById('contact-submit-btn').disabled = !ok;
+}
+
+function submitContact(e) {
+  e.preventDefault();
+  var firstName = document.getElementById('f-name').value.trim();
+  var email     = document.getElementById('f-email').value.trim();
+  if (!firstName || !email) return;
+
+  var planTag   = PLAN_TAGS[recommendedPlanKey] || 'quiz-completed';
+  var planName  = (PLANS[recommendedPlanKey] || {}).name || '';
+
+  var btn = document.getElementById('contact-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  fetch(QUIZ_SUBMIT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      firstName:      firstName,
+      email:          email,
+      planTag:        planTag,
+      planName:       planName,
+      whatWeHeard:    _quizPayload.whatWeHeard    || '',
+      bigIssue:       _quizPayload.bigIssue       || '',
+      recommendation: _quizPayload.recommendation || '',
+      howBSFits:      _quizPayload.howBSFits      || '',
+      secondaryPlan:  _quizPayload.secondaryPlanKey || null
+    })
+  })
+  .then(function() { showSent(); })
+  .catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Get Your Full Results →'; }
+  });
+}
+
+function showSent() {
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'block';
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════ */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function restartQuiz() {
+  qIndex = 0; answers = []; picked = null; _quizPayload = {};
+  show('screen-intro');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
