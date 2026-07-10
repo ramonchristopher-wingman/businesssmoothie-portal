@@ -264,6 +264,71 @@
     .claude-pill-red    { color: var(--red);        background: var(--red-bg);   border-color: #f5a6a6; }
     .claude-pill-muted  { color: #bbb;              background: #f5f5f5;         border-color: #e0e0e0; }
 
+    /* ── Clients tab (BB-032) ───────────────────────────── */
+    .clients-picker {
+      position: sticky;
+      top: 52px;
+      z-index: 40;
+      background: var(--bg);
+      padding: 12px 0 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .clients-picker-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .client-search-input {
+      flex: 1; min-width: 180px;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--white);
+    }
+    .client-search-input:focus { outline: none; border-color: var(--green); }
+    .snoozed-toggle {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted); white-space: nowrap; cursor: pointer;
+    }
+    .client-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+    .client-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer; transition: border-color 0.12s, background 0.12s;
+    }
+    .client-row:hover { border-color: var(--green); }
+    .client-row.active { border-color: var(--green); background: #e6f9ee; }
+    .client-row-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 13px; flex: 1; }
+
+    .cb-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .cb-open-link { font-size: 11px; color: var(--dark-green); text-decoration: none; white-space: nowrap; }
+    .cb-open-link:hover { text-decoration: underline; }
+    .cb-list { list-style: disc; padding-left: 18px; font-size: 13px; margin: 6px 0; }
+    .cb-list li { padding: 2px 0; }
+    .cb-h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 12px; margin: 10px 0 4px; }
+    .cb-h3:first-child { margin-top: 0; }
+    .cb-call-entry { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .cb-call-entry:last-child { border-bottom: none; }
+    .cb-callout { background: var(--gray-light); border-radius: 6px; padding: 8px 10px; font-size: 13px; margin: 6px 0; }
+    .cb-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+    .cb-table td, .cb-table th { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; }
+    .cb-table th { background: var(--gray-light); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+    .clients-content p { font-size: 13px; margin: 6px 0; color: #333; }
+
+    .card-scratchpad { border: 1px solid var(--green); border-left: 4px solid var(--green); background: #f4fcf7; }
+    .cb-scratch-form { display: flex; gap: 8px; margin-bottom: 8px; }
+    .cb-scratch-input {
+      flex: 1; font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--white);
+    }
+    .cb-scratch-input:focus { outline: none; border-color: var(--green); }
+    .cb-scratch-btn {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 12px;
+      padding: 7px 16px; border-radius: 6px; border: none;
+      background: var(--green); color: var(--white); cursor: pointer;
+    }
+    .cb-scratch-btn:disabled { opacity: 0.6; cursor: default; }
+    .cb-scratch-status { font-size: 12px; margin-bottom: 6px; }
+    .cb-scratch-entries p { font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); margin: 0; }
+    .cb-scratch-entries p:last-child { border-bottom: none; }
+
     /* ── Responsive ─────────────────────────────────────── */
     @media (max-width: 640px) {
       .header { padding: 0 14px; }
@@ -285,6 +350,7 @@
     <button class="tab-btn active" onclick="switchTab('cockpit', this)">Cockpit</button>
     <button class="tab-btn" onclick="switchTab('resources', this)">Resources</button>
     <button class="tab-btn" onclick="switchTab('opsmap', this)">Ops Map</button>
+    <button class="tab-btn" onclick="switchTab('clients', this)">Clients</button>
   </nav>
 </header>
 
@@ -602,6 +668,23 @@
     <p class="map-note">Green = active data flows. Gray = deploy + delivery. Dashed = cache read path.</p>
   </div>
 
+  <!-- ── CLIENTS (BB-032) ─────────────────────────────────── -->
+  <div id="tab-clients" class="tab-panel">
+    <div class="clients-picker">
+      <div class="clients-picker-row">
+        <input type="text" id="client-search" class="client-search-input" placeholder="Search clients…" oninput="renderClientList()">
+        <label class="snoozed-toggle">
+          <input type="checkbox" id="show-snoozed" onchange="loadClients()">
+          Show Snoozed
+        </label>
+      </div>
+      <div id="client-list" class="client-list">
+        <div class="empty-text">Loading clients&hellip;</div>
+      </div>
+    </div>
+    <div id="client-brain-content" class="clients-content card-grid"></div>
+  </div>
+
 </main>
 
 <script>
@@ -615,6 +698,7 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+  if (name === 'clients' && !CLIENTS_CACHE) loadClients();
 }
 
 // ── Greeting + date ───────────────────────────────────────────────────────────
@@ -864,6 +948,297 @@ function legacyCopy(text, cb) {
   document.execCommand('copy');
   document.body.removeChild(ta);
   cb();
+}
+
+// ── Clients tab (BB-032) ─────────────────────────────────────────────────────
+const CLIENT_BRAIN_TEMPLATE_URL = 'https://www.notion.so/38dbbe80262181238582ee7f46251e30';
+const CLIENT_BRAIN_SECTIONS = [
+  { key: 'profile',              label: 'Profile' },
+  { key: 'goals & priorities',   label: 'Goals & Priorities' },
+  { key: 'brand notes',          label: 'Brand Notes' },
+  { key: "what's built",         label: "What's Built" },
+  { key: "what's next",          label: "What's Next" },
+  { key: 'people',               label: 'People' },
+  { key: 'call log',             label: 'Call Log' },
+  { key: 'scratch pad',          label: 'Scratch Pad' },
+];
+
+let CLIENTS_CACHE = null;
+let currentClient = null;
+
+async function loadClients() {
+  const showSnoozed = document.getElementById('show-snoozed').checked;
+  const listEl = document.getElementById('client-list');
+  listEl.innerHTML = '<div class="empty-text">Loading clients&hellip;</div>';
+  try {
+    const vis = showSnoozed ? 'Active,Snoozed' : 'Active';
+    const res = await fetch(`${WORKER_URL}/notion/clients?visibility=${vis}`);
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+    CLIENTS_CACHE = data.clients || [];
+    renderClientList();
+  } catch (err) {
+    listEl.innerHTML = `<div class="notice notice-error">Could not load clients. ${esc(err.message)}</div>`;
+  }
+}
+
+function clientStatusBadge(status) {
+  if (status === 'Active Client') return `<span class="badge badge-green">${esc(status)}</span>`;
+  if (status === 'Prospect')      return `<span class="badge badge-purple">${esc(status)}</span>`;
+  return status ? `<span class="badge badge-gray">${esc(status)}</span>` : '';
+}
+
+function renderClientList() {
+  if (!CLIENTS_CACHE) return;
+  const q = document.getElementById('client-search').value.trim().toLowerCase();
+  const listEl = document.getElementById('client-list');
+  const filtered = CLIENTS_CACHE.filter(c => fx(c.name).toLowerCase().includes(q));
+  if (!filtered.length) {
+    listEl.innerHTML = '<div class="empty-text">No clients match.</div>';
+    return;
+  }
+  listEl.innerHTML = filtered.map(c => `
+    <div class="client-row ${currentClient && currentClient.id === c.id ? 'active' : ''}" data-id="${esc(c.id)}">
+      <span class="client-row-name">${esc(fx(c.name))}</span>
+      ${clientStatusBadge(c.status)}
+      ${c.plan ? `<span class="badge badge-gray">${esc(c.plan)}</span>` : ''}
+    </div>`).join('');
+  listEl.querySelectorAll('.client-row').forEach(row => {
+    row.addEventListener('click', () => selectClient(row.dataset.id));
+  });
+}
+
+async function selectClient(id) {
+  const client = CLIENTS_CACHE.find(c => c.id === id);
+  if (!client) return;
+  currentClient = client;
+  renderClientList();
+
+  const contentEl = document.getElementById('client-brain-content');
+  contentEl.innerHTML = '<div class="card card-full" style="text-align:center;color:var(--muted);padding:28px">Loading Client Brain&hellip;</div>';
+
+  if (!client.clientBrainUrl) {
+    contentEl.innerHTML = `
+      <div class="card card-full">
+        <div class="empty-text">
+          No Client Brain yet for ${esc(fx(client.name))}.
+          <a href="${CLIENT_BRAIN_TEMPLATE_URL}" target="_blank" rel="noopener">Create one from the template &rarr;</a>
+        </div>
+      </div>`;
+    return;
+  }
+
+  try {
+    const res = await fetch(`${WORKER_URL}/notion/page?pageId=${encodeURIComponent(client.clientBrainUrl)}`);
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+    contentEl.innerHTML = renderClientBrainSections(client, data.blocks || []);
+  } catch (err) {
+    contentEl.innerHTML = `<div class="notice notice-error">Could not load Client Brain. ${esc(err.message)}</div>`;
+  }
+}
+
+// ── Notion block rendering ────────────────────────────────────────────────────
+function rtPlain(arr) { return (arr || []).map(t => t.plain_text).join(''); }
+
+function rtHtml(arr) {
+  if (!arr || !arr.length) return '';
+  return arr.map(t => {
+    let s = esc(t.plain_text || '');
+    const a = t.annotations || {};
+    if (a.code) s = `<code>${s}</code>`;
+    if (a.bold) s = `<strong>${s}</strong>`;
+    if (a.italic) s = `<em>${s}</em>`;
+    if (t.href) s = `<a href="${esc(t.href)}" target="_blank" rel="noopener">${s}</a>`;
+    return s;
+  }).join('');
+}
+
+function blockToHtml(block) {
+  switch (block.type) {
+    case 'paragraph': {
+      const t = rtHtml(block.paragraph.rich_text);
+      return t ? `<p>${t}</p>` : '';
+    }
+    case 'heading_3':
+      return `<div class="cb-h3">${rtHtml(block.heading_3.rich_text)}</div>`;
+    case 'quote':
+      return `<blockquote>${rtHtml(block.quote.rich_text)}</blockquote>`;
+    case 'callout':
+      return `<div class="cb-callout">${rtHtml(block.callout.rich_text)}</div>`;
+    case 'to_do':
+      return `<p>${block.to_do.checked ? '&#9745;' : '&#9744;'} ${rtHtml(block.to_do.rich_text)}</p>`;
+    default:
+      return '';
+  }
+}
+
+function renderTable(tableBlock) {
+  const rows = tableBlock.children || [];
+  if (!rows.length) return '';
+  const hasColHeader = !!(tableBlock.table && tableBlock.table.has_column_header);
+  const rowsHtml = rows.map((row, idx) => {
+    const cells = (row.table_row && row.table_row.cells) || [];
+    const tag = idx === 0 && hasColHeader ? 'th' : 'td';
+    return '<tr>' + cells.map(c => `<${tag}>${rtHtml(c)}</${tag}>`).join('') + '</tr>';
+  }).join('');
+  return `<table class="cb-table">${rowsHtml}</table>`;
+}
+
+function renderBlocks(blocks) {
+  let html = '';
+  let i = 0;
+  while (i < blocks.length) {
+    const b = blocks[i];
+    if (b.type === 'bulleted_list_item') {
+      let items = '';
+      while (i < blocks.length && blocks[i].type === 'bulleted_list_item') {
+        items += `<li>${rtHtml(blocks[i].bulleted_list_item.rich_text)}</li>`;
+        i++;
+      }
+      html += `<ul class="cb-list">${items}</ul>`;
+      continue;
+    }
+    if (b.type === 'numbered_list_item') {
+      let items = '';
+      while (i < blocks.length && blocks[i].type === 'numbered_list_item') {
+        items += `<li>${rtHtml(blocks[i].numbered_list_item.rich_text)}</li>`;
+        i++;
+      }
+      html += `<ol class="cb-list">${items}</ol>`;
+      continue;
+    }
+    if (b.type === 'table') {
+      html += renderTable(b);
+      i++;
+      continue;
+    }
+    if (b.type === 'divider') { i++; continue; }
+    html += blockToHtml(b);
+    i++;
+  }
+  return html;
+}
+
+function groupClientBrainSections(blocks) {
+  const sections = {};
+  let current = null;
+  for (const b of blocks) {
+    if (b.type === 'heading_2') {
+      const key = rtPlain(b.heading_2.rich_text).replace(/[^\x00-\x7F]/g, '').trim().toLowerCase();
+      current = key;
+      sections[current] = sections[current] || [];
+      continue;
+    }
+    if (b.type === 'divider') { current = null; continue; }
+    if (current) sections[current].push(b);
+  }
+  return sections;
+}
+
+function renderCallLogCard(blocks, notionUrl) {
+  const entries = [];
+  let cur = null;
+  for (const b of blocks) {
+    if (b.type === 'heading_3') {
+      cur = { title: rtPlain(b.heading_3.rich_text), blocks: [] };
+      entries.push(cur);
+      continue;
+    }
+    if (cur) cur.blocks.push(b);
+  }
+  const shown = entries.slice(0, 3);
+  const inner = shown.length
+    ? shown.map(e => `<div class="cb-call-entry"><div class="cb-h3">${esc(e.title)}</div>${renderBlocks(e.blocks)}</div>`).join('')
+    : '<div class="empty-text">No call log entries yet.</div>';
+  const linkText = entries.length > 3 ? `View all ${entries.length} in Notion &rarr;` : 'Open in Notion &rarr;';
+  return `
+    <div class="card">
+      <div class="cb-card-head">
+        <div class="card-label" style="margin-bottom:0"><span class="dot"></span>Call Log</div>
+        <a class="cb-open-link" href="${esc(notionUrl)}" target="_blank" rel="noopener">${linkText}</a>
+      </div>
+      ${inner}
+    </div>`;
+}
+
+function renderScratchPadCard(blocks, client) {
+  const entriesHtml = blocks.length ? renderBlocks(blocks) : '';
+  return `
+    <div class="card card-scratchpad" data-client-id="${esc(client.id)}">
+      <div class="cb-card-head">
+        <div class="card-label" style="margin-bottom:0"><span class="dot"></span>Scratch Pad</div>
+        <a class="cb-open-link" href="${esc(client.clientBrainUrl)}" target="_blank" rel="noopener">Open in Notion &rarr;</a>
+      </div>
+      <form class="cb-scratch-form" onsubmit="return submitScratchpad(event)">
+        <input type="text" class="cb-scratch-input" placeholder="Quick capture&hellip;" required>
+        <button type="submit" class="cb-scratch-btn">Add</button>
+      </form>
+      <div class="cb-scratch-status"></div>
+      <div class="cb-scratch-entries">${entriesHtml}</div>
+    </div>`;
+}
+
+function renderClientBrainSections(client, blocks) {
+  const sections = groupClientBrainSections(blocks);
+  const notionUrl = client.clientBrainUrl;
+  let html = '';
+  for (const def of CLIENT_BRAIN_SECTIONS) {
+    const secBlocks = sections[def.key] || [];
+    if (def.key === 'call log') {
+      html += renderCallLogCard(secBlocks, notionUrl);
+    } else if (def.key === 'scratch pad') {
+      html += renderScratchPadCard(secBlocks, client);
+    } else {
+      const inner = secBlocks.length ? renderBlocks(secBlocks) : '<div class="empty-text">Nothing here yet.</div>';
+      html += `
+        <div class="card">
+          <div class="cb-card-head">
+            <div class="card-label" style="margin-bottom:0"><span class="dot"></span>${esc(def.label)}</div>
+            <a class="cb-open-link" href="${esc(notionUrl)}" target="_blank" rel="noopener">Open in Notion &rarr;</a>
+          </div>
+          ${inner}
+        </div>`;
+    }
+  }
+  return html;
+}
+
+async function submitScratchpad(e) {
+  e.preventDefault();
+  const form = e.target;
+  const card = form.closest('.card');
+  const input = form.querySelector('.cb-scratch-input');
+  const statusEl = card.querySelector('.cb-scratch-status');
+  const entriesEl = card.querySelector('.cb-scratch-entries');
+  const btn = form.querySelector('.cb-scratch-btn');
+  const text = input.value.trim();
+  if (!text || !currentClient) return false;
+
+  btn.disabled = true;
+  btn.textContent = 'Adding…';
+  statusEl.textContent = '';
+
+  try {
+    const res = await fetch(`${WORKER_URL}/api/scratchpad-append`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pageId: currentClient.clientBrainUrl, text }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+
+    const p = document.createElement('p');
+    p.textContent = data.entry;
+    entriesEl.insertBefore(p, entriesEl.firstChild);
+    input.value = '';
+  } catch (err) {
+    statusEl.innerHTML = `<span style="color:var(--red)">Couldn't add: ${esc(err.message)}</span>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add';
+  }
+  return false;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
