@@ -15,6 +15,11 @@
 //     client's Client Brain page. Top-level search only, never recurses, never edits or
 //     deletes existing blocks — pure append to avoid read-modify-write version conflicts
 //     with concurrent edits made directly in Notion.
+//   GET  /notion/rayslist                      — Cockpit tab (BB-048): reads the unchecked
+//     to_do blocks on the fixed Ray's List page.
+//   POST /api/rayslist-append  body: {text}    — Cockpit tab (BB-048): appends one new
+//     unchecked to_do block to the end of the Ray's List page. Same append-only pattern
+//     as the Scratch Pad above — never edits, checks off, or deletes existing blocks.
 //
 // Deploy: cd workers && npx wrangler deploy --config wrangler-notion-proxy.toml
 // Secret: npx wrangler secret put NOTION_TOKEN --name notion-proxy
@@ -28,6 +33,7 @@ const ALLOWED_ORIGINS = [
 const NOTION_VERSION = '2022-06-28';
 const ENTITIES_DB_ID = 'db150108-b987-4069-b77b-3ec7d76544db';
 const MAX_BLOCK_DEPTH = 3;
+const RAYS_LIST_PAGE_ID = '3a8bbe80-2621-81bc-abf8-db149b576595';
 
 export default {
   async fetch(request, env) {
@@ -54,6 +60,10 @@ export default {
       return handleScratchpadAppend(request, env, cors);
     }
 
+    if (url.pathname === '/api/rayslist-append' && request.method === 'POST') {
+      return handleRaysListAppend(request, env, cors);
+    }
+
     if (request.method !== 'GET') {
       return json({ error: 'Method not allowed' }, 405, cors);
     }
@@ -68,6 +78,10 @@ export default {
 
     if (url.pathname === '/notion/page') {
       return handlePage(url, env, cors);
+    }
+
+    if (url.pathname === '/notion/rayslist') {
+      return handleRaysList(url, env, cors);
     }
 
     return json({ error: 'Not found', path: url.pathname }, 404, cors);
@@ -280,6 +294,95 @@ async function handleScratchpadAppend(request, env, cors) {
   }
 
   return json({ success: true, entry: entryText }, 200, cors);
+}
+
+// ── /notion/rayslist (BB-048) ──────────────────────────────────────────────────
+async function handleRaysList(url, env, cors) {
+  let results = [];
+  let cursor;
+  try {
+    do {
+      const qs = cursor ? `&start_cursor=${cursor}` : '';
+      const res = await fetch(
+        `https://api.notion.com/v1/blocks/${RAYS_LIST_PAGE_ID}/children?page_size=100${qs}`,
+        { headers: notionHeaders(env) }
+      );
+      if (!res.ok) {
+        const text = await res.text();
+        return json({ error: `Notion API ${res.status}`, detail: text.slice(0, 400) }, res.status, cors);
+      }
+      const data = await res.json();
+      results = results.concat(data.results || []);
+      cursor = data.has_more ? data.next_cursor : null;
+    } while (cursor);
+  } catch (e) {
+    return json({ error: e.message }, 502, cors);
+  }
+
+  const todoBlocks = results.filter(b => b.type === 'to_do');
+  if (!todoBlocks.length) {
+    return json({ error: "Couldn't find any to-do items on Ray's List — check the page directly in Notion" }, 404, cors);
+  }
+
+  const items = todoBlocks.map(b => ({
+    id: b.id,
+    text: (b.to_do?.rich_text || []).map(r => r.plain_text).join(''),
+    checked: !!b.to_do?.checked,
+  }));
+
+  return json({ items }, 200, cors);
+}
+
+// ── /api/rayslist-append (BB-048) ──────────────────────────────────────────────
+async function handleRaysListAppend(request, env, cors) {
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({ error: 'Invalid JSON body' }, 400, cors);
+  }
+
+  const text = (body.text || '').trim();
+  if (!text) return json({ error: 'text required' }, 400, cors);
+
+  // Confirm the page still has the expected to_do block structure before writing blind.
+  const checkRes = await fetch(
+    `https://api.notion.com/v1/blocks/${RAYS_LIST_PAGE_ID}/children?page_size=100`,
+    { headers: notionHeaders(env) }
+  );
+  if (!checkRes.ok) {
+    const errText = await checkRes.text();
+    return json({ error: `Notion API ${checkRes.status}`, detail: errText.slice(0, 400) }, checkRes.status, cors);
+  }
+  const checkData = await checkRes.json();
+  const hasTodoStructure = (checkData.results || []).some(b => b.type === 'to_do');
+  if (!hasTodoStructure) {
+    return json({ error: "Couldn't confirm Ray's List to-do structure — add directly in Notion" }, 404, cors);
+  }
+
+  const appendRes = await fetch(`https://api.notion.com/v1/blocks/${RAYS_LIST_PAGE_ID}/children`, {
+    method: 'PATCH',
+    headers: { ...notionHeaders(env), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      children: [
+        {
+          object: 'block',
+          type: 'to_do',
+          to_do: { rich_text: [{ type: 'text', text: { content: text } }], checked: false },
+        },
+      ],
+    }),
+  });
+
+  if (!appendRes.ok) {
+    const errText = await appendRes.text();
+    return json({ error: `Notion API ${appendRes.status}`, detail: errText.slice(0, 400) }, appendRes.status, cors);
+  }
+
+  const appendData = await appendRes.json();
+  const newBlock = (appendData.results || [])[0];
+
+  return json({ success: true, item: { id: newBlock?.id, text, checked: false } }, 200, cors);
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────

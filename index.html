@@ -312,6 +312,11 @@
     .cb-table th { background: var(--gray-light); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
     .clients-content p { font-size: 13px; margin: 6px 0; color: #333; }
 
+    .card-rayslist { border: 1px solid var(--amber); border-left: 4px solid var(--amber); background: var(--amber-bg); margin-bottom: 16px; }
+    .rl-item { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+    .rl-item:last-child { border-bottom: none; }
+    .rl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
     .card-scratchpad { border: 1px solid var(--green); border-left: 4px solid var(--green); background: #f4fcf7; }
     .cb-scratch-form { display: flex; gap: 8px; margin-bottom: 8px; }
     .cb-scratch-input {
@@ -362,6 +367,7 @@
       <div class="cockpit-greeting" id="greeting">Good morning, Ramon</div>
       <div class="cockpit-date" id="today-line"></div>
     </div>
+    <div id="rayslist-card"></div>
     <div id="cache-notice"></div>
     <div id="cockpit-content" class="card-grid">
       <div class="card card-full" style="color:var(--muted);font-size:13px;text-align:center;padding:28px">
@@ -1241,9 +1247,87 @@ async function submitScratchpad(e) {
   return false;
 }
 
+// ── Ray's List (BB-048) ─────────────────────────────────────────────────────────
+async function loadRaysList() {
+  const cardEl = document.getElementById('rayslist-card');
+  try {
+    const res = await fetch(`${WORKER_URL}/notion/rayslist`);
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+    renderRaysListCard(cardEl, data.items || []);
+  } catch (err) {
+    cardEl.innerHTML = `
+      <div class="card card-rayslist">
+        <div class="cb-card-head"><div class="card-label" style="margin-bottom:0"><span class="dot" style="background:var(--amber)"></span>Ray's List</div></div>
+        <div class="empty-text">Couldn't load Ray's List: ${esc(err.message)}</div>
+      </div>`;
+  }
+}
+
+function renderRaysListCard(cardEl, items) {
+  const open = items.filter(i => !i.checked);
+  const itemsHtml = open.length
+    ? open.map(i => `<div class="rl-item"><span class="rl-dot"></span><span>${esc(fx(i.text))}</span></div>`).join('')
+    : '<div class="empty-text">Nothing on the list right now.</div>';
+
+  cardEl.innerHTML = `
+    <div class="card card-rayslist">
+      <div class="cb-card-head">
+        <div class="card-label" style="margin-bottom:0"><span class="dot" style="background:var(--amber)"></span>Ray's List</div>
+        <a class="cb-open-link" href="https://www.notion.so/3a8bbe80262181bcabf8db149b576595" target="_blank" rel="noopener">Open in Notion &rarr;</a>
+      </div>
+      <form class="cb-scratch-form" onsubmit="return submitRaysList(event)">
+        <input type="text" class="cb-scratch-input" placeholder="Add to the list&hellip;" required>
+        <button type="submit" class="cb-scratch-btn" style="background:var(--amber)">Add</button>
+      </form>
+      <div class="cb-scratch-status"></div>
+      <div class="rl-items">${itemsHtml}</div>
+    </div>`;
+}
+
+async function submitRaysList(e) {
+  e.preventDefault();
+  const form = e.target;
+  const card = form.closest('.card');
+  const input = form.querySelector('.cb-scratch-input');
+  const statusEl = card.querySelector('.cb-scratch-status');
+  const itemsEl = card.querySelector('.rl-items');
+  const btn = form.querySelector('.cb-scratch-btn');
+  const text = input.value.trim();
+  if (!text) return false;
+
+  btn.disabled = true;
+  btn.textContent = 'Adding…';
+  statusEl.textContent = '';
+
+  try {
+    const res = await fetch(`${WORKER_URL}/api/rayslist-append`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
+
+    if (itemsEl.querySelector('.empty-text')) itemsEl.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'rl-item';
+    div.innerHTML = `<span class="rl-dot"></span><span>${esc(fx(data.item.text))}</span>`;
+    itemsEl.appendChild(div);
+    input.value = '';
+  } catch (err) {
+    statusEl.innerHTML = `<span style="color:var(--red)">Couldn't add: ${esc(err.message)}</span>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add';
+  }
+  return false;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 initHeader();
 loadCockpit();
+loadRaysList();
 </script>
 </body>
 </html>
